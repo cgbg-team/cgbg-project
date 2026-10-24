@@ -1,4 +1,6 @@
 import type { PublicProfile } from "@cgbg/shared/profile";
+import type { z } from "zod";
+import type { jobSchema } from "./schemas";
 
 export const stageLabels = {
   queued: "면접 대기 중",
@@ -17,26 +19,7 @@ export const stageLabels = {
 
 export type Stage = keyof typeof stageLabels;
 export type Outcome = "recommended" | "hold" | "mismatch";
-export type Job = {
-  id: string;
-  company: string;
-  title: string;
-  description: string;
-  skills: string[];
-  country?: string;
-  location?: string;
-  source?: string;
-  url?: string;
-  salaryText?: string;
-  remote: boolean | null;
-  weeklyHours: number | null;
-  salary: {
-    currency: "USD" | "KRW";
-    min: number;
-    max: number;
-    period: "annual";
-  } | null;
-};
+export type Job = z.infer<typeof jobSchema>;
 export type JobSearch = { total: number; countryTotal: number; matched: number; companies: number; country: string };
 export type Keyword = {
   term: string;
@@ -111,7 +94,12 @@ export function applyEvent(state: Snapshot, event: RunEvent): Snapshot {
       ...state,
       stage: "experience",
       interviews: (event.selected ?? []).map(({ job, reasons }) => ({
-        job,
+        // 이전 실행의 변환된 공고도 24시간 기록 복원에 사용한다.
+        job: typeof job.salary === "string" ? job : {
+          ...job,
+          salary: "salaryText" in job && typeof job.salaryText === "string" ? job.salaryText : "",
+          text: "description" in job && typeof job.description === "string" ? job.description : "",
+        },
         stage: "queued",
         messages: [],
         matchReasons: reasons,

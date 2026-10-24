@@ -99,21 +99,15 @@ export const privateProfileSchema: z.ZodType<PrivateProfile> = z.object({
 });
 
 export const jobSchema = z.object({
-  id: z.string().regex(/^[a-z0-9-]+$/),
-  company: text,
-  title: text,
-  description: text,
-  skills: z.array(text).min(1),
-  remote: z.boolean(),
-  weeklyHours: z.number().positive().max(100),
-  salary: z
-    .object({
-      currency: z.enum(["USD", "KRW"]),
-      min: z.number().positive(),
-      max: z.number().positive(),
-      period: z.literal("annual"),
-    })
-    .refine((salary) => salary.min <= salary.max),
+  id: z.string().regex(/^[A-Za-z0-9_-]+$/),
+  title: z.string().min(1).max(1000),
+  company: z.string().max(500),
+  country: z.string().max(10),
+  location: z.string().max(2000),
+  salary: z.string().max(5000),
+  source: z.string().min(1).max(100),
+  url: z.url().refine((value) => /^https?:\/\//.test(value)),
+  text: z.string().max(3000),
 });
 
 export const keywordSchema = z.object({

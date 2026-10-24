@@ -5,8 +5,10 @@ import { cp, readFile, writeFile } from "node:fs/promises";
 test("자료 폴더로 시작한 1:N 면접은 화면을 닫아도 완료되고 기록을 복원한다", async ({ page, context, playwright }, testInfo) => {
   test.setTimeout(90_000);
   await page.goto("http://127.0.0.1:3101");
+  await page.getByRole("button", { name: "샘플로 체험하기" }).click();
+  await expect(page.getByRole("status").filter({ hasText: "최신 온보딩 예시 프로필" })).toContainText("Multimodal AI Research Engineer");
   const folder = testInfo.outputPath("candidate");
-  await cp(path.resolve("apps/interviews/src/data/demo/candidate"), folder, { recursive: true });
+  await cp(path.resolve("data/demo/candidates/onboarding-example"), folder, { recursive: true });
   const file = path.join(folder, "index.json");
   const candidate = JSON.parse(await readFile(file, "utf8"));
   candidate.publicProfile.headline = "업로드한 자동화 엔지니어";

@@ -18,7 +18,7 @@ async function interview(input: Awaited<ReturnType<typeof prepare>>, job: Job) {
     for (const stage of [
       "experience",
       "conditions",
-      job.salary || job.salaryText ? "salary" : "salary_check",
+      job.salary ? "salary" : "salary_check",
     ] satisfies Stage[]) {
       await publish({ type: "stage", jobId: job.id, stage });
       const recruiter = await recruiterTurn(input, job, messages, stage);

@@ -10,15 +10,16 @@ import {
 import { screenJobs } from "./screening";
 import { assessConditions } from "./job-conditions";
 import { applyEvent, emptySnapshot } from "./types";
-import candidate from "../data/demo/candidate/index.json";
-import orbit from "../data/demo/jobs/orbit/index.json";
-import relay from "../data/demo/jobs/relay/index.json";
-import folio from "../data/demo/jobs/folio/index.json";
+import candidate from "../../../../data/demo/candidates/onboarding-example/index.json";
 
 afterEach(() => vi.unstubAllEnvs());
 const profile = publicProfileSchema.parse(candidate.publicProfile);
 const privateProfile = privateProfileSchema.parse(candidate.privateProfile);
-const jobs = [orbit, relay, folio].map((job) => jobSchema.parse(job));
+const jobs = [
+  { id: "orbit", company: "Search A", title: "Python SQL Engineer", text: "Python SQL", salary: "$100,000" },
+  { id: "relay", company: "Search B", title: "Engineer", text: "Python SQL", salary: "" },
+  { id: "folio", company: "Search C", title: "iOS Engineer", text: "Swift", salary: "" },
+].map((job) => jobSchema.parse({ country: "US", location: "", source: "test", url: "https://example.com/job", ...job }));
 
 test("프로필 v1을 검증하고 잘못된 공개 경로·연봉·근거를 거부한다", () => {
   expect(profile.schemaVersion).toBe(1);
@@ -67,18 +68,19 @@ test("실제 검색어 일치 수로 상위 2개만 선택하고 무관한 공�
 test("기업 중복·국가·제목 가중치와 면접 수 제한을 적용한다", () => {
   const base = jobs[0];
   const pool = [
-    { ...base, id: "body", company: "same", country: "AU", title: "Other", description: "Python" },
-    { ...base, id: "title", company: "SAME", country: "AU", title: "Python", description: "" },
+    { ...base, id: "body", company: "same", country: "AU", title: "Other", text: "Python" },
+    { ...base, id: "title", company: "SAME", country: "AU", title: "Python", text: "" },
     { ...base, id: "us", company: "US", country: "US", title: "Python" },
   ];
   const keywords = [{ term: "Python", source: "skills" as const }];
   expect(screenJobs(pool, keywords, 20, "AU").selected.map(({job}) => job.id)).toEqual(["title"]);
   expect(screenJobs(pool, keywords, 0).selected).toEqual([]);
 });
-test("미확인 조건은 보류하고 구조화된 연봉 하한 불일치는 거절한다", () => {
+test("연봉 문자열을 추정하지 않고 미확인 조건은 보류하며 명시적 불일치를 보존한다", () => {
   const result = { outcome: "recommended" as const, reasons: ["경험 일치"] };
-  expect(assessConditions(result, { ...jobs[0], salary: null, remote: null, weeklyHours: null }, privateProfile.salary, false).outcome).toBe("hold");
-  expect(assessConditions(result, { ...jobs[0], salary: { currency: "USD", min: 1, max: 2, period: "annual" } }, privateProfile.salary, false).outcome).toBe("mismatch");
+  expect(assessConditions(result, { ...jobs[0], salary: "" }, false).outcome).toBe("hold");
+  expect(assessConditions(result, jobs[0], true).reasons.join(" ")).toContain("추가 답변");
+  expect(assessConditions({ outcome: "mismatch", reasons: ["경험 불일치"] }, jobs[0], false).outcome).toBe("mismatch");
 });
 test("기업별 대화·오류·확인 질문을 섞지 않고 기록을 복원한다", () => {
   let state = applyEvent(emptySnapshot, {

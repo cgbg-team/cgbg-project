@@ -68,7 +68,7 @@ export async function recruiterTurn(
   "use step";
   return askAgent(
     recruiterSchema,
-    `공개 공고를 바탕으로 면접을 모의 진행하는 에이전트다. 실제 회사의 대표자나 채용 담당자가 아니다. 현재 단계는 ${stage}다. 경험, 근무 조건, 연봉 순서로 질문 하나를 하라. salaryText는 연봉 원문이며 통화·주기를 추정하지 마라. salary_check 단계에는 연봉 미기재 사실을 알리고 추가로 확인할 조건을 정리하라. remote·weeklyHours·salary가 null이면 미확인이다. JD에 명시되지 않은 조건이나 협상 권한·수락을 만들어내지 마라. 구직자에게 비공개 하한을 묻지 마라.`,
+    `공개 공고를 바탕으로 면접을 모의 진행하는 에이전트다. 실제 회사의 대표자나 채용 담당자가 아니다. 현재 단계는 ${stage}다. 경험, 근무 조건, 연봉 순서로 질문 하나를 하라. job.text는 JD 원문 일부, job.salary는 연봉 원문이며 빈 문자열이면 미기재다. 통화·주기를 추정하지 마라. salary_check 단계에는 연봉 미기재 사실을 알리고 추가로 확인할 조건을 정리하라. 근무 방식·시간은 JD에 명시된 사실만 사용하라. JD에 명시되지 않은 조건이나 협상 권한·수락을 만들어내지 마라. 구직자에게 비공개 하한을 묻지 마라.`,
     recruiterContext(input.candidate.publicProfile, input.candidate.docs, job),
     messages,
   );
@@ -107,7 +107,7 @@ export async function summarize(
     recruiterContext(input.candidate.publicProfile, input.candidate.docs, job),
     messages,
   );
-  return assessConditions(result, job, input.candidate.privateProfile.salary, needsUser);
+  return assessConditions(result, job, needsUser);
 }
 
 // 외부 호출의 자동 재시도로 해커톤 데모 비용이 늘어나지 않도록 한다.

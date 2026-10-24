@@ -20,19 +20,16 @@
 
 ## 샘플 입력과 프로필 v1
 
-계약 타입은 `@cgbg/shared/profile`, 런타임 검증은 앱의 `schemas.ts`에 있다. 샘플 위치는 `src/data/demo/`다.
+계약 타입은 `@cgbg/shared/profile`, 런타임 검증은 앱의 `schemas.ts`에 있다. 샘플은 저장소 루트 `data/demo/candidates/onboarding-example/`의 최신 온보딩 예시 한 곳에서 읽는다. 버튼 체험과 폴더 업로드 모두 같은 v1 검증을 적용한다. 앱 내부에 예시 복사본을 만들지 않는다. 아래 경로는 예시 폴더 기준이다.
 
 ```text
-candidate/index.json
-candidate/public/experience.md
-candidate/public/strengths.md
-candidate/private/interview.md
-jobs/orbit/index.json
-jobs/relay/index.json
-jobs/folio/index.json
+index.json
+public/experience.md
+public/strengths.md
+private/interview.md
 ```
 
-구직자 `index.json`은 `confirmed_at`(ISO 시각), `salaryPeriod: "annual"`, `publicProfile: PublicProfile`, `privateProfile: PrivateProfile`을 묶는 **면접 앱 입력 봉투 형식**이다. 온보딩의 업로드 형식으로 강제하지 않는다. 두 프로필 ID가 같아야 한다. 프로필과 공개 문서를 시작 시 실행 입력 스냅샷으로 보관한다. 서버는 확인 후 시작한 시각으로 `confirmed_at`을 갱신한다.
+구직자 `index.json`은 `confirmed_at`(ISO 시각), `salaryPeriod: "annual"`, `publicProfile: PublicProfile`, `privateProfile: PrivateProfile`을 묶는 **면접 앱 입력 봉투 형식**이다. 온보딩 앱은 이 형식의 폴더를 zip으로 내보내며 압축을 풀어 면접 앱에서 선택한다. 두 프로필 ID가 같아야 한다. 프로필과 공개 문서를 시작 시 실행 입력 스냅샷으로 보관한다. 서버는 확인 후 시작한 시각으로 `confirmed_at`을 갱신한다.
 
 폴더 전체는 파일 20개·합계 1MB 이하이며, index에 등록한 Markdown 파일과 index.json만 허용한다. 누락·중복·경로 이탈·없는 근거 앵커는 시작 전에 안내한다. 폴더 선택은 브라우저에서 읽기·미리보기만 수행하며, 시작할 때 프로필 JSON과 공개 문서 내용만 서버로 전송한다. 비공개 Markdown 원문은 전송하지 않는다. 서버에서 같은 검증을 다시 수행하고 요청 본문도 1MB로 제한한다. PDF·원본 이력서의 프로필 변환은 포함하지 않는다.
 
@@ -40,13 +37,13 @@ jobs/folio/index.json
 
 `src/lib/searchJobs.ts`는 검색 step 안에서만 압축 풀을 읽고 검증해 프로세스 메모리에 캐시한다. 기본 경로는 앱 cwd 아래 `src/data/jobs/jobs_pool.json.gz`이며 서버 `JOBS_POOL_PATH`로 변경한다. Vercel 함수 추적에 파일을 포함했다. 전체 풀과 미선정 목록은 Workflow 입력·출력에 직렬화하지 않는다. 화면에는 `summary.json`의 국가별 개수만 포함한다. 풀 교체 시 요약도 함께 갱신한다.
 
-선택 공고의 연봉 원문은 `salaryText`로 보존한다. 구조화된 `salary`, `remote`, `weeklyHours`는 null이며 통화·지급 주기·근무시간·원격 여부를 추정하지 않는다. 미확인 조건은 보류한다. 기존 가상 공고·과거 실행의 구조화된 연간 급여는 통화가 다르면 보류하고 상한이 구직자 하한보다 작으면 서버에서 조건 불일치로 처리한다. 가상 공고 세 개는 회귀 테스트 자료로만 유지한다.
+공고는 검색·Workflow·양측 에이전트·화면에서 원본 필드 `id/title/company/country/location/salary/source/url/text`를 그대로 사용한다. `salary`는 원문 문자열이고 빈 값은 미기재다. 타입과 런타임 검증은 같은 `jobSchema`를 기준으로 한다. 별도 description·skills·salaryText·remote·weeklyHours 필드는 만들지 않는다. 화면에서 제공된 JD 일부·출처·원문 링크·연봉을 확인한다. 정규화된 연봉·근무 조건이 없으므로 통화·지급 주기·시간·원격 여부를 추정하거나 하한과 숫자로 비교하지 않는다. 모델이 명시적 불일치를 반환하면 보존하고, 그 외에는 원문 조건 확인을 위해 보류한다. 기존 실행 기록의 description·salaryText는 재생 시 원본 필드로 변환한다.
 
-샘플 구직자는 가상 정보이며 공고는 실제 공개 자료다. 공개 문서만 읽고 루트 이탈·상위 경로 이동·잘못된 JSON·누락 근거와 앵커를 거부한다. 비공개 Markdown 원문은 모델에 넣지 않고 구조화된 비공개 조건만 구직자 프롬프트에 사용한다. 연봉 하한은 양측 모델에서 제외하고 서버 비교에만 쓴다. 채용 에이전트는 공개 요약·공개 문서·자기 공고·해당 기업 대화만 받는다.
+샘플 구직자는 저장소에 제공된 온보딩 예시이며 공고는 실제 공개 자료다. 공개 문서만 읽고 루트 이탈·상위 경로 이동·잘못된 JSON·누락 근거와 앵커를 거부한다. 비공개 Markdown 원문은 모델에 넣지 않고 구조화된 비공개 조건만 구직자 프롬프트에 사용한다. 연봉 하한은 양측 모델과 공개 진행 기록에서 제외한다. 원문 연봉을 정규화하는 비교 기능은 아직 없다. 채용 에이전트는 공개 요약·공개 문서·자기 공고·해당 기업 대화만 받는다.
 
 ## 실행·저장·접근 제어
 
-Workflow SDK 5.2.3의 실행 로그와 저장 스트림을 사용한다. 로컬은 앱의 `.workflow-data/`에 저장하며 서버 프로세스가 켜져 있어야 진행된다. 폴더를 삭제하면 기록을 잃는다. Vercel에서는 관리형 Workflow로 두 기업의 실제 면접 완료와 기록 조회를 확인했다. 다른 서버리스 호스트에서 로컬 파일 저장으로 운영하지 않는다. Supabase 테이블·온보딩 데이터 조회·양 앱 간 전달은 아직 연결하지 않았다. 기존 계획의 Supabase 상태 복제는 샘플 구현에 포함하지 않는다.
+Workflow SDK 5.2.3의 실행 로그와 저장 스트림을 사용한다. 로컬은 앱의 `.workflow-data/`에 저장하며 서버 프로세스가 켜져 있어야 진행된다. 폴더를 삭제하면 기록을 잃는다. Vercel에서는 관리형 Workflow로 두 기업의 실제 면접 완료와 기록 조회를 확인했다. 다른 서버리스 호스트에서 로컬 파일 저장으로 운영하지 않는다. 온보딩 zip → 압축 해제 → 폴더 업로드로 전달한다. Supabase 테이블·온보딩 데이터 직접 조회·자동 앱 이동은 아직 연결하지 않았다. 기존 계획의 Supabase 상태 복제는 샘플 구현에 포함하지 않는다.
 
 실행 ID만으로 조회할 수 없다. 서버가 실행 ID와 만료 시각을 서명한 HttpOnly·SameSite 쿠키를 발급하고 조회·중지 시 검증한다. 새 실행 시 쿠키가 교체되므로 같은 브라우저의 **가장 최근 실행 1개**를 24시간 동안 복원한다. 제어 토큰·프로필을 URL에 넣지 않는다. Workflow 내부 로그에는 비공개 프로필이 있으므로 관리자 접근을 제한해야 한다.
 

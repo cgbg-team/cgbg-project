@@ -1,7 +1,7 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, expect, test } from "vitest";
 import { InterviewDashboard } from "@/components/interview-dashboard";
-import candidate from "@/data/demo/candidate/index.json";
+import candidate from "../../../../data/demo/candidates/onboarding-example/index.json";
 import { publicProfileSchema } from "@/lib/schemas";
 
 afterEach(cleanup);

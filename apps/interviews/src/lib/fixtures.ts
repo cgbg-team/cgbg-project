@@ -1,13 +1,13 @@
 import "server-only";
 import { readFile, realpath } from "node:fs/promises";
 import path from "node:path";
-import candidate from "../data/demo/candidate/index.json";
+import candidate from "../../../../data/demo/candidates/onboarding-example/index.json";
 import { candidateManifestSchema, validateCandidate } from "./candidate-input";
 
 export async function loadDemoCandidate() {
   const data = candidateManifestSchema.parse(candidate);
   const root = await realpath(
-    path.join(process.cwd(), "src/data/demo/candidate"),
+    path.join(process.cwd(), "../../data/demo/candidates/onboarding-example"),
   );
   const docs = await Promise.all(
     data.publicProfile.docs.map(async (doc) => {

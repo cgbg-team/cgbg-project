@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import candidate from "../data/demo/candidate/index.json";
+import candidate from "../../../../data/demo/candidates/onboarding-example/index.json";
 import {
   parseCandidateFiles,
   validateCandidate,

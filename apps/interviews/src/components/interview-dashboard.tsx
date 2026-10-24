@@ -140,6 +140,7 @@ export function InterviewDashboard({
           </p>
         )}
         <CandidateUpload
+          sampleProfile={profile}
           disabled={running || run.starting}
           onPrepared={setCandidate}
         />

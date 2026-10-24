@@ -1,6 +1,6 @@
 # 구직자 프로필 데이터 계약 (v1)
 
-상태: v1을 면접 샘플 구현의 기준으로 사용한다. 타입은 `packages/shared/src/profile.ts`에 구현했으며 테이블은 아직 없다. 온보딩의 저장·전달 연결은 담당자와 별도로 맞춘다. 면접 샘플 봉투 형식은 [면접 앱 문서](../interviews/00_overview.md)에 정의한다.
+상태: v1을 면접 샘플 구현의 기준으로 사용한다. 타입은 `packages/shared/src/profile.ts`에 구현했으며 테이블은 아직 없다. 온보딩은 index.json과 공개·비공개 Markdown을 zip으로 내보내며, 면접 앱은 압축 해제된 폴더를 읽는다. 면접 샘플 봉투 형식은 [면접 앱 문서](../interviews/00_overview.md)에 정의한다.
 
 onboarding 앱이 확정한 구직자 프로필을 interviews 앱이 읽는 형식을 정한다. 제품 흐름은 [제품 아이디어](../01_product_idea.md), 앱 책임은 [개발 계획](../plan/20261024_1119_monorepo_plan.md#앱과-데이터의-책임)을 따른다.
 
@@ -109,7 +109,7 @@ export type PrivateProfile = {
 ## interviews에서 사용하는 규칙
 
 - 채용 에이전트 프롬프트에는 `PublicProfile.summary`와 필요한 공개 문서만 넣는다.
-- `PrivateProfile`은 구직자 에이전트만 읽는다. `salary.floor`는 조건 비교에만 사용하고 대화에서 밝히지 않는다.
+- `PrivateProfile`은 구직자 에이전트만 읽는다. `salary.floor`는 양측 모델과 공개 진행 기록에서 제외한다. 현재 실제 공고의 salary는 원문 문자열이라 하한과 정규화된 숫자 비교는 하지 않는다.
 - 근거가 없는 경험이나 수락 의사를 만들어내지 않는다. 필요하면 `openQuestions`처럼 사용자에게 질문한다.
 
 ## 변경 절차

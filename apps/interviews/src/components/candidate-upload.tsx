@@ -1,5 +1,6 @@
 "use client";
 import { useState, type ChangeEvent } from "react";
+import type { PublicProfile } from "@cgbg/shared/profile";
 import {
   fileLimit,
   inputError,
@@ -11,9 +12,11 @@ import {
 export function CandidateUpload({
   disabled,
   onPrepared,
+  sampleProfile,
 }: {
   disabled: boolean;
   onPrepared: (candidate: CandidateInput | null | undefined) => void;
+  sampleProfile: PublicProfile;
 }) {
   const [candidate, setCandidate] = useState<CandidateInput>();
   const [folder, setFolder] = useState("");
@@ -79,6 +82,7 @@ export function CandidateUpload({
         <details className="upload-help">
           <summary>어떤 폴더를 올리나요?</summary>
           <p>
+            온보딩에서 받은 zip은 압축을 풀고 폴더를 선택해주세요.
             index.json에 publicProfile, privateProfile, confirmed_at,
             salaryPeriod를 넣고, docs에 등록한 public/·private/ Markdown 파일을
             함께 준비해주세요.
@@ -136,9 +140,11 @@ export function CandidateUpload({
           </p>
         )}
         {demo && (
-          <p className="upload-feedback" role="status">
-            가상 구직자와 실제 공고 풀로 면접을 진행합니다.
-          </p>
+          <div className="upload-feedback" role="status">
+            <strong>{sampleProfile.headline}</strong>
+            <p>{sampleProfile.wants.roleTypes.join(" · ")}</p>
+            <p>최신 온보딩 예시 프로필과 실제 공고 풀로 면접을 진행합니다.</p>
+          </div>
         )}
         {candidate && (
           <div className="upload-preview">
@@ -185,7 +191,7 @@ export function CandidateUpload({
         )}
         <p className="upload-privacy">
         면접 시작 시 프로필은 Claude 처리와 서버 실행 기록 저장에 사용됩니다.
-        비공개 문서 원문은 전송하지 않으며, 연봉 하한은 서버에서만 비교합니다.
+        비공개 문서 원문은 전송하지 않으며, 연봉 하한은 모델 대화와 공개 기록에서 제외합니다.
         </p>
       </div>
     </section>

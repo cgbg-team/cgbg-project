@@ -45,13 +45,13 @@ export function InterviewDetail({ interview }: { interview?: Interview }) {
       </header>
       <div className="job-conditions">
         {job.country && <span>{countryLabel(job.country)} · {job.location || "지역 미기재"}</span>}
-        <span>{job.remote == null ? "근무 방식 미확인" : job.remote ? "원격 근무 가능" : "사무실 근무"}</span>
-        <span>{job.weeklyHours == null ? "근무시간 미확인" : `주 ${job.weeklyHours}시간`}</span>
+        <span>근무 방식·시간은 공고 원문 확인 필요</span>
         <span>
-          {job.salaryText || (job.salary ? `${job.salary.currency} ${job.salary.min.toLocaleString()}–${job.salary.max.toLocaleString()} / 년` : "연봉 미기재")}
+          {job.salary || "연봉 미기재"}
         </span>
         {job.url && <a href={job.url} target="_blank" rel="noopener noreferrer">{job.source} · 공고 원문 ↗</a>}
       </div>
+      <details className="job-description"><summary>제공된 공고 내용 보기</summary><p>{job.text || "제공된 본문이 없습니다."}</p><small>JD 앞부분만 제공됩니다. 최신 조건은 원문에서 확인해주세요.</small></details>
       <div
         className="transcript"
         role="log"

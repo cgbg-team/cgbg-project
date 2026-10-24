@@ -5,7 +5,7 @@ import { withWorkflow } from "workflow/next";
 const nextConfig: NextConfig = {
   agentRules: false,
   outputFileTracingRoot: path.join(__dirname, "../.."),
-  outputFileTracingIncludes: { "/*": ["./src/data/demo/candidate/public/*.md", "./src/data/jobs/jobs_pool.json.gz"] },
+  outputFileTracingIncludes: { "/*": ["../../data/demo/candidates/onboarding-example/public/*.md", "./src/data/jobs/jobs_pool.json.gz"] },
   turbopack: {
     root: path.join(__dirname, "../.."),
     rules: {

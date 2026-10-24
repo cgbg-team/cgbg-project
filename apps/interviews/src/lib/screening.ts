@@ -7,10 +7,10 @@ export function screenJobs(jobs: Job[], keywords: Keyword[], limit = 2, country 
   const scored = candidates
     .map((job) => {
       const title = job.title.toLowerCase();
-      const body = job.description.toLowerCase();
+      const body = job.text.toLowerCase();
       const reasons = terms.filter((term) => title.includes(term) || body.includes(term));
       const score = terms.reduce((sum, term) => sum + (title.includes(term) ? 3 : 0) + (body.includes(term) ? 1 : 0), 0);
-      return { job, reasons, score: score ? score + (job.salaryText || job.salary ? 1 : 0) : 0 };
+      return { job, reasons, score: score ? score + (job.salary ? 1 : 0) : 0 };
     })
     .filter((item) => item.score > 0 && item.job.company.trim().length > 0)
     .sort(
