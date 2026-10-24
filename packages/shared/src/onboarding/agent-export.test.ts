@@ -4,28 +4,28 @@ import { demoAgentExport } from "./demo";
 
 test("에이전트 JSON의 경력·학력은 이력서로, 나머지는 추가 자료로 나눈다", () => {
   const { resumeText, extraText } = parseAgentExport(`\`\`\`json\n${demoAgentExport}\n\`\`\``);
-  expect(resumeText).toContain("[work] Attending Radiologist");
+  expect(resumeText).toContain("[work] 머신러닝 엔지니어, 음성 AI 스타트업");
+  expect(resumeText).toContain("[education] 세종대학교");
   expect(resumeText).not.toContain("[project]");
-  expect(extraText).toContain("[project] Vintage lever machine restoration");
+  expect(extraText).toContain("[project] Piano2Midi");
 });
 
 test("인사이트는 가설로 넘기고 약점·일하는 스타일은 비공개 문서로만 분리한다", () => {
-  const { insightsText, selfInsightMd } = parseAgentExport(demoAgentExport);
-  expect(insightsText).toContain("## Role ideas\n- Product specialist (Coffee equipment)");
-  expect(insightsText).not.toContain("administrative meetings");
-  expect(selfInsightMd).toContain("## Weaknesses\n- Loses energy in long administrative meetings");
-  expect(selfInsightMd).toContain("## Work style");
-});
-
-test("질문 설계용 JSON에는 gaps·제안을 남기고 약점·일하는 스타일은 뺀다", () => {
   const raw = JSON.parse(demoAgentExport);
-  const { plannerJson } = parseAgentExport(
-    JSON.stringify({ ...raw, gaps: [{ topic: "해외 근무 의향" }], proposals: [{ type: "role_idea", text: "Coffee PM", ownerResponse: "unanswered" }] }),
-  );
-  expect(plannerJson).toContain("해외 근무 의향");
-  expect(plannerJson).toContain("Coffee PM");
-  expect(plannerJson).not.toContain("administrative meetings");
-  expect(plannerJson).not.toContain("hands-on problems");
+  const exported = JSON.stringify({
+    ...raw,
+    insights: { ...raw.insights, weaknesses: [{ text: "긴 회의에서 집중이 떨어진다" }] },
+  });
+  const { insightsText, selfInsightMd, plannerJson } = parseAgentExport(exported);
+  expect(insightsText).toContain("## Talents\n- 어려운 기술을 쉽게 풀어 설명한다");
+  expect(insightsText).toContain("DevRel(개발자 관계) 엔지니어");
+  expect(insightsText).not.toContain("긴 회의");
+  expect(selfInsightMd).toContain("## Weaknesses\n- 긴 회의에서 집중이 떨어진다");
+  expect(selfInsightMd).toContain("## Work style");
+  // 질문 설계용 JSON에는 gaps·제안을 남기고 약점·일하는 스타일은 뺀다.
+  expect(plannerJson).toContain("Kitsch Labs를 운영하면서");
+  expect(plannerJson).not.toContain("긴 회의");
+  expect(plannerJson).not.toContain("작은 팀에서 연구와 제품을");
 });
 
 test("형식이 틀리거나 경력이 없으면 이유를 알린다", () => {

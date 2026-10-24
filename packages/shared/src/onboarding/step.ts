@@ -190,10 +190,10 @@ async function finalize(client: Anthropic | null, agent: ParsedAgentExport, body
 const demoQuestions: Question[] = [
   {
     id: "r1q1",
-    text: "커피 장비 복원 경험을 살려 장비 회사에서 일해 볼 의향이 있나요?",
+    text: "블로그와 무료 강의 경험을 살려 DevRel(개발자 관계) 일을 해 볼 의향이 있나요?",
     why: "이력서에는 없지만 에이전트가 발견한 강점이에요.",
     type: "single",
-    options: ["네, 관심 있어요", "부업으로만", "취미로 두고 싶어요", "기타"],
+    options: ["네, 관심 있어요", "부업·프로젝트로만", "추천하지 말아 주세요", "기타"],
     unit: null,
     fills: "roleIdeas",
   },
