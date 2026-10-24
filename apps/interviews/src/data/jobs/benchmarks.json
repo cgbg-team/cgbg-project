@@ -1,0 +1,397 @@
+{
+  "sources": {
+    "bigMac": "The Economist Big Mac index 2026-07-01 (https://raw.githubusercontent.com/TheEconomist/big-mac-data/master/output-data/big-mac-full-index.csv)",
+    "salaries": "jobs_pool.json.gz 공고에 적힌 연봉 범위의 중간값, USD 연봉 환산. 대부분 미국 테크 기업 공고라 시장 평균이 아니다."
+  },
+  "rules": {
+    "roles": [
+      [
+        "ml_engineer",
+        "machine learning|\\bml\\b|\\bai engineer|applied ai"
+      ],
+      [
+        "research",
+        "research (scientist|engineer)|researcher"
+      ],
+      [
+        "data",
+        "data (scientist|analyst|engineer)|analytics"
+      ],
+      [
+        "devrel",
+        "developer (relations|advocate)|devrel|developer experience"
+      ],
+      [
+        "solutions",
+        "solutions? (engineer|architect)|forward deployed|field engineer|sales engineer"
+      ],
+      [
+        "technical_writer",
+        "technical writer|documentation"
+      ],
+      [
+        "software_engineer",
+        "software|backend|frontend|full[- ]?stack|infrastructure engineer|platform engineer|mobile|\\bios\\b|android|engineer"
+      ],
+      [
+        "product_manager",
+        "product manager"
+      ],
+      [
+        "designer",
+        "designer|design lead"
+      ],
+      [
+        "customer_success",
+        "customer success|customer experience|\\bcx\\b|support"
+      ],
+      [
+        "sales",
+        "account executive|account manager|sales|business development"
+      ],
+      [
+        "marketing",
+        "marketing|growth|communications|brand"
+      ],
+      [
+        "recruiting",
+        "recruit|talent"
+      ],
+      [
+        "operations",
+        "operations|program manager|chief of staff"
+      ],
+      [
+        "finance_legal",
+        "financ|account(ing|ant)|counsel|legal|payroll|tax"
+      ]
+    ],
+    "levels": {
+      "skip": "intern",
+      "entry": "junior|new grad|graduate|entry|early career|associate|\\bi\\b",
+      "senior": "senior|\\bsr\\b|staff|principal|lead|director|head|manager|\\bvp\\b"
+    }
+  },
+  "countries": {
+    "US": {
+      "bigMacLocal": 6.22,
+      "currency": "USD",
+      "bigMacUsd": 6.22,
+      "gdpPerCapitaUsd": 89991,
+      "region": "United States"
+    },
+    "UK": {
+      "bigMacLocal": 5.49,
+      "currency": "GBP",
+      "bigMacUsd": 7.4,
+      "gdpPerCapitaUsd": 49528,
+      "region": "Britain"
+    },
+    "CA": {
+      "bigMacLocal": 8.17,
+      "currency": "CAD",
+      "bigMacUsd": 5.81,
+      "gdpPerCapitaUsd": 59356,
+      "region": "Canada"
+    },
+    "AU": {
+      "bigMacLocal": 8.5,
+      "currency": "AUD",
+      "bigMacUsd": 5.95,
+      "gdpPerCapitaUsd": 75324,
+      "region": "Australia"
+    },
+    "JP": {
+      "bigMacLocal": 500,
+      "currency": "JPY",
+      "bigMacUsd": 3.08,
+      "gdpPerCapitaUsd": 66973,
+      "region": "Japan"
+    },
+    "KR": {
+      "bigMacLocal": 5700,
+      "currency": "KRW",
+      "bigMacUsd": 3.84,
+      "gdpPerCapitaUsd": 56232,
+      "region": "South Korea"
+    },
+    "SG": {
+      "bigMacLocal": 7.45,
+      "currency": "SGD",
+      "bigMacUsd": 5.77,
+      "gdpPerCapitaUsd": 108466,
+      "region": "Singapore"
+    },
+    "IN": {
+      "bigMacLocal": 236.25,
+      "currency": "INR",
+      "bigMacUsd": 2.45,
+      "gdpPerCapitaUsd": 6232,
+      "region": "India"
+    },
+    "DE": {
+      "bigMacLocal": 6.19,
+      "currency": "EUR",
+      "bigMacUsd": 7.08,
+      "gdpPerCapitaUsd": 44687,
+      "region": "Euro area"
+    },
+    "FR": {
+      "bigMacLocal": 6.19,
+      "currency": "EUR",
+      "bigMacUsd": 7.08,
+      "gdpPerCapitaUsd": 44687,
+      "region": "Euro area"
+    },
+    "IE": {
+      "bigMacLocal": 6.19,
+      "currency": "EUR",
+      "bigMacUsd": 7.08,
+      "gdpPerCapitaUsd": 44687,
+      "region": "Euro area"
+    },
+    "NL": {
+      "bigMacLocal": 6.19,
+      "currency": "EUR",
+      "bigMacUsd": 7.08,
+      "gdpPerCapitaUsd": 44687,
+      "region": "Euro area"
+    }
+  },
+  "salaries": {
+    "CA|product_manager|senior": {
+      "n": 3,
+      "p25": 122763,
+      "median": 222500,
+      "p75": 240000
+    },
+    "CA|sales|mid": {
+      "n": 7,
+      "p25": 67608,
+      "median": 124044,
+      "p75": 227734
+    },
+    "CA|sales|senior": {
+      "n": 7,
+      "p25": 131303,
+      "median": 245525,
+      "p75": 307796
+    },
+    "CA|software_engineer|mid": {
+      "n": 11,
+      "p25": 80063,
+      "median": 129168,
+      "p75": 202825
+    },
+    "CA|software_engineer|senior": {
+      "n": 15,
+      "p25": 175070,
+      "median": 202825,
+      "p75": 230225
+    },
+    "CA|solutions|mid": {
+      "n": 4,
+      "p25": 195709,
+      "median": 234850,
+      "p75": 256200
+    },
+    "DE|sales|senior": {
+      "n": 4,
+      "p25": 132235,
+      "median": 142957,
+      "p75": 303068
+    },
+    "DE|software_engineer|senior": {
+      "n": 3,
+      "p25": 124201,
+      "median": 147474,
+      "p75": 188188
+    },
+    "UK|sales|senior": {
+      "n": 3,
+      "p25": 161753,
+      "median": 252000,
+      "p75": 347096
+    },
+    "UK|software_engineer|mid": {
+      "n": 6,
+      "p25": 205562,
+      "median": 313397,
+      "p75": 319463
+    },
+    "UK|software_engineer|senior": {
+      "n": 3,
+      "p25": 177255,
+      "median": 208931,
+      "p75": 377425
+    },
+    "US|customer_success|mid": {
+      "n": 4,
+      "p25": 107000,
+      "median": 170000,
+      "p75": 263000
+    },
+    "US|customer_success|senior": {
+      "n": 19,
+      "p25": 162500,
+      "median": 195000,
+      "p75": 215000
+    },
+    "US|data|mid": {
+      "n": 24,
+      "p25": 197500,
+      "median": 217225,
+      "p75": 310000
+    },
+    "US|data|senior": {
+      "n": 16,
+      "p25": 194250,
+      "median": 226600,
+      "p75": 272500
+    },
+    "US|designer|mid": {
+      "n": 14,
+      "p25": 182500,
+      "median": 212625,
+      "p75": 257500
+    },
+    "US|designer|senior": {
+      "n": 11,
+      "p25": 183200,
+      "median": 230000,
+      "p75": 238500
+    },
+    "US|devrel|mid": {
+      "n": 6,
+      "p25": 190000,
+      "median": 225000,
+      "p75": 227500
+    },
+    "US|finance_legal|entry": {
+      "n": 3,
+      "p25": 148000,
+      "median": 185000,
+      "p75": 402000
+    },
+    "US|finance_legal|mid": {
+      "n": 22,
+      "p25": 139425,
+      "median": 191000,
+      "p75": 226500
+    },
+    "US|finance_legal|senior": {
+      "n": 30,
+      "p25": 162500,
+      "median": 200250,
+      "p75": 266200
+    },
+    "US|marketing|mid": {
+      "n": 5,
+      "p25": 185000,
+      "median": 209000,
+      "p75": 227000
+    },
+    "US|marketing|senior": {
+      "n": 69,
+      "p25": 172000,
+      "median": 197500,
+      "p75": 233000
+    },
+    "US|ml_engineer|mid": {
+      "n": 29,
+      "p25": 238500,
+      "median": 249500,
+      "p75": 301127
+    },
+    "US|ml_engineer|senior": {
+      "n": 19,
+      "p25": 239344,
+      "median": 275000,
+      "p75": 309500
+    },
+    "US|operations|mid": {
+      "n": 24,
+      "p25": 140000,
+      "median": 180000,
+      "p75": 212500
+    },
+    "US|operations|senior": {
+      "n": 63,
+      "p25": 175000,
+      "median": 212000,
+      "p75": 243500
+    },
+    "US|product_manager|senior": {
+      "n": 22,
+      "p25": 220000,
+      "median": 257500,
+      "p75": 285000
+    },
+    "US|recruiting|mid": {
+      "n": 10,
+      "p25": 138200,
+      "median": 180000,
+      "p75": 185000
+    },
+    "US|recruiting|senior": {
+      "n": 20,
+      "p25": 173500,
+      "median": 198000,
+      "p75": 245200
+    },
+    "US|research|mid": {
+      "n": 12,
+      "p25": 247500,
+      "median": 347500,
+      "p75": 450000
+    },
+    "US|research|senior": {
+      "n": 5,
+      "p25": 211500,
+      "median": 243750,
+      "p75": 283000
+    },
+    "US|sales|mid": {
+      "n": 53,
+      "p25": 110000,
+      "median": 205000,
+      "p75": 290000
+    },
+    "US|sales|senior": {
+      "n": 56,
+      "p25": 203500,
+      "median": 291500,
+      "p75": 335000
+    },
+    "US|software_engineer|entry": {
+      "n": 3,
+      "p25": 165000,
+      "median": 173250,
+      "p75": 321750
+    },
+    "US|software_engineer|mid": {
+      "n": 168,
+      "p25": 193500,
+      "median": 232500,
+      "p75": 296000
+    },
+    "US|software_engineer|senior": {
+      "n": 179,
+      "p25": 228550,
+      "median": 265500,
+      "p75": 312500
+    },
+    "US|solutions|mid": {
+      "n": 26,
+      "p25": 212900,
+      "median": 239000,
+      "p75": 262500
+    },
+    "US|solutions|senior": {
+      "n": 16,
+      "p25": 194250,
+      "median": 240000,
+      "p75": 295000
+    }
+  }
+}

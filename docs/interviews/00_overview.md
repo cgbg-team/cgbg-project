@@ -47,6 +47,10 @@ private/interview.md
 
 `src/lib/searchJobs.ts`는 검색 step 안에서만 압축 풀을 읽고 검증해 프로세스 메모리에 캐시한다. 기본 경로는 앱 cwd 아래 `src/data/jobs/jobs_pool.json.gz`이며 서버 `JOBS_POOL_PATH`로 변경한다. Vercel 함수 추적에 파일을 포함했다. 전체 풀과 미선정 목록은 Workflow 입력·출력에 직렬화하지 않는다. 화면에는 `summary.json`의 국가별 개수만 포함한다. 풀 교체 시 요약도 함께 갱신한다.
 
+풀에서 제목까지 일치하는 공고가 요청 수보다 적으면 `src/lib/liveJobs.ts`가 로그인 없는 공개 API(Jobicy·Remotive 원격 공고, 국가 선택 시 해당 국가·전 세계 지원 가능 공고)를 호출당 5초 제한으로 조회해 풀과 함께 같은 규칙으로 고른다. 성공한 결과는 검색어·국가별로 30분간 서버 메모리에 캐시하고, 실패한 호출은 캐시하지 않으며 풀 결과만 쓴다. 출처는 `jobicy (live)`·`remotive (live)`로 표시하고 실시간 조회 건수를 검색 통계 `live`에 남긴다. LinkedIn 게스트 검색은 429 차단 이력이 있어 쓰지 않는다.
+
+`src/data/jobs/benchmarks.json`은 `node apps/interviews/scripts/build-benchmarks.mjs`로 미리 만든 참고값이다. 국가별 빅맥 가격·1인당 GDP(The Economist Big Mac index 최신분, 유로존 국가는 Euro area 값)와 풀 공고에 적힌 연봉 범위의 중간값을 국가·직무·연차별 USD 연봉 p25/중앙값/p75로 담는다. 같은 회사·같은 연봉 문구는 한 건으로 세고 표본 3건 미만 그룹은 뺀다. 표본이 대부분 미국 테크 기업이라 시장 평균으로 표시하지 않는다. `src/lib/benchmarks.ts`의 `countryCost`·`salaryBenchmark`로 조회하며, 직무·연차 분류 규칙은 JSON의 `rules`를 따른다. 풀을 바꾸면 스크립트를 다시 실행한다.
+
 공고는 검색·Workflow·양측 에이전트·화면에서 원본 필드 `id/title/company/country/location/salary/source/url/text`를 그대로 사용한다. `salary`는 원문 문자열이고 빈 값은 미기재다. 타입과 런타임 검증은 같은 `jobSchema`를 기준으로 한다. 별도 description·skills·salaryText·remote·weeklyHours 필드는 만들지 않는다. 화면에서 제공된 JD 일부·출처·원문 링크·연봉을 확인한다. 정규화된 연봉·근무 조건이 없으므로 통화·지급 주기·시간·원격 여부를 추정하거나 하한과 숫자로 비교하지 않는다. 모델의 사전검토 결과를 보존하고 미확정 원문 조건을 별도 확인 사항으로 덧붙인다. 기존 실행 기록의 description·salaryText는 재생 시 원본 필드로 변환한다.
 
 샘플 구직자는 저장소에 제공된 온보딩 예시이며 공고는 실제 공개 자료다. 공개 문서만 읽고 루트 이탈·상위 경로 이동·잘못된 JSON·누락 근거와 앵커를 거부한다. 비공개 Markdown 원문은 모델에 넣지 않고 구조화된 비공개 조건만 구직자 프롬프트에 사용한다. 연봉 하한은 양측 모델과 공개 진행 기록에서 제외한다. 원문 연봉을 정규화하는 비교 기능은 아직 없다. 채용 에이전트는 공개 요약·공개 문서·자기 공고·해당 기업 대화만 받는다.
