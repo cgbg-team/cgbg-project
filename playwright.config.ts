@@ -26,6 +26,8 @@ export default defineConfig({
       url: "http://127.0.0.1:3101",
       env: {
         ANTHROPIC_API_KEY: "test-only-key",
+        NEXT_PUBLIC_SUPABASE_URL: "",
+        NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "",
         ANTHROPIC_BASE_URL: "http://127.0.0.1:4312",
         INTERVIEW_SESSION_SECRET: "test-only-session-secret-at-least-32-characters",
         WORKFLOW_LOCAL_DATA_DIR: ".workflow-test-data",

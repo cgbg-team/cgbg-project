@@ -6,7 +6,10 @@ import * as interviewRun from "@/components/use-interview-run";
 import { emptySnapshot } from "@/lib/types";
 import { publicProfileSchema } from "@/lib/schemas";
 
-afterEach(() => { cleanup(); vi.restoreAllMocks(); });
+const navigation = vi.hoisted(() => ({ push: vi.fn(), replace: vi.fn() }));
+vi.mock("next/navigation", () => ({ useRouter: () => navigation }));
+
+afterEach(() => { cleanup(); vi.restoreAllMocks(); vi.clearAllMocks(); });
 
 test("첫 화면에서 샘플과 내 페르소나를 선택하고 다시 선택할 수 있다", () => {
   render(<InterviewDashboard profile={publicProfileSchema.parse(candidate.publicProfile)} ready={false} />);
@@ -21,8 +24,7 @@ test("첫 화면에서 샘플과 내 페르소나를 선택하고 다시 선택�
   expect(screen.getByRole("button", { name: "면접 시작 ↗" }).hasAttribute("disabled")).toBe(false);
   fireEvent.click(screen.getByRole("button", { name: "페르소나 다시 선택" }));
   fireEvent.click(screen.getByRole("button", { name: "내 페르소나로 체험하기" }));
-  expect(screen.getByRole("heading", { name: "구직자 온보딩" })).toBeDefined();
-  expect(screen.getByRole("button", { name: "프로필 만들기" })).toBeDefined();
+  expect(navigation.push).toHaveBeenCalledWith("/onboarding");
   expect(screen.queryByRole("button", { name: "면접 시작 ↗" })).toBeNull();
   expect(screen.queryByText("90000")).toBeNull();
 });
