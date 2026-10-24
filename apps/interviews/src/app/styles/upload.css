@@ -196,7 +196,7 @@
 }
 .run-progress ol {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 12px;
   list-style: none;
   margin: 0;
@@ -245,6 +245,15 @@
   gap: 8px;
   font-size: 10px;
   color: #839274;
+}
+.search-log {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #dfe6d6;
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--green);
+  overflow-wrap: anywhere;
 }
 @media (max-width: 1000px) {
   .upload-panel {

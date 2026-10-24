@@ -1,13 +1,14 @@
 "use client";
 
 import { strToU8, zipSync } from "fflate";
-import type { CandidateFolder } from "@/lib/onboarding/build";
-import type { Messages } from "@/lib/onboarding/messages";
+import type { CandidateFolder } from "./build";
+import type { Messages } from "./messages";
 
 type Props = {
   result: CandidateFolder & { mock: boolean };
   t: Messages;
   onRestart: () => void;
+  onContinue?: (folder: CandidateFolder) => void;
 };
 
 const interviewsUrl = process.env.NEXT_PUBLIC_INTERVIEWS_URL || "http://localhost:3001";
@@ -25,7 +26,7 @@ function Chips({ title, items }: { title: string; items: string[] }) {
   );
 }
 
-export function ProfileResult({ result, t, onRestart }: Props) {
+export function ProfileResult({ result, t, onRestart, onContinue }: Props) {
   const { publicProfile, privateProfile } = result.manifest;
   const folder = publicProfile.candidateId;
 
@@ -73,12 +74,14 @@ export function ProfileResult({ result, t, onRestart }: Props) {
         <button type="button" onClick={download} className="rounded bg-neutral-900 px-4 py-3 font-semibold text-white">
           {t.downloadZip}
         </button>
-        <a href={interviewsUrl} className="rounded border border-neutral-900 px-4 py-3 font-semibold">
+        {onContinue ? <button type="button" onClick={() => onContinue(result)} className="rounded border border-neutral-900 px-4 py-3 font-semibold">
+          {t.continueInterviews}
+        </button> : <a href={interviewsUrl} className="rounded border border-neutral-900 px-4 py-3 font-semibold">
           {t.goInterviews}
-        </a>
+        </a>}
         <button type="button" onClick={onRestart} className="px-4 py-3 underline">{t.restart}</button>
       </div>
-      <p className="text-sm text-neutral-500">{t.handoff}</p>
+      <p className="text-sm text-neutral-500">{onContinue ? t.directHandoff : t.handoff}</p>
     </section>
   );
 }

@@ -1,12 +1,13 @@
 import { stageLabels, type Interview } from "@/lib/types";
 import { countryLabel } from "@/lib/job-countries";
+import { InterviewApplication } from "./interview-application";
 
 export const outcomeLabels = {
-  recommended: "대면 면접 추천",
+  recommended: "AI 사전검토 통과",
   hold: "확인 후 결정",
   mismatch: "조건 불일치",
 };
-export function InterviewDetail({ interview }: { interview?: Interview }) {
+export function InterviewDetail({ interview, runId }: { interview?: Interview; runId?: string }) {
   if (!interview)
     return (
       <section className="detail empty-detail">
@@ -81,7 +82,7 @@ export function InterviewDetail({ interview }: { interview?: Interview }) {
           <strong>내 확인이 필요한 조건</strong>
           <p>{interview.question}</p>
           <small>
-            이번 실행은 보류로 기록합니다. 답변 제출은 다음 범위에서 연결합니다.
+            사전검토 결과와 별도로 확인할 사항입니다. 답변 제출·대화 재개는 아직 지원하지 않습니다.
           </small>
         </aside>
       )}
@@ -105,6 +106,7 @@ export function InterviewDetail({ interview }: { interview?: Interview }) {
           </small>
         </aside>
       )}
+      {runId && result?.outcome === "recommended" && <InterviewApplication key={`${runId}:${job.id}`} runId={runId} jobId={job.id} company={job.company} />}
     </section>
   );
 }

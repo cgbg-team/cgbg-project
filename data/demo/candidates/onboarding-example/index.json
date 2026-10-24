@@ -4,8 +4,8 @@
   "publicProfile": {
     "schemaVersion": 1,
     "candidateId": "cand_40317bc0-db90-403b-ba1d-91aede358cd1",
-    "headline": "Multimodal AI Research Engineer — speech, vision-language and video models from research to production",
-    "summary": "Research/ML engineer spanning video, vision-language and speech AI. Leads end-to-end speech recognition development and serving at a seed-stage startup (Korean-English code-switching STT, 200k+ monthly API calls), previously did VLM data synthesis, multi-node fine-tuning and evaluation at a large cloud company, and began in a university computer vision lab. First author at ACL Findings 2025 and EACL Findings 2026. Strong communicator: long-running tech blog, YouTube lectures, invited talks and conference organizing. Extra materials indicate founding a speech AI company focused on AI as entertainment.",
+    "headline": "음성·시각-언어·영상 모델의 연구부터 서비스화까지 경험한 멀티모달 AI 연구 엔지니어",
+    "summary": "영상, 시각-언어, 음성 AI를 아우르는 연구·머신러닝 엔지니어입니다. 시드 단계 스타트업에서 음성인식 모델 개발부터 서비스 운영까지 맡고 있으며, 한국어·영어 코드 스위칭 음성인식과 월 20만 건 이상 호출되는 API를 개발·운영했습니다. 이전에는 대형 클라우드 기업에서 시각-언어 모델의 데이터 합성, 멀티 노드 미세조정과 평가를 연구했고, 대학 컴퓨터 비전 연구실에서 연구를 시작했습니다. ACL Findings 2025와 EACL Findings 2026에 제1저자로 논문을 발표했습니다. 오랫동안 운영한 기술 블로그, YouTube 강의, 초청 발표와 학회 운영 경험을 바탕으로 기술을 전달하고 소통하는 데 강점이 있습니다. 추가 자료에서는 AI를 엔터테인먼트로 즐기는 경험을 지향하는 음성 AI 기업을 창업한 이력도 확인할 수 있습니다.",
     "location": {
       "country": "US",
       "remoteOk": true,
@@ -13,11 +13,11 @@
     },
     "languages": [
       {
-        "name": "Korean",
+        "name": "한국어",
         "level": "native"
       },
       {
-        "name": "English",
+        "name": "영어",
         "level": "business"
       }
     ],
@@ -45,7 +45,7 @@
         ]
       },
       {
-        "name": "Speech recognition (STT, Faster-Whisper)",
+        "name": "음성인식(STT, Faster-Whisper)",
         "level": "expert",
         "years": 1,
         "verified": true,
@@ -61,7 +61,7 @@
         ]
       },
       {
-        "name": "Kubernetes / model serving (vLLM)",
+        "name": "Kubernetes / 모델 서빙(vLLM)",
         "level": "working",
         "verified": true,
         "evidence": [
@@ -72,7 +72,7 @@
         ]
       },
       {
-        "name": "Vision-language model fine-tuning (multi-node)",
+        "name": "시각-언어 모델 미세조정(멀티 노드)",
         "level": "working",
         "verified": true,
         "evidence": [
@@ -83,7 +83,7 @@
         ]
       },
       {
-        "name": "Data curation, synthesis and data recipes",
+        "name": "데이터 큐레이션·합성 및 데이터 레시피",
         "level": "expert",
         "verified": true,
         "evidence": [
@@ -98,7 +98,7 @@
         ]
       },
       {
-        "name": "Model evaluation / benchmarks (LLM-as-a-judge)",
+        "name": "모델 평가·벤치마크(LLM-as-a-judge)",
         "level": "expert",
         "verified": true,
         "evidence": [
@@ -109,7 +109,7 @@
         ]
       },
       {
-        "name": "Multi-agent LLM pipelines",
+        "name": "다중 LLM 에이전트 파이프라인",
         "level": "working",
         "verified": true,
         "evidence": [
@@ -120,7 +120,7 @@
         ]
       },
       {
-        "name": "Video retrieval / video-language alignment",
+        "name": "영상 검색 / 영상-언어 정렬",
         "level": "working",
         "years": 1,
         "verified": true,
@@ -134,15 +134,15 @@
     ],
     "experience": [
       {
-        "title": "ML Engineer",
-        "orgDescription": "Speech AI startup · seed stage · Korea",
+        "title": "머신러닝 엔지니어",
+        "orgDescription": "음성 AI 스타트업 · 시드 단계 · 한국",
         "startYear": 2025,
         "highlights": [
-          "Built and shipped Korean-English code-switching STT with under 5% error rate",
-          "Developed and operates STT API with 200k+ monthly calls (Faster-Whisper, K8S)",
-          "Built data recipe search and model-based data quality pipelines",
-          "Built multi-agent pipeline generating English learning content from video",
-          "Led team AI transformation: non-developers write 15+ PRs/week while PR review demand fell 30%"
+          "오류율 5% 미만의 한국어·영어 코드 스위칭 음성인식 모델을 개발하고 서비스화",
+          "월 20만 건 이상 호출되는 음성인식 API 개발·운영(Faster-Whisper, K8S)",
+          "데이터 레시피 탐색 및 모델 기반 데이터 품질 개선 파이프라인 구축",
+          "영상에서 영어 학습 콘텐츠를 생성하는 다중 에이전트 파이프라인 구축",
+          "팀 전체의 AI 전환을 주도해 비개발자의 주 15회 이상 PR 작성과 전체 PR 리뷰 수요 30% 감소를 달성"
         ],
         "evidence": [
           {
@@ -156,14 +156,14 @@
         ]
       },
       {
-        "title": "Research Intern",
-        "orgDescription": "Cloud & AI platform · large enterprise · Korea",
+        "title": "연구 인턴",
+        "orgDescription": "클라우드·AI 플랫폼 · 대기업 · 한국",
         "startYear": 2024,
         "endYear": 2025,
         "highlights": [
-          "Synthesized SFT datasets and fine-tuned VLMs in multi-node environments",
-          "Built data mixing and experiment tools for data recipes and curricula",
-          "Researched LLM-as-a-judge benchmark for LVLM reasoning (MMRefine, ACL Findings 2025)"
+          "지도 미세조정(SFT)용 데이터셋 합성 및 멀티 노드 환경에서 시각-언어 모델 미세조정",
+          "데이터 레시피와 학습 커리큘럼을 위한 데이터 혼합·실험 도구 개발",
+          "대규모 시각-언어 모델의 추론 능력을 평가하는 LLM-as-a-judge 벤치마크 연구(MMRefine, ACL Findings 2025)"
         ],
         "evidence": [
           {
@@ -173,13 +173,13 @@
         ]
       },
       {
-        "title": "Undergraduate Researcher",
-        "orgDescription": "University robotics & computer vision lab · academic · Seoul",
+        "title": "학부 연구생",
+        "orgDescription": "대학 로보틱스·컴퓨터 비전 연구실 · 학계 · 서울",
         "startYear": 2023,
         "endYear": 2024,
         "highlights": [
-          "Fast and precise video retrieval via suppressing non-essential information",
-          "Video-language alignment with probabilistic embeddings"
+          "비핵심 정보 억제를 통한 빠르고 정밀한 영상 검색 기술 연구",
+          "확률적 임베딩을 활용한 영상-언어 정렬 연구"
         ],
         "evidence": [
           {
@@ -189,14 +189,14 @@
         ]
       },
       {
-        "title": "Software Developer (military service)",
-        "orgDescription": "Air force information systems unit · government · Korea",
+        "title": "소프트웨어 개발자(군 복무)",
+        "orgDescription": "공군 정보체계 부대 · 정부기관 · 한국",
         "startYear": 2021,
         "endYear": 2022,
         "highlights": [
-          "Edited internal IT newsletter and operated GPU cloud for AI research",
-          "Planned and ran headquarters IT conference",
-          "Runs alumni community and tech conference after discharge"
+          "내부 IT 뉴스레터 편집 및 AI 연구용 GPU 클라우드 운영",
+          "공군본부 IT 컨퍼런스 기획·운영",
+          "전역 후 동문 커뮤니티와 기술 컨퍼런스 운영"
         ],
         "evidence": [
           {
@@ -212,8 +212,8 @@
     ],
     "transferableStrengths": [
       {
-        "strength": "Founder / product vision in consumer voice AI",
-        "why": "Founding a speech AI company around lovable AI voices opens founding-engineer, head-of-AI and product roles in entertainment, companion apps, games and media.",
+        "strength": "소비자용 음성 AI 분야의 창업·제품 비전",
+        "why": "사랑받는 AI 음성을 목표로 음성 AI 기업을 창업한 경험은 엔터테인먼트, AI 동반자 앱, 게임, 미디어 분야의 창업 엔지니어·AI 총괄·제품 직무로 이어질 수 있습니다.",
         "evidence": [
           {
             "source": "portfolio",
@@ -226,8 +226,8 @@
         ]
       },
       {
-        "strength": "Technical education and content creation",
-        "why": "Free deep learning lecture series and paper reviews point to developer relations, technical education and edtech curriculum roles.",
+        "strength": "기술 교육과 콘텐츠 제작",
+        "why": "무료 딥러닝 강의 시리즈와 논문 리뷰 경험은 개발자 관계(DevRel), 기술 교육, 에듀테크 교육과정 설계 직무로 이어질 수 있습니다.",
         "evidence": [
           {
             "source": "portfolio",
@@ -240,8 +240,8 @@
         ]
       },
       {
-        "strength": "Music and audio AI tinkering, TTS serving",
-        "why": "Piano-to-MIDI and serverless TTS projects open roles in music tech, generative audio and voice synthesis companies.",
+        "strength": "음악·오디오 AI 실험과 음성합성(TTS) 서비스 운영",
+        "why": "피아노 음원을 MIDI로 변환하는 프로젝트와 서버리스 음성합성 프로젝트 경험은 음악 기술, 생성형 오디오, 음성합성 기업의 직무로 이어질 수 있습니다.",
         "evidence": [
           {
             "source": "portfolio",
@@ -254,8 +254,8 @@
         ]
       },
       {
-        "strength": "Community building and AI developer tooling",
-        "why": "Founding clubs, leading alumni communities and building agent-readiness tools fit community lead, developer productivity and AI enablement roles.",
+        "strength": "커뮤니티 구축과 AI 개발 도구 제작",
+        "why": "동아리 창립, 동문 커뮤니티 운영, 저장소의 에이전트 활용을 돕는 도구 제작 경험은 커뮤니티 리더, 개발자 생산성 개선, AI 도입 지원 직무에 적합합니다.",
         "evidence": [
           {
             "source": "portfolio",
@@ -270,17 +270,17 @@
     ],
     "wants": {
       "roleTypes": [
-        "Speech AI / ML Engineer",
-        "Multimodal Research Engineer",
-        "AI Developer Relations Engineer (consumer entertainment / edtech)"
+        "음성 AI / 머신러닝 엔지니어",
+        "멀티모달 AI 연구 엔지니어",
+        "AI 개발자 관계(DevRel) 엔지니어(소비자 엔터테인먼트 / 에듀테크)"
       ],
       "interests": [
-        "Multimodal AI",
-        "AI as entertainment",
-        "Speech and voice AI",
-        "Technical writing and teaching",
-        "Music",
-        "Travel and specialty coffee"
+        "멀티모달 AI",
+        "엔터테인먼트로서의 AI",
+        "음성·보이스 AI",
+        "기술 글쓰기와 교육",
+        "음악",
+        "여행과 스페셜티 커피"
       ],
       "workStyle": [
         "흥미와 성장 가능성"
@@ -312,18 +312,18 @@
     },
     "dealbreakers": [],
     "mustEmphasize": [
-      "End-to-end ownership of production STT serving 200k+ monthly calls",
-      "First-author papers at ACL Findings 2025 and EACL Findings 2026",
-      "Data-centric expertise: synthesis, curation, evaluation",
-      "Team-wide AI adoption lead with measurable PR review reduction",
-      "Strong public communication: blog, YouTube, invited talks"
+      "월 20만 건 이상 호출되는 음성인식 서비스의 개발부터 운영까지 전 과정 담당",
+      "ACL Findings 2025와 EACL Findings 2026 제1저자 논문",
+      "데이터 합성·큐레이션·평가를 아우르는 데이터 중심 전문성",
+      "PR 리뷰 수요 감소로 성과를 입증한 팀 전체 AI 도입 주도 경험",
+      "블로그·YouTube·초청 발표를 통한 대외 기술 소통 역량"
     ],
     "openQuestions": [
-      "Is the candidate still running Kitsch Labs (listed from Jul. 2026) and available for employment?",
-      "What English proficiency level for work communication?",
-      "Team size and scope of leadership at the startup?",
-      "Experience with TTS/LLM training at scale beyond fine-tuning?",
-      "Salary, location and remote preferences?"
+      "2026년 7월부터 운영한 것으로 기재된 Kitsch Labs를 현재도 운영하고 있으며, 취업이 가능한 상태인가요?",
+      "업무 소통에 필요한 영어 구사 수준은 어느 정도인가요?",
+      "스타트업의 팀 규모와 리더십 범위는 어느 정도였나요?",
+      "미세조정을 넘어 대규모 음성합성(TTS)·대형 언어 모델(LLM)을 학습한 경험이 있나요?",
+      "연봉·근무 지역·원격 근무에 대한 선호는 무엇인가요?"
     ],
     "docs": [
       {

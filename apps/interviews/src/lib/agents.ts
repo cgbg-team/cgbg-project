@@ -64,6 +64,8 @@ export async function askAgent<T>(
   const output = response.content.find(
     (block) => block.type === "tool_use" && block.name === "respond",
   );
+  if (response.stop_reason === "max_tokens")
+    throw new Error("응답이 출력 토큰 한도에서 잘렸습니다.");
   if (!output || output.type !== "tool_use")
     throw new Error("구조화 응답이 없습니다.");
   return schema.parse(output.input);

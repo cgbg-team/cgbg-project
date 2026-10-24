@@ -1,14 +1,14 @@
 "use client";
-import Link from "next/link";
 import { useState } from "react";
 import type { PublicProfile } from "@cgbg/shared/profile";
-import { stageLabels } from "@/lib/types";
-import { InterviewDetail, outcomeLabels } from "./interview-detail";
 import { useInterviewRun } from "./use-interview-run";
-import { CandidateUpload } from "./candidate-upload";
+import { OwnOnboarding } from "./own-onboarding";
 import { RunProgress } from "./run-progress";
 import type { CandidateInput } from "@/lib/candidate-input";
 import { countryLabel, jobSummary } from "@/lib/job-countries";
+import { PersonaChoice, type PersonaMode } from "./persona-choice";
+import { CompanyInterviews } from "./company-interviews";
+import { ProfileSummary } from "./profile-summary";
 
 export function InterviewDashboard({
   profile,
@@ -21,58 +21,39 @@ export function InterviewDashboard({
 }) {
   const run = useInterviewRun(initialRun);
   const { snapshot } = run;
-  const [selected, setSelected] = useState<string>();
+  // shortcut: 면접 시작 전 프로필은 메모리에만 유지하며, 입력 복원이 필요해지면 임시 저장을 추가한다.
   const [candidate, setCandidate] = useState<CandidateInput | null>();
-  const [country, setCountry] = useState("");
+  const [preparingOwn, setPreparingOwn] = useState(false);
+  const profileCountry = profile.location.country === "GB" ? "UK" : profile.location.country;
+  const [country, setCountry] = useState(jobSummary.countries.some(item => item.code === profileCountry) ? profileCountry : "");
+  const [mode, setMode] = useState<PersonaMode | null>(initialRun ? "own" : null);
   const currentProfile =
-    snapshot.profile ?? candidate?.publicProfile ?? profile;
-  const active =
-    snapshot.interviews.find((item) => item.job.id === selected) ??
-    snapshot.interviews[0];
+    candidate?.publicProfile ?? snapshot.profile ?? profile;
   const completed = snapshot.interviews.filter((item) => !!item.result).length;
   const recommended = snapshot.interviews.filter(
     (item) => item.result?.outcome === "recommended",
   ).length;
   const running = !!run.runId && !snapshot.done && !snapshot.error;
+  if (!mode) return <PersonaChoice onSelect={(choice) => {
+    run.reset();
+    if (choice === "sample") setCountry("US");
+    setCandidate(choice === "sample" ? null : undefined);
+    setPreparingOwn(choice === "own");
+    setMode(choice);
+  }} />;
+  if (mode === "own" && preparingOwn) return <OwnOnboarding
+    onBack={() => setMode(null)}
+    onPrepared={(input) => {
+      setCandidate(input);
+      setPreparingOwn(false);
+      const code = input.publicProfile.location.country === "GB" ? "UK" : input.publicProfile.location.country;
+      setCountry(jobSummary.countries.some(item => item.code === code) ? code : "");
+    }}
+  />;
+  if (mode === "sample" && !run.runId) return <ProfileSummary profile={profile} starting={run.starting} error={run.error} onBack={() => setMode(null)} onStart={() => void run.start(null, "US")} />;
   return (
     <div className="app-shell">
-      <aside className="sidebar">
-        <Link className="brand" href="/" aria-label="cgbg 홈">
-          <span className="brand-symbol">c</span> cgbg.
-        </Link>
-        <p className="workspace-label">CAREER WORKSPACE</p>
-        <nav aria-label="주 메뉴">
-          <span className="nav-item">
-            01 <span>자료 업로드</span>
-          </span>
-          <Link href="/" className="nav-item current" aria-current="page">
-            02 <span>에이전트 면접</span>
-            <span>↗</span>
-          </Link>
-        </nav>
-        <div className="sidebar-note">
-          <span className="live-dot" />
-          나의 커리어 워크스페이스
-          <p>
-            내 프로필 · 실제 공고 {jobSummary.total.toLocaleString()}개
-            <br />
-            Claude 에이전트의 실제 대화
-          </p>
-        </div>
-        <div className="profile-mini">
-          <div className="avatar">D</div>
-          <div>
-            <strong>
-              {snapshot.source === "upload"
-                ? "업로드한 프로필"
-                : "나의 에이전트"}
-            </strong>
-            <span>
-              프로필 v1 · {snapshot.profile ? "면접 진행 기록" : "자료 준비"}
-            </span>
-          </div>
-        </div>
-      </aside>
+
       <main className="main-content">
         <header className="topbar">
           <span>
@@ -80,7 +61,7 @@ export function InterviewDashboard({
           </span>
           <span className="connection">
             <span className={run.connected ? "live-dot" : "idle-dot"} />
-            {run.connected ? "진행 기록 연결됨" : "서버에서 실행 · 기록 보관"}
+            {mode === "sample" ? "저장된 대화 · 지연 재생" : run.connected ? "진행 기록 연결됨" : "서버에서 실행 · 기록 보관"}
           </span>
         </header>
         <div className="page-heading">
@@ -92,6 +73,7 @@ export function InterviewDashboard({
             </p>
           </div>
           <div className="actions">
+            {!running && !run.starting && <button className="button secondary" onClick={() => setMode(null)}>페르소나 다시 선택</button>}
             {running && (
               <button
                 className="button secondary"
@@ -103,7 +85,7 @@ export function InterviewDashboard({
             <button
               className="button primary"
               disabled={
-                !ready || run.starting || running || candidate === undefined
+                (mode === "own" && !ready) || run.starting || running || candidate === undefined
               }
               onClick={() => void run.start(candidate, country)}
             >
@@ -115,7 +97,7 @@ export function InterviewDashboard({
             </button>
           </div>
         </div>
-        {!ready && (
+        {!ready && mode === "own" && (
           <div className="notice" role="status">
             <strong>Claude 연결을 준비해주세요.</strong>
             <p>
@@ -139,32 +121,26 @@ export function InterviewDashboard({
             {snapshot.error}
           </p>
         )}
-        <CandidateUpload
-          sampleProfile={profile}
-          disabled={running || run.starting}
-          onPrepared={setCandidate}
-        />
-        <RunProgress snapshot={snapshot} started={!!run.runId} />
+        {mode === "own" ? <section className="notice" aria-label="선택한 페르소나"><strong>내 프로필로 체험합니다.</strong><p>프로필과 검색 조건을 확인한 뒤 면접 시작을 눌러주세요.</p></section> : <section className="notice" aria-label="선택한 페르소나"><strong>백지오 페르소나로 체험합니다.</strong><p>4배속 · 저장된 실제 대화를 재생합니다.</p></section>}
+        <RunProgress snapshot={snapshot} started={!!run.runId} demo={mode === "sample"} />
         <div className="job-search-controls">
-          <label>
+          {!run.runId && mode === "own" && <label>
             검색 국가{" "}
-            <select value={country} onChange={(event) => setCountry(event.target.value)} disabled={running || run.starting}>
+            <select value={country} onChange={(event) => setCountry(event.target.value)} disabled={mode === "sample" || running || run.starting}>
               <option value="">전체 국가 ({jobSummary.total.toLocaleString()})</option>
               {jobSummary.countries.map(({code, count}) => (
                 <option value={code} key={code}>{countryLabel(code)} ({count.toLocaleString()})</option>
               ))}
             </select>
-          </label>
-          <p>공개 공고 기반 모의 면접입니다. 실제 기업과 연락하지 않습니다.</p>
-          {snapshot.search && <p role="status">{countryLabel(snapshot.search.country)} · 일치 공고 {snapshot.search.matched.toLocaleString()}개 / {snapshot.search.companies.toLocaleString()}개 기업 · 상위 최대 2개 면접</p>}
+          </label>}
         </div>
-        <section className="candidate-strip" aria-label="면접에 사용할 프로필">
+        {!run.runId && <section className="candidate-strip" aria-label="면접에 사용할 프로필">
           <div className="candidate-icon" aria-hidden="true">
             ✳
           </div>
           <div>
             <span className="eyebrow">
-              {snapshot.source === "upload" || (!snapshot.profile && candidate)
+              {snapshot.source === "upload" || candidate
                 ? "YOUR AGENT BRIEF"
                 : "SAMPLE AGENT BRIEF"}
             </span>
@@ -176,7 +152,7 @@ export function InterviewDashboard({
               <span key={skill.name}>{skill.name}</span>
             ))}
           </div>
-        </section>
+        </section>}
         <section className="metrics" aria-label="면접 현황">
           <div>
             <span>검색 대상</span>
@@ -199,93 +175,14 @@ export function InterviewDashboard({
             </strong>
           </div>
           <div className="accent-metric">
-            <span>대면 면접 추천</span>
+            <span>AI 사전검토 통과</span>
             <strong>
               {recommended}
               <small>개 기업</small>
             </strong>
           </div>
         </section>
-        <div className="section-heading">
-          <h2>
-            기업별 진행 상황{" "}
-            <span className="count">{snapshot.interviews.length}</span>
-          </h2>
-          <span role="status">
-            {run.runId ? stageLabels[snapshot.stage] : "시작할 준비가 되었어요"}
-          </span>
-        </div>
-        {snapshot.keywords.length > 0 && (
-          <div className="keywords">
-            <span>검색 키워드</span>
-            {snapshot.keywords.map((keyword) => (
-              <span
-                className="keyword"
-                title={`출처: ${keyword.source}`}
-                key={keyword.term}
-              >
-                {keyword.term}
-              </span>
-            ))}
-          </div>
-        )}
-        <div className="interview-workspace">
-          <section className="company-list" aria-label="기업별 면접 목록">
-            {snapshot.interviews.length === 0 ? (
-              <div className="empty-list">
-                <span className="eyebrow">READY WHEN YOU ARE</span>
-                <h3>
-                  반복 지원 대신,
-                  <br />한 번의 시작.
-                </h3>
-                <p>
-                  프로필에서 검색어를 찾고
-                  <br />
-                  맞는 공고와 최대 2건의 면접을
-                  <br />
-                  동시에 진행합니다.
-                </p>
-                <ol>
-                  <li>경험 기반 공고 탐색</li>
-                  <li>에이전트 간 조건 확인</li>
-                  <li>대면 면접 추천 확인</li>
-                </ol>
-              </div>
-            ) : (
-              snapshot.interviews.map((item, index) => (
-                <button
-                  key={item.job.id}
-                  className={`company-card ${active?.job.id === item.job.id ? "selected" : ""}`}
-                  onClick={() => setSelected(item.job.id)}
-                  aria-pressed={active?.job.id === item.job.id}
-                >
-                  <div className="company-card-top">
-                    <span className="company-number">0{index + 1}</span>
-                    <span
-                      className={`badge ${item.result?.outcome ?? item.stage}`}
-                    >
-                      {item.result
-                        ? outcomeLabels[item.result.outcome]
-                        : stageLabels[item.stage]}
-                    </span>
-                  </div>
-                  <h3>{item.job.company}</h3>
-                  <p>{item.job.title}</p>
-                  <div className="match-tags">
-                    {item.matchReasons.map((reason) => (
-                      <span key={reason}>{reason}</span>
-                    ))}
-                  </div>
-                  <div className="card-footer">
-                    <span>{item.messages.length}개 메시지</span>
-                    <span aria-hidden="true">↗</span>
-                  </div>
-                </button>
-              ))
-            )}
-          </section>
-          <InterviewDetail interview={active} />
-        </div>
+        <CompanyInterviews interviews={snapshot.interviews} candidates={snapshot.candidates} runId={run.runId} done={snapshot.done} />
         {snapshot.excluded.length > 0 && (
           <details className="excluded">
             <summary>선택되지 않은 공고 {snapshot.excluded.length}개</summary>
@@ -301,8 +198,7 @@ export function InterviewDashboard({
         )}
         <footer className="page-footer">
           <span>
-            화면을 닫아도 서버에서 면접을 계속합니다. 같은 브라우저에서 24시간
-            동안 기록을 확인할 수 있습니다.
+            {mode === "sample" ? "저장된 실제 대화의 시연입니다. 화면을 떠나면 재생이 멈추며 다시 시작할 수 있습니다." : "화면을 닫아도 서버에서 면접을 계속합니다. 같은 브라우저에서 24시간 동안 기록을 확인할 수 있습니다."}
           </span>
           <span>
             {snapshot.source === "upload" ? "YOUR PROFILE" : "DEMO"} · V1

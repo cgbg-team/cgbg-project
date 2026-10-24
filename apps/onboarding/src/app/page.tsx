@@ -1,4 +1,4 @@
-import { Onboarding } from "@/components/onboarding";
+import { Onboarding } from "@cgbg/shared/onboarding";
 
 export default function Home() {
   return (

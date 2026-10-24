@@ -1,0 +1,52 @@
+.profile-overview { max-width: 1080px; margin: 0 auto; padding: 0 40px 40px; }
+.profile-overview-nav { display: flex; align-items: center; justify-content: space-between; padding: 25px 0; border-bottom: 1px solid var(--line); gap: 20px; }
+.profile-overview-nav .brand { padding: 0; }
+.profile-intro { display: flex; align-items: center; gap: 30px; padding: 56px 0 36px; }
+.profile-monogram { position: relative; display: grid; place-items: center; width: 104px; height: 120px; flex-shrink: 0; border-radius: 52px 52px 10px 10px; background: #e5ecd8; font-size: 26px; letter-spacing: -2px; color: var(--green); }
+.profile-monogram span { position: absolute; bottom: -10px; right: -10px; display: grid; place-items: center; width: 34px; height: 34px; background: var(--green); color: #e0ee94; border-radius: 50%; font-size: 24px; }
+.profile-intro h1 { margin: 8px 0 10px; font-size: clamp(30px, 4vw, 44px); }
+.profile-intro h1 span { font-weight: 400; color: #869080; }
+.profile-headline { max-width: 650px; font-size: 15px; line-height: 1.6; }
+.profile-meta { color: var(--muted); font-size: 12px; margin-top: 14px; }
+.profile-story { padding: 28px 32px; background: #eef2e8; border-radius: 10px; }
+.profile-story h2 { font-size: 18px; font-weight: 600; margin: 8px 0 14px; }
+.profile-story > p:last-child { font-size: 13px; color: #5f6d5b; line-height: 1.9; }
+.profile-summary-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 56px; padding: 18px 0 32px; }
+.profile-section { padding-top: 28px; }
+.profile-section h2 { font-size: 16px; font-weight: 600; margin-bottom: 18px; }
+.profile-section h2 > span { margin-left: 6px; color: #869080; font-size: 12px; }
+.profile-experience { list-style: none; margin: 0; padding: 0; }
+.profile-experience li { position: relative; padding: 0 0 24px 20px; border-left: 1px solid #d5ddcc; }
+.profile-experience li:last-child { padding-bottom: 0; }
+.profile-experience li::before { content: ""; position: absolute; left: -4px; top: 5px; width: 7px; height: 7px; border-radius: 50%; background: #8d9e7c; }
+.experience-year { font-size: 10px; color: #7a8870; }
+.profile-experience h3 { font-size: 14px; margin: 5px 0; }
+.profile-experience p { font-size: 11px; color: var(--muted); }
+.profile-experience .experience-highlight { margin-top: 8px; font-size: 12px; color: #53644b; }
+.profile-summary-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.profile-summary-tags span { padding: 6px 10px; border: 1px solid #dfe5d7; border-radius: 5px; font-size: 11px; background: white; }
+.profile-summary-tags.interests span { background: #f2eddf; border-color: transparent; color: #74643f; }
+.profile-roles { padding-left: 16px; margin: 0; font-size: 12px; line-height: 2; }
+.profile-footnote { color: var(--muted); font-size: 11px; margin-top: 14px; }
+.profile-start { display: flex; justify-content: space-between; align-items: center; gap: 24px; border-bottom: 1px solid var(--line); padding: 24px 0; }
+.profile-start strong { font-size: 14px; }
+.profile-start p { font-size: 12px; color: var(--muted); margin-top: 5px; }
+.profile-start small { font-size: 10px; color: var(--muted); }
+.profile-start .button { padding: 15px 32px; }
+@media (max-width: 640px) {
+  .profile-overview { padding: 0 20px 28px; }
+  .profile-overview-nav { padding: 20px 0; }
+  .profile-overview-nav .text-button { font-size: 11px; }
+  .profile-intro { padding: 32px 0; gap: 18px; align-items: flex-start; }
+  .profile-monogram { width: 58px; height: 72px; font-size: 19px; }
+  .profile-monogram span { width: 25px; height: 25px; font-size: 18px; bottom: -5px; right: -5px; }
+  .profile-intro h1 { font-size: 28px; }
+  .profile-headline { font-size: 12px; }
+  .profile-meta { font-size: 10px; }
+  .profile-story { padding: 22px; }
+  .profile-summary-grid { grid-template-columns: 1fr; gap: 0; }
+  .profile-start { align-items: stretch; flex-direction: column; gap: 18px; }
+}
+
+.profile-monogram img { width: 100%; height: 100%; object-fit: cover; object-position: center 24%; border-radius: inherit; }
+.persona-photo { object-fit: cover; object-position: center 24%; }

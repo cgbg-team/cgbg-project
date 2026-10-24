@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { messages } from "@/lib/onboarding/messages";
-import type { Locale } from "@/lib/onboarding/questions";
+import { messages } from "./messages";
+import type { Locale } from "./questions";
+import type { CandidateFolder } from "./build";
 import { OnboardingForm } from "./onboarding-form";
 
 const locales: { id: Locale; label: string }[] = [
@@ -10,12 +11,14 @@ const locales: { id: Locale; label: string }[] = [
   { id: "en", label: "English" },
 ];
 
-export function Onboarding() {
+export function Onboarding({ onContinue }: { onContinue?: (folder: CandidateFolder) => void }) {
   const [locale, setLocale] = useState<Locale>("ko");
   const t = messages[locale];
 
   useEffect(() => {
+    const previous = document.documentElement.lang;
     document.documentElement.lang = locale;
+    return () => { document.documentElement.lang = previous; };
   }, [locale]);
 
   return (
@@ -38,7 +41,7 @@ export function Onboarding() {
       </header>
       <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">{t.title}</h1>
       <p className="text-lg text-neutral-700">{t.tagline}</p>
-      <OnboardingForm locale={locale} />
+      <OnboardingForm locale={locale} onContinue={onContinue} />
     </>
   );
 }

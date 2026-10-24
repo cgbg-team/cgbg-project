@@ -1,9 +1,9 @@
-# Experience
-## ML Engineer — Speech AI startup · seed · Korea (2025–present)
-Led STT from data to service; 200k+ monthly API calls; code-switching error under 5%; team AX lead.
-## Research Intern — Cloud & AI enterprise · Korea (2024–2025)
-VLM SFT data synthesis, multi-node fine-tuning, LLM-as-a-judge benchmark (ACL Findings 2025).
-## Undergraduate Researcher — University CV lab · Seoul (2023–2024)
-Video retrieval and video-language alignment.
-## Software Developer — Air force IT unit (2021–2022)
-GPU cloud operations, IT newsletter, IT conference organizing.
+# 경력
+## 머신러닝 엔지니어 — 음성 AI 스타트업 · 시드 단계 · 한국(2025–현재)
+데이터 준비부터 서비스화까지 음성인식 개발을 주도했습니다. 월 20만 건 이상 API 호출, 한국어·영어 코드 스위칭 오류율 5% 미만을 달성했으며 팀의 AI 전환을 이끌었습니다.
+## 연구 인턴 — 클라우드·AI 대기업 · 한국(2024–2025)
+시각-언어 모델의 지도 미세조정(SFT)용 데이터 합성, 멀티 노드 미세조정, LLM-as-a-judge 벤치마크를 연구했습니다(ACL Findings 2025).
+## 학부 연구생 — 대학 컴퓨터 비전 연구실 · 서울(2023–2024)
+영상 검색과 영상-언어 정렬을 연구했습니다.
+## 소프트웨어 개발자 — 공군 IT 부대(2021–2022)
+GPU 클라우드와 IT 뉴스레터를 운영하고 IT 컨퍼런스를 기획·운영했습니다.

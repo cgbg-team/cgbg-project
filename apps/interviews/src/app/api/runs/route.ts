@@ -31,6 +31,9 @@ export async function POST(request: Request) {
       { status: 503 },
     );
   const jar = await cookies();
+  const maxTurns = Number(process.env.MAX_TURNS ?? 20);
+  if (!Number.isInteger(maxTurns) || maxTurns < 1 || maxTurns > 100)
+    return Response.json({ error: "서버 MAX_TURNS는 1~100 사이의 정수여야 합니다." }, { status: 503 });
   const country = (new URL(request.url).searchParams.get("country") ?? "").trim().toUpperCase();
   if (country && !/^(?:[A-Z]{2}|\?)$/.test(country)) return Response.json({ error: "국가 코드를 확인해주세요." }, { status: 400 });
   let candidate: CandidateInput | null = null;
@@ -100,7 +103,7 @@ export async function POST(request: Request) {
       { status: 429 },
     );
   try {
-    const run = await start(interviewWorkflow, [candidate, country]);
+    const run = await start(interviewWorkflow, [candidate, country, maxTurns]);
     jar.set(sessionCookie, createSession(run.runId), {
       httpOnly: true,
       secure:

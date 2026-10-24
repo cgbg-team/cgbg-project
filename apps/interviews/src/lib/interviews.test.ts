@@ -6,10 +6,13 @@ import {
   jobSchema,
   privateProfileSchema,
   publicProfileSchema,
+  candidateSchema,
+  recruiterSchema,
 } from "./schemas";
 import { screenJobs } from "./screening";
 import { assessConditions } from "./job-conditions";
-import { applyEvent, emptySnapshot } from "./types";
+import { enrichSearchKeywords } from "./search-keywords";
+import { applyEvent, emptySnapshot, type Keyword } from "./types";
 import candidate from "../../../../data/demo/candidates/onboarding-example/index.json";
 
 afterEach(() => vi.unstubAllEnvs());
@@ -20,6 +23,19 @@ const jobs = [
   { id: "relay", company: "Search B", title: "Engineer", text: "Python SQL", salary: "" },
   { id: "folio", company: "Search C", title: "iOS Engineer", text: "Swift", salary: "" },
 ].map((job) => jobSchema.parse({ country: "US", location: "", source: "test", url: "https://example.com/job", ...job }));
+
+test("모델이 종료 필드를 생략하면 완료로 오인하지 않고 한도 안에서 대화를 계속한다", () => {
+  expect(candidateSchema.parse({ message: "답변", needsUser: false })).toMatchObject({ done: false, question: "" });
+  expect(recruiterSchema.parse({ message: "추가 질문", stage: "experience" }).done).toBe(false);
+});
+
+test("명시된 기술·활동·관심사로 검색 표현을 보완하고 관심사를 경력으로 만들지 않는다", () => {
+  const keywords = enrichSearchKeywords(profile, []);
+  expect(keywords.find(item => item.term === "Python")).toMatchObject({ track: "primary", source: "skills" });
+  expect(keywords.find(item => item.term === "barista")).toMatchObject({ track: "exploration", basis: "interest" });
+  expect(keywords.find(item => item.term === "community manager")).toMatchObject({ basis: "evidence" });
+  expect(enrichSearchKeywords({ ...profile, skills: [], transferableStrengths: [], wants: { ...profile.wants, interests: [] } }, [])).toEqual([]);
+});
 
 test("프로필 v1을 검증하고 잘못된 공개 경로·연봉·근거를 거부한다", () => {
   expect(profile.schemaVersion).toBe(1);
@@ -76,9 +92,31 @@ test("기업 중복·국가·제목 가중치와 면접 수 제한을 적용한�
   expect(screenJobs(pool, keywords, 20, "AU").selected.map(({job}) => job.id)).toEqual(["title"]);
   expect(screenJobs(pool, keywords, 0).selected).toEqual([]);
 });
-test("연봉 문자열을 추정하지 않고 미확인 조건은 보류하며 명시적 불일치를 보존한다", () => {
+test("후보 100곳을 90:10으로 구성하고 관심사 기반 가설을 보존한다", () => {
+  const base = jobs[0];
+  const pool = [
+    ...Array.from({ length: 110 }, (_, i) => ({ ...base, id: `main-${i}`, company: `Main ${i}`, title: "Python Engineer", country: "US" })),
+    ...Array.from({ length: 20 }, (_, i) => ({ ...base, id: `explore-${i}`, company: `Explore ${i}`, title: "Barista", text: "Coffee", country: "US" })),
+    { ...base, id: "perk", company: "Perk", title: "Office Manager", text: "We have a barista and coffee", country: "US" },
+    { ...base, id: "foreign", company: "Foreign", title: "Barista", country: "KR" },
+  ];
+  const keywords: Keyword[] = [
+    { term: "Python", source: "skills" },
+    { term: "barista", source: "wants", track: "exploration", basis: "interest", hypothesis: "커피 관심사에 기반한 가설" },
+  ];
+  const result = screenJobs(pool, keywords, 200, "US");
+  expect(result.selected).toHaveLength(100);
+  expect(result.search).toMatchObject({ candidateCount: 100, explorationCount: 10, explorationTarget: 10 });
+  expect(result.selected.filter(item => item.basis === "interest")).toHaveLength(10);
+  expect(new Set(result.selected.map(item => item.job.company)).size).toBe(100);
+  expect(result.selected.some(item => ["perk", "foreign"].includes(item.job.id))).toBe(false);
+  expect(screenJobs(pool, [{ term: "Python", source: "skills" }], 100, "US").selected).toHaveLength(100);
+  const developerExploration: Keyword = { term: "engineer", source: "transferableStrengths", track: "exploration", basis: "evidence", hypothesis: "같은 개발 직군" };
+  expect(screenJobs(pool, [...keywords, developerExploration], 100, "US", ["ML Engineer"]).selected.filter(item => item.track === "exploration").every(item => item.job.title === "Barista")).toBe(true);
+});
+test("미확인 조건은 별도로 표시하고 AI 사전검토 결과를 보존한다", () => {
   const result = { outcome: "recommended" as const, reasons: ["경험 일치"] };
-  expect(assessConditions(result, { ...jobs[0], salary: "" }, false).outcome).toBe("hold");
+  expect(assessConditions(result, { ...jobs[0], salary: "" }, false).outcome).toBe("recommended");
   expect(assessConditions(result, jobs[0], true).reasons.join(" ")).toContain("추가 답변");
   expect(assessConditions({ outcome: "mismatch", reasons: ["경험 불일치"] }, jobs[0], false).outcome).toBe("mismatch");
 });

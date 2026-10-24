@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { applyEvent, emptySnapshot, type RunEvent } from "@/lib/types";
 import type { CandidateInput } from "@/lib/candidate-input";
 
@@ -10,8 +10,12 @@ export function useInterviewRun(initialRun?: string) {
   const [starting, setStarting] = useState(false);
   const [connected, setConnected] = useState(false);
   const [reconnect, setReconnect] = useState(0);
+  const replayTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const replayVersion = useRef(0);
+  const [demo, setDemo] = useState(false);
+  useEffect(() => () => { replayVersion.current++; clearTimeout(replayTimer.current); }, []);
   useEffect(() => {
-    if (!runId) return;
+    if (!runId || demo) return;
     const abort = new AbortController();
     let timer: ReturnType<typeof setTimeout>;
     let finished = false;
@@ -89,8 +93,45 @@ export function useInterviewRun(initialRun?: string) {
       abort.abort();
       clearTimeout(timer);
     };
-  }, [runId, reconnect]);
+  }, [runId, reconnect, demo]);
+  async function startDemo() {
+    const startedAt = Date.now();
+    const version = ++replayVersion.current;
+    clearTimeout(replayTimer.current);
+    setStarting(true);
+    setError(undefined);
+    try {
+      const response = await fetch("/api/demo");
+      if (!response.ok) throw new Error("체험 데이터를 불러오지 못했습니다.");
+      const data: { events: RunEvent[] } = await response.json();
+      if (version !== replayVersion.current) return;
+      if (!data.events.some(event => event.type === "done")) throw new Error("완료된 체험 데이터가 없습니다.");
+      setDemo(true);
+      setSnapshot(emptySnapshot);
+      setRunId("demo-gio");
+      window.history.replaceState(null, "", window.location.pathname);
+      let cursor = 0;
+      const advance = () => {
+        const elapsed = Date.now() - startedAt;
+        // 검색 단계를 읽을 여유를 주고, 경과 시간에 맞춰 100초에 재생을 마친다.
+        const target = Math.min(data.events.length, elapsed < 12000
+          ? Math.floor(elapsed / 2000) + 1
+          : 6 + Math.ceil(Math.max(0, data.events.length - 6) * Math.min(1, (elapsed - 12000) / 88000)));
+        const batch = data.events.slice(cursor, target);
+        cursor = target;
+        setSnapshot(state => batch.reduce(applyEvent, state));
+        if (cursor < data.events.length) replayTimer.current = setTimeout(advance, 250);
+      };
+      advance();
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "체험을 시작하지 못했습니다.");
+    } finally { setStarting(false); }
+  }
   async function start(candidate: CandidateInput | null = null, country = "") {
+    if (!candidate) return startDemo();
+    replayVersion.current++;
+    clearTimeout(replayTimer.current);
+    setDemo(false);
     setStarting(true);
     setError(undefined);
     try {
@@ -126,6 +167,11 @@ export function useInterviewRun(initialRun?: string) {
     }
   }
   async function cancel() {
+    if (demo) {
+      clearTimeout(replayTimer.current);
+      setSnapshot(state => ({ ...state, stage: "cancelled", done: true }));
+      return;
+    }
     try {
       const response = await fetch(`/api/runs/${runId}`, { method: "DELETE" });
       if (!response.ok)
@@ -142,5 +188,14 @@ export function useInterviewRun(initialRun?: string) {
     setError(undefined);
     setReconnect((value) => value + 1);
   }
-  return { runId, snapshot, starting, connected, error, start, cancel, retry };
+  function reset() {
+    replayVersion.current++;
+    clearTimeout(replayTimer.current);
+    setRunId(undefined);
+    setDemo(false);
+    setSnapshot(emptySnapshot);
+    setError(undefined);
+    window.history.replaceState(null, "", window.location.pathname);
+  }
+  return { runId, snapshot, starting, connected, error, start, cancel, retry, demo, reset };
 }

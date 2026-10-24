@@ -121,18 +121,25 @@ export const keywordSchema = z.object({
           "experience",
           "transferableStrengths",
         ]),
+        track: z.enum(["primary", "exploration"]).default("primary"),
+        basis: z.enum(["evidence", "interest"]).optional(),
+        hypothesis: z.string().min(1).max(150).optional(),
       }),
     )
     .min(1)
-    .max(8),
+    .max(12)
+    .refine((keywords) => keywords.every(keyword => keyword.track !== "exploration" || (keyword.basis && keyword.hypothesis)), "탐색 검색어에는 근거 유형과 가설이 필요합니다"),
 });
 export const recruiterSchema = z.object({
   message: z.string().min(1).max(1800),
+  stage: z.enum(["experience", "conditions", "salary", "salary_check"]),
+  done: z.boolean().default(false),
 });
 export const candidateSchema = z.object({
   message: z.string().min(1).max(1800),
   needsUser: z.boolean(),
-  question: z.string().max(500),
+  question: z.string().max(500).default(""),
+  done: z.boolean().default(false),
 });
 export const resultSchema = z.object({
   outcome: z.enum(["recommended", "hold", "mismatch"]),

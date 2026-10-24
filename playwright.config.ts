@@ -11,7 +11,7 @@ export default defineConfig({
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: [
     {
-      command: "node tests/fixtures/anthropic-server.mjs",
+      command: "node --experimental-strip-types tests/fixtures/anthropic-server.mjs",
       url: "http://127.0.0.1:4312/health",
       reuseExistingServer: false,
     },

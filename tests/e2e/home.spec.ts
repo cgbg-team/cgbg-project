@@ -8,7 +8,7 @@ for (const [title, url] of [
     const response = await page.goto(url);
     expect(response?.status()).toBe(200);
     await expect(page).toHaveTitle(`${title} | cgbg-project`);
-    await expect(page.getByRole("heading", { level: 1, name: title })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: title === "에이전트 면접" ? "누구의 다음 기회를 찾아볼까요?" : title })).toBeVisible();
     await expect(page.locator("html")).toHaveAttribute("lang", "ko");
   });
 }

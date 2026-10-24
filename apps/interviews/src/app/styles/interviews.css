@@ -325,3 +325,10 @@
 .job-conditions a { color: var(--green); overflow-wrap: anywhere; }
 .job-description { padding-bottom: 16px; font-size: 12px; color: var(--muted); }
 .job-description p { white-space: pre-wrap; overflow-wrap: anywhere; }
+.candidate-pool { padding: 18px 0; font-size: 12px; border-bottom: 1px solid var(--line); }
+.candidate-pool summary { cursor: pointer; color: var(--green); }
+.candidate-pool > p, .candidate-pool li p { color: var(--muted); }
+.candidate-pool ul { padding: 0; list-style: none; max-height: 460px; overflow: auto; }
+.candidate-pool li { padding: 14px 0; border-top: 1px solid var(--line); overflow-wrap: anywhere; }
+.candidate-pool a { color: var(--green); }
+.exploration-label { display: inline-block; margin-top: 8px; padding: 3px 8px; background: #f4ecdf; color: #765c32; border-radius: 3px; }

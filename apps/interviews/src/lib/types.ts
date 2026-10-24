@@ -6,6 +6,7 @@ export const stageLabels = {
   queued: "면접 대기 중",
   keywords: "검색 키워드 추출 중…",
   screening: "채용공고 스크리닝 중…",
+  interviewing: "에이전트 대화 중…",
   experience: "경험 확인 중…",
   conditions: "근무 조건 확인 중…",
   salary: "연봉 협상 중…",
@@ -20,11 +21,15 @@ export const stageLabels = {
 export type Stage = keyof typeof stageLabels;
 export type Outcome = "recommended" | "hold" | "mismatch";
 export type Job = z.infer<typeof jobSchema>;
-export type JobSearch = { total: number; countryTotal: number; matched: number; companies: number; country: string };
+export type JobSearch = { total: number; countryTotal: number; matched: number; companies: number; country: string; candidateCount?: number; explorationCount?: number; explorationTarget?: number };
 export type Keyword = {
   term: string;
   source: "wants" | "skills" | "experience" | "transferableStrengths";
+  track?: "primary" | "exploration";
+  basis?: "evidence" | "interest";
+  hypothesis?: string;
 };
+export type CandidateMatch = { job: Job; reasons: string[]; track?: "primary" | "exploration"; basis?: "evidence" | "interest"; hypothesis?: string };
 export type Message = {
   role: "candidate" | "recruiter";
   text: string;
@@ -56,7 +61,8 @@ export type RunEvent = {
   jobId?: string;
   stage?: Stage;
   keywords?: Keyword[];
-  selected?: { job: Job; reasons: string[] }[];
+  selected?: CandidateMatch[];
+  candidates?: CandidateMatch[];
   excluded?: { job: Job; reason: string }[];
   search?: JobSearch;
   message?: Message;
@@ -71,6 +77,7 @@ export type Snapshot = {
   stage: Stage;
   keywords: Keyword[];
   interviews: Interview[];
+  candidates: CandidateMatch[];
   excluded: { job: Job; reason: string }[];
   done: boolean;
   error?: string;
@@ -80,6 +87,7 @@ export const emptySnapshot: Snapshot = {
   stage: "queued",
   keywords: [],
   interviews: [],
+  candidates: [],
   excluded: [],
   done: false,
 };
@@ -93,6 +101,7 @@ export function applyEvent(state: Snapshot, event: RunEvent): Snapshot {
     return {
       ...state,
       stage: "experience",
+      candidates: event.candidates ?? event.selected ?? [],
       interviews: (event.selected ?? []).map(({ job, reasons }) => ({
         // 이전 실행의 변환된 공고도 24시간 기록 복원에 사용한다.
         job: typeof job.salary === "string" ? job : {

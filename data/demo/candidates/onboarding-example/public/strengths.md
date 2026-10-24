@@ -1,9 +1,9 @@
-# Hidden Strengths
-## Consumer voice AI founder
-Opens founding-engineer and AI product roles in entertainment and companion apps.
-## Technical educator
-Opens DevRel and edtech roles.
-## Audio and music AI
-Opens music tech and generative voice roles.
-## Community builder
-Opens community lead and AI enablement roles.
+# 이력서 밖에서 발견한 강점
+## 소비자용 음성 AI 분야의 창업 경험
+엔터테인먼트와 AI 동반자 앱 분야의 창업 엔지니어·AI 제품 직무로 이어질 수 있습니다.
+## 기술 교육
+개발자 관계(DevRel)와 에듀테크 직무로 이어질 수 있습니다.
+## 오디오·음악 AI
+음악 기술과 생성형 음성 분야의 직무로 이어질 수 있습니다.
+## 커뮤니티 구축
+커뮤니티 리더와 AI 도입 지원 직무로 이어질 수 있습니다.

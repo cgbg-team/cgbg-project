@@ -1,6 +1,6 @@
 # cgbg-project
 
-구직자 온보딩과 에이전트 면접을 독립된 Next.js 앱으로 개발하는 npm workspaces 모노레포다. 면접 앱은 업로드 또는 온보딩 예시 프로필과 실제 공개 공고 17,237건으로 Claude 검색·1:N 모의 면접을 서버에서 실행한다. 실제 온보딩 데이터 연결과 DB 스키마는 아직 없다.
+구직자 온보딩과 에이전트 면접을 독립된 Next.js 앱으로 개발하는 npm workspaces 모노레포다. 면접 앱은 업로드 또는 온보딩 예시 프로필과 실제 공개 공고 17,237건으로 Claude 검색·1:N 모의 면접을 서버에서 실행한다. 면접 앱에서 온보딩으로 만든 프로필을 재업로드 없이 사용한다. DB 스키마는 아직 없다.
 
 [프로젝트 개요](docs/00_overview.md) · [제품 아이디어](docs/01_product_idea.md) · [개발 계획](docs/plan/20261024_1119_monorepo_plan.md) · [에이전트 규칙](AGENTS.md)
 
@@ -12,19 +12,15 @@ Node.js 24.x와 npm을 권장한다. 저장소 루트에서 설치한다. 지원
 npm ci
 ```
 
-온보딩 앱을 실행한다.
+통합 체험 앱을 실행한다.
 
 ```bash
-npm run dev:onboarding
+npm run dev
 ```
 
-[http://localhost:3000](http://localhost:3000)에서 확인한다. 면접 앱은 별도 터미널에서 실행한다.
+[http://localhost:3001](http://localhost:3001)에서 페르소나 선택 → 온보딩 → 면접을 확인한다. `npm run dev`는 `dev:interviews`의 단축 명령이다. 기본 화면과 테스트는 환경변수 없이 실행된다.
 
-```bash
-npm run dev:interviews
-```
-
-[http://localhost:3001](http://localhost:3001)에서 확인한다. 두 앱은 동시에 실행할 수 있다. `npm run dev`는 온보딩 앱의 단축 명령이다. 기본 화면과 테스트는 환경변수 없이 실행된다.
+독립 온보딩 앱이 필요하면 별도 터미널에서 `npm run dev:onboarding`을 실행하고 [http://localhost:3000](http://localhost:3000)에서 확인한다. 두 앱은 동시에 실행할 수 있다.
 
 ## 구조
 
@@ -33,6 +29,7 @@ apps/
   onboarding/             # @cgbg/onboarding: 독립된 Next.js 앱
   interviews/             # @cgbg/interviews: 독립된 Next.js 앱
 packages/
+  shared/src/onboarding/  # 두 앱의 공통 온보딩 화면·프로필 생성·파싱 API
   shared/src/supabase/    # @cgbg/shared: 클라이언트·설정 검증·테스트
 tests/e2e/               # 두 앱의 프로덕션 화면 검사
 docs/
@@ -46,7 +43,7 @@ docs/
 
 앱마다 `package.json`, Next.js·TypeScript·Vitest 설정과 `.env.example`이 있다. `@/*` 경로 별칭은 각 앱의 `src/*`를 가리킨다. TypeScript strict 모드와 Server Component 기본 원칙을 유지한다. 앱끼리 소스를 직접 가져오지 않으며, 실제 공통 코드는 shared의 명시적인 export를 사용한다.
 
-프로필 v1 타입은 `@cgbg/shared/profile`에서 제공한다. 필드의 기준은 [프로필 계약](docs/shared/00_profile_contract.md)이다. 공용 UI 패키지는 없다.
+프로필 v1 타입은 `@cgbg/shared/profile`에서 제공한다. 필드의 기준은 [프로필 계약](docs/shared/00_profile_contract.md)이다. 온보딩 화면과 파싱 API는 `@cgbg/shared/onboarding`과 `@cgbg/shared/onboarding/parse`로 공유한다.
 
 ## 면접 앱 실행
 
@@ -57,9 +54,9 @@ node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
 npm run dev:interviews
 ```
 
-`index.json`과 등록된 Markdown이 있는 구직자 폴더를 선택하고 프로필·희망 조건을 확인한 뒤 **면접 시작**을 누른다. 파일은 20개·합계 1MB 이하로 준비한다. 자료가 없으면 **샘플로 체험하기**를 선택한다. 샘플의 기준은 `data/demo/candidates/onboarding-example/`이며 업로드와 동일한 프로필 v1 검증을 거친다. 온보딩 앱에서 받은 zip은 압축을 풀고 index.json이 들어 있는 폴더를 선택한다. 최대 2개 기업과 각각 3왕복 대화를 진행하며, 창을 닫아도 서버 작업은 계속되고 같은 브라우저에서 다시 열면 업로드한 프로필과 진행 기록을 복원한다. 기본 모델은 `claude-sonnet-4-6`이며 `ANTHROPIC_MODEL`로 변경한다. 키가 없으면 설정 안내를 표시한다. 입력 형식·API·저장 방식·제약은 [면접 앱 문서](docs/interviews/00_overview.md)를 따른다.
+`index.json`과 등록된 Markdown이 있는 구직자 폴더를 선택하고 프로필·희망 조건을 확인한 뒤 **면접 시작**을 누른다. 파일은 20개·합계 1MB 이하로 준비한다. 첫 화면에서 **백지오 페르소나로 체험하기** 또는 **내 페르소나로 체험하기**를 선택한다. 내 페르소나를 선택하면 같은 면접 앱에서 기존 온보딩 화면이 열린다. 이력서·질문 3개·희망 조건으로 프로필을 생성하고 **이 프로필로 면접 준비하기**를 누르면 공개 문서와 비공개 조건이 기존 v1 검증을 거쳐 면접 준비 화면으로 전달된다. 검색 조건을 확인하고 면접을 시작한다. 프로필은 시작 전까지 브라우저 메모리에만 있으므로 새로고침하면 다시 입력해야 한다. 샘플의 기준은 `data/demo/candidates/onboarding-example/`이며 업로드와 동일한 프로필 v1 검증을 거친다. 기존 프로필 폴더는 온보딩 화면 하단 **이미 만든 프로필 폴더가 있나요?**에서 업로드한다. 별도 온보딩 앱에서 받은 zip도 압축을 풀어 선택할 수 있다. 최대 100개 기업과 동시에 대화하며, 각 면접은 MAX_TURNS(기본 20개 발화) 안에서 에이전트가 질문·종료를 결정한다. 확인이 끝나거나 사용자 결정이 필요하면 일찍 종료한다. 또한, 창을 닫아도 서버 작업은 계속되고 같은 브라우저에서 실행 URL(?run=…)을 다시 열면 업로드한 프로필과 진행 기록을 복원한다. 루트 첫 화면은 페르소나 선택을 표시한다. 온보딩 파서는 기존 `claude-opus-5-5` 모델을 사용하며 면접 앱의 서버 키를 함께 사용한다. 키가 없으면 온보딩은 명시된 데모 결과를 표시하고 실제 면접 시작은 비활성화된다. 면접 기본 모델은 `claude-sonnet-4-6`이며 `ANTHROPIC_MODEL`로 변경한다. 키가 없으면 설정 안내를 표시한다. 입력 형식·API·저장 방식·제약은 [면접 앱 문서](docs/interviews/00_overview.md)를 따른다.
 
-실제 공고 풀은 `apps/interviews/src/data/jobs/jobs_pool.json.gz`다. 국가 선택은 기본 전체이며 최대 2개 회사만 면접한다. 출처·원문 링크·연봉 원문을 표시하고 미확인 조건은 보류한다. 공고는 제공받은 스냅샷이다. 서버 `JOBS_POOL_PATH`는 별도 풀의 절대 경로를 지정할 때만 설정한다.
+실제 공고 풀은 `apps/interviews/src/data/jobs/jobs_pool.json.gz`다. 검색 국가는 프로필의 국가를 기본 선택하고 화면에서 바꿀 수 있다. API에서 country를 생략하면 전체 국가다. 회사 중복을 제거해 최대 100곳을 고르고 모두와 동시에 면접한다. 약 10%는 주 직군 밖의 탐색 후보로 확보한다. 관심사만 근거인 후보는 ‘관심사 기반·적합성 확인 필요’로 표시한다. 탐색 공고는 제목에 해당 직업명이 있어야 하며 부족하면 주 직군 후보로 채운다. 전체 일치 공고가 부족하면 100곳 미만일 수 있다. 출처·원문 링크·연봉 원문을 표시하고 미확인 조건은 별도로 표시한다. 핵심 역량이 맞으면 AI 사전검토 통과로 분류한다. 공고는 제공받은 스냅샷이다. 서버 `JOBS_POOL_PATH`는 별도 풀의 절대 경로를 지정할 때만 설정한다.
 
 ## Supabase 설정
 
@@ -119,3 +116,5 @@ GitHub의 `cgbg-team` 조직에 Vercel App을 설치했고 `main` 소스로 API 
 ## 알려진 도구 제약
 
 Next.js ESLint 프리셋의 일부 플러그인이 ESLint 10을 지원하지 않아 ESLint 9를 사용한다. 지원 종료 경고가 있으므로 프리셋의 호환성이 갱신되면 함께 업그레이드한다.
+
+백지오 체험은 미국 공고에서 저장한 실제 대화를 지연 재생하며 추가 AI 호출이 없다. 내 페르소나는 온보딩 후 서버에서 실제로 실행한다. 사전검토 통과 기업의 면접 신청은 시연용 상태만 같은 브라우저에 저장하며 기업에 전송하지 않는다. 자세한 흐름은 [면접 앱 문서](docs/interviews/00_overview.md)를 따른다.

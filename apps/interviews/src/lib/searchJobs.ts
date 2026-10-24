@@ -19,8 +19,8 @@ export function loadPool(): Job[] {
   }
   return pool;
 }
-export function searchJobPool(keywords: Keyword[], opts: { country?: string; n?: number } = {}) {
-  return screenJobs(loadPool(), keywords, opts.n ?? 2, opts.country ?? "");
+export function searchJobPool(keywords: Keyword[], opts: { country?: string; n?: number; primaryRoles?: string[] } = {}) {
+  return screenJobs(loadPool(), keywords, opts.n ?? 100, opts.country ?? "", opts.primaryRoles);
 }
 export function searchJobs(tags: string[], opts: { country?: string; n?: number } = {}): Job[] {
   return searchJobPool(tags.map((term) => ({ term, source: "wants" })), opts).selected.map(({ job }) => job);

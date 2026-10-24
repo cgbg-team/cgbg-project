@@ -7,7 +7,7 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "npm run dev:onboarding",
+    "dev": "npm run dev:interviews",
     "dev:onboarding": "npm run dev --workspace=@cgbg/onboarding",
     "dev:interviews": "npm run dev --workspace=@cgbg/interviews",
     "build": "npm run build --workspaces --if-present",

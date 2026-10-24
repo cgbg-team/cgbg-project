@@ -8,20 +8,18 @@ import {
   candidateTurn,
   summarize,
 } from "../lib/steps";
-import type { Job, Message, Stage } from "../lib/types";
+import type { Job, Message } from "../lib/types";
 import type { CandidateInput } from "../lib/candidate-input";
 
-async function interview(input: Awaited<ReturnType<typeof prepare>>, job: Job) {
+async function interview(input: Awaited<ReturnType<typeof prepare>>, job: Job, maxTurns: number) {
   const messages: Message[] = [];
   let needsUser = false;
   try {
-    for (const stage of [
-      "experience",
-      "conditions",
-      job.salary ? "salary" : "salary_check",
-    ] satisfies Stage[]) {
+    await publish({ type: "stage", jobId: job.id, stage: "interviewing" });
+    while (messages.length < maxTurns) {
+      const recruiter = await recruiterTurn(input, job, messages, maxTurns);
+      const stage = recruiter.stage;
       await publish({ type: "stage", jobId: job.id, stage });
-      const recruiter = await recruiterTurn(input, job, messages, stage);
       const question: Message = {
         role: "recruiter",
         text: recruiter.message,
@@ -29,7 +27,8 @@ async function interview(input: Awaited<ReturnType<typeof prepare>>, job: Job) {
       };
       messages.push(question);
       await publish({ type: "message", jobId: job.id, message: question });
-      const candidate = await candidateTurn(input, job, messages);
+      if (recruiter.done || messages.length >= maxTurns) break;
+      const candidate = await candidateTurn(input, job, messages, maxTurns);
       const answer: Message = {
         role: "candidate",
         text: candidate.message,
@@ -45,6 +44,7 @@ async function interview(input: Awaited<ReturnType<typeof prepare>>, job: Job) {
           question: candidate.question || "이 조건을 확인해주세요.",
         });
       }
+      if (candidate.done || needsUser) break;
     }
     await publish({ type: "stage", jobId: job.id, stage: "summarizing" });
     const result = await summarize(input, job, messages, needsUser);
@@ -68,6 +68,7 @@ async function interview(input: Awaited<ReturnType<typeof prepare>>, job: Job) {
 export async function interviewWorkflow(
   candidate: CandidateInput | null = null,
   country = "",
+  maxTurns = 20,
 ) {
   "use workflow";
   try {
@@ -81,9 +82,10 @@ export async function interviewWorkflow(
     const { keywords } = await extract(input);
     await publish({ type: "keywords", keywords });
     await publish({ type: "stage", stage: "screening" });
-    const { selected, search } = await screen(keywords, country);
-    await publish({ type: "screened", selected, search });
-    await Promise.all(selected.map(({ job }) => interview(input, job)));
+    const { selected: candidates, search } = await screen(keywords, country, input.candidate.publicProfile.wants.roleTypes);
+    const selected = candidates;
+    await publish({ type: "screened", selected, candidates, search });
+    await Promise.all(selected.map(({ job }) => interview(input, job, maxTurns)));
     await publish({ type: "done" });
   } catch {
     await publish({

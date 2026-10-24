@@ -16,7 +16,7 @@ test("샘플 체험과 온보딩 폴더 업로드는 동일한 최신 프로필�
   const cwd = vi.spyOn(process, "cwd").mockReturnValue(path.resolve("apps/interviews"));
   try {
     expect(await loadDemoCandidate()).toEqual(uploaded);
-    expect(uploaded.publicProfile.headline).toContain("Multimodal AI");
+    expect(uploaded.publicProfile.headline).toContain("멀티모달 AI");
     expect(uploaded.docs.every(doc => doc.path.startsWith("public/"))).toBe(true);
   } finally { cwd.mockRestore(); }
 });
@@ -24,7 +24,7 @@ test("샘플 체험과 온보딩 폴더 업로드는 동일한 최신 프로필�
 test("실제 압축 풀에서 호주 공고를 검색하고 상위 두 회사만 반환한다", () => {
   vi.stubEnv("JOBS_POOL_PATH", fileURLToPath(new URL("../data/jobs/jobs_pool.json.gz", import.meta.url)));
   try {
-    const result = searchJobPool([{ term: "software engineer", source: "wants" }], { country: "AU" });
+    const result = searchJobPool([{ term: "software engineer", source: "wants" }], { country: "AU", n: 2 });
     expect(result.search).toMatchObject({ total: 17237, countryTotal: 172, country: "AU" });
     expect(result.selected.map(({job}) => job.id)).toEqual(["J00558", "J04766"]);
     expect(result.selected.every(({job}) => job.url.startsWith("https://") && typeof job.salary === "string" && typeof job.text === "string")).toBe(true);
