@@ -1,0 +1,166 @@
+{
+  "confirmed_at": "2026-10-24T03:36:39.554Z",
+  "salaryPeriod": "annual",
+  "publicProfile": {
+    "schemaVersion": 1,
+    "candidateId": "cand_a36d524a-be42-4ec9-b8a2-f1b5eee4db3d",
+    "headline": "Radiologist turned detail-obsessed coffee equipment expert and educator",
+    "summary": "Attending radiologist with 10+ years of chest imaging and AI tool adoption experience. Outside medicine, runs a 12k-reader espresso equipment blog, restores machines, speaks publicly and built a 60-member café community. Open to roles that combine technical depth, teaching and community.",
+    "location": {
+      "country": "US",
+      "remoteOk": true,
+      "relocateOk": false
+    },
+    "languages": [
+      {
+        "name": "Korean",
+        "level": "native"
+      },
+      {
+        "name": "English",
+        "level": "fluent"
+      }
+    ],
+    "skills": [
+      {
+        "name": "Medical image analysis",
+        "level": "expert",
+        "years": 12,
+        "verified": true,
+        "evidence": [
+          {
+            "source": "resume",
+            "quote": "Read 40,000+ CT/MRI studies per year; subspecialty in chest imaging"
+          }
+        ]
+      },
+      {
+        "name": "Clinical AI tool adoption",
+        "level": "working",
+        "verified": true,
+        "evidence": [
+          {
+            "source": "resume",
+            "quote": "Led adoption of an AI triage tool for chest X-rays across 3 departments"
+          }
+        ]
+      },
+      {
+        "name": "Medical education",
+        "level": "expert",
+        "verified": true,
+        "evidence": [
+          {
+            "source": "resume",
+            "quote": "Teaches imaging interpretation to 20 residents per year"
+          }
+        ]
+      }
+    ],
+    "experience": [
+      {
+        "title": "Attending Radiologist",
+        "orgDescription": "University hospital · 2,000+ beds · Seoul",
+        "startYear": 2014,
+        "highlights": [
+          "40,000+ CT/MRI reads per year",
+          "Led AI triage tool adoption across 3 departments"
+        ],
+        "evidence": [
+          {
+            "source": "resume",
+            "quote": "Attending Radiologist, University Hospital (2,000+ beds, Seoul) — 2014–present"
+          }
+        ]
+      }
+    ],
+    "transferableStrengths": [
+      {
+        "strength": "Coffee equipment knowledge",
+        "why": "Teardown-level understanding of espresso machines fits product, QA and technical sales roles at coffee equipment companies.",
+        "evidence": [
+          {
+            "source": "portfolio",
+            "quote": "Repaired and restored 15 vintage lever machines for local cafés"
+          }
+        ]
+      },
+      {
+        "strength": "Public speaking",
+        "why": "Regular talks to both medical and consumer audiences translate to developer relations, education and evangelist roles.",
+        "evidence": [
+          {
+            "source": "portfolio",
+            "quote": "Monthly hospital \"AI & Medicine\" lunch talk host since 2021"
+          }
+        ]
+      },
+      {
+        "strength": "Community building",
+        "why": "Founding and running a 60-member owners' group shows community management and partnership skills.",
+        "evidence": [
+          {
+            "source": "portfolio",
+            "quote": "Founded a neighborhood café owners' group (60 members)"
+          }
+        ]
+      }
+    ],
+    "wants": {
+      "roleTypes": [
+        "Clinical AI product specialist",
+        "Coffee equipment product manager",
+        "Medical education content lead"
+      ],
+      "interests": [
+        "specialty coffee",
+        "medical AI",
+        "public speaking",
+        "community"
+      ],
+      "workStyle": [
+        "흥미와 성장 가능성"
+      ]
+    },
+    "docs": [
+      {
+        "path": "public/experience.md",
+        "about": "경력 상세와 성과",
+        "visibility": "public"
+      },
+      {
+        "path": "public/strengths.md",
+        "about": "이력서 밖에서 발견한 강점과 근거",
+        "visibility": "public"
+      }
+    ]
+  },
+  "privateProfile": {
+    "schemaVersion": 1,
+    "candidateId": "cand_a36d524a-be42-4ec9-b8a2-f1b5eee4db3d",
+    "salary": {
+      "currency": "USD",
+      "target": 150000,
+      "floor": 110000,
+      "flexibleOn": [
+        "성장 기회가 좋다면 연봉 조정 가능"
+      ]
+    },
+    "dealbreakers": [
+      "More than 60 hours per week"
+    ],
+    "mustEmphasize": [
+      "Explains complex technical detail to non-experts"
+    ],
+    "openQuestions": [
+      "Would you accept a role outside healthcare with a lower starting salary?"
+    ],
+    "docs": [
+      {
+        "path": "private/interview.md",
+        "about": "온보딩 질문 응답 원문",
+        "visibility": "private"
+      }
+    ]
+  }
+}
