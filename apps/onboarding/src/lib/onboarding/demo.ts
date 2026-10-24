@@ -117,3 +117,22 @@ Seoul Coffee Expo 2023 speaker; hosts a monthly "AI & Medicine" talk.
 Founded a 60-member café owners' group; organized a charity event raising $8,000.
 `,
 };
+
+// 가상 데모 인물의 개인 에이전트가 만든 JSON 예시.
+export const demoAgentExport = JSON.stringify(
+  {
+    format: "beyond-cv/agent-export/v1",
+    items: [
+      { category: "work", title: "Attending Radiologist, 2014–present", detail: "University hospital, 2,000+ beds, Seoul. Chest imaging subspecialty.", quote: "Read 40,000+ CT/MRI studies per year; subspecialty in chest imaging", source: "my CV" },
+      { category: "work", title: "AI triage tool rollout lead", detail: "Led adoption of an AI triage tool for chest X-rays across 3 departments.", quote: "Led adoption of an AI triage tool for chest X-rays across 3 departments", source: "my CV" },
+      { category: "education", title: "M.D., Seoul National University, 2010" },
+      { category: "writing", title: "Blog: Three Shots Before Rounds (2019–present)", detail: "Espresso machine and grinder reviews, 12k monthly readers.", quote: "teardown posts on boiler and pump design", source: "blog" },
+      { category: "project", title: "Vintage lever machine restoration", detail: "Repaired and restored 15 vintage lever machines for local cafés.", source: "my notes" },
+      { category: "activity", title: "Speaker, Seoul Coffee Expo 2023", detail: "Talk on seeing details in espresso extraction.", source: "event page" },
+      { category: "activity", title: "Founder, café owners' group (60 members)", detail: "Shares equipment and repair know-how.", source: "group page" },
+      { category: "interest", title: "Specialty coffee and community events" },
+    ],
+  },
+  null,
+  2,
+);

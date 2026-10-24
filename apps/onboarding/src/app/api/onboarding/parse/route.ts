@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
+import { parseAgentExport } from "@/lib/onboarding/agent-export";
 import { buildCandidateFolder } from "@/lib/onboarding/build";
 import { extractProfile } from "@/lib/onboarding/extract";
 import { questions } from "@/lib/onboarding/questions";
@@ -11,6 +12,7 @@ const formSchema = z.object({
   locale: z.enum(["ko", "en"]),
   resumeText: z.string().max(textLimit),
   extraText: z.string().max(textLimit),
+  agentExport: z.string().max(100_000),
   direction: z.enum(questions.direction),
   pay: z.enum(questions.pay),
   priority: z.enum(questions.priority),
@@ -45,6 +47,14 @@ export async function POST(request: Request) {
   const data = parsed.data;
   if (data.floor > data.target)
     return Response.json({ error: "최저 연봉은 희망 연봉보다 클 수 없습니다." }, { status: 400 });
+
+  if (data.agentExport.trim()) {
+    try {
+      Object.assign(data, parseAgentExport(data.agentExport));
+    } catch (error) {
+      return Response.json({ error: error instanceof Error ? error.message : String(error) }, { status: 400 });
+    }
+  }
 
   const file = form.get("resumeFile");
   let resumePdf: string | undefined;
