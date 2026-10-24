@@ -48,9 +48,12 @@ export async function POST(request: Request) {
   if (data.floor > data.target)
     return Response.json({ error: "최저 연봉은 희망 연봉보다 클 수 없습니다." }, { status: 400 });
 
+  let agent: ReturnType<typeof parseAgentExport> | undefined;
   if (data.agentExport.trim()) {
     try {
-      Object.assign(data, parseAgentExport(data.agentExport));
+      agent = parseAgentExport(data.agentExport);
+      data.resumeText = agent.resumeText;
+      data.extraText = agent.extraText;
     } catch (error) {
       return Response.json({ error: error instanceof Error ? error.message : String(error) }, { status: 400 });
     }
@@ -73,6 +76,7 @@ export async function POST(request: Request) {
       resumePdf,
       resumeText: data.resumeText.trim() || undefined,
       extraText: data.extraText.trim() || undefined,
+      agentInsights: agent?.insightsText,
       locale: data.locale,
     });
     const folder = buildCandidateFolder(extraction, {
@@ -84,6 +88,7 @@ export async function POST(request: Request) {
       remoteOk: data.remoteOk === "true",
       relocateOk: data.relocateOk === "true",
       dealbreakers: data.dealbreakers.split("\n").map((line) => line.trim()).filter(Boolean),
+      selfInsightMd: agent?.selfInsightMd,
     }, `cand_${randomUUID()}`);
     return Response.json({ ...folder, mock });
   } catch (error) {

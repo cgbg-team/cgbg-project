@@ -9,6 +9,14 @@ test("에이전트 JSON의 경력·학력은 이력서로, 나머지는 추가 �
   expect(extraText).toContain("[project] Vintage lever machine restoration");
 });
 
+test("인사이트는 가설로 넘기고 약점·일하는 스타일은 비공개 문서로만 분리한다", () => {
+  const { insightsText, selfInsightMd } = parseAgentExport(demoAgentExport);
+  expect(insightsText).toContain("## Role ideas\n- Product specialist (Coffee equipment)");
+  expect(insightsText).not.toContain("administrative meetings");
+  expect(selfInsightMd).toContain("## Weaknesses\n- Loses energy in long administrative meetings");
+  expect(selfInsightMd).toContain("## Work style");
+});
+
 test("형식이 틀리거나 경력이 없으면 이유를 알린다", () => {
   expect(() => parseAgentExport("{not json")).toThrow("JSON 문법");
   expect(() => parseAgentExport(JSON.stringify({ format: "other", items: [] }))).toThrow("형식");

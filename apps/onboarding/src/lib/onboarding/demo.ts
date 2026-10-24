@@ -132,6 +132,16 @@ export const demoAgentExport = JSON.stringify(
       { category: "activity", title: "Founder, café owners' group (60 members)", detail: "Shares equipment and repair know-how.", source: "group page" },
       { category: "interest", title: "Specialty coffee and community events" },
     ],
+    insights: {
+      talents: [{ text: "Explains complex technical detail to non-experts", why: "Readers and residents both ask for his explanations.", basedOn: ["Blog: Three Shots Before Rounds (2019–present)"] }],
+      strengths: [{ text: "Patient, detail-obsessed troubleshooting", basedOn: ["Vintage lever machine restoration"] }],
+      weaknesses: [{ text: "Loses energy in long administrative meetings", why: "Often mentions it after department meetings." }],
+      workStyle: [{ text: "Works best with hands-on problems and small teams" }],
+      roleIdeas: [
+        { role: "Product specialist", industry: "Coffee equipment", why: "Combines teardown knowledge with teaching.", basedOn: ["Vintage lever machine restoration"] },
+        { role: "Clinical lead", industry: "Medical AI", basedOn: ["AI triage tool rollout lead"] },
+      ],
+    },
   },
   null,
   2,

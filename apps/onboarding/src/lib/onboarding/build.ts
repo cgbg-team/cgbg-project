@@ -17,6 +17,8 @@ export type Preferences = {
   remoteOk: boolean;
   relocateOk: boolean;
   dealbreakers: string[];
+  // 개인 에이전트가 준 약점·일하는 스타일. 비공개 문서로만 저장한다.
+  selfInsightMd?: string;
 };
 
 export type CandidateManifest = {
@@ -35,9 +37,12 @@ const publicDocs: ProfileDoc[] = [
   { path: "public/experience.md", about: "경력 상세와 성과", visibility: "public" },
   { path: "public/strengths.md", about: "이력서 밖에서 발견한 강점과 근거", visibility: "public" },
 ];
-const privateDocs: ProfileDoc[] = [
-  { path: "private/interview.md", about: "온보딩 질문 응답 원문", visibility: "private" },
-];
+const interviewDoc: ProfileDoc = { path: "private/interview.md", about: "온보딩 질문 응답 원문", visibility: "private" };
+const selfInsightDoc: ProfileDoc = {
+  path: "private/self-insight.md",
+  about: "개인 에이전트가 본 약점과 일하는 스타일",
+  visibility: "private",
+};
 
 const flexibleOn: Record<Answers["pay"], string[]> = {
   keepLevel: [],
@@ -116,7 +121,7 @@ export function buildCandidateFolder(
     dealbreakers: prefs.dealbreakers,
     mustEmphasize: extraction.mustEmphasize,
     openQuestions: extraction.openQuestions,
-    docs: privateDocs,
+    docs: prefs.selfInsightMd ? [interviewDoc, selfInsightDoc] : [interviewDoc],
   };
   const manifest: CandidateManifest = {
     confirmed_at: now.toISOString(),
@@ -131,6 +136,7 @@ export function buildCandidateFolder(
       { path: "public/experience.md", content: extraction.experienceMd },
       { path: "public/strengths.md", content: extraction.strengthsMd },
       { path: "private/interview.md", content: interviewMd(prefs.answers) },
+      ...(prefs.selfInsightMd ? [{ path: selfInsightDoc.path, content: prefs.selfInsightMd }] : []),
     ],
   };
 }
