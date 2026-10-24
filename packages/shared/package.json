@@ -8,7 +8,8 @@
     "./supabase/server": "./src/supabase/server.ts",
     "./supabase/env": "./src/supabase/env.ts",
     "./onboarding": "./src/onboarding/onboarding.tsx",
-    "./onboarding/parse": "./src/onboarding/parse.ts"
+    "./onboarding/parse": "./src/onboarding/parse.ts",
+    "./onboarding/step": "./src/onboarding/step.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"
