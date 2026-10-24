@@ -5,7 +5,7 @@ import { loadDemoCandidate } from "@/lib/fixtures";
 export default async function Home({
   searchParams,
 }: {
-  searchParams: Promise<{ run?: string }>;
+  searchParams: Promise<{ run?: string; from?: string }>;
 }) {
   const candidate = await loadDemoCandidate();
   const params = await searchParams;
@@ -14,6 +14,7 @@ export default async function Home({
       profile={candidate.publicProfile}
       ready={configurationReady()}
       initialRun={params.run}
+      fromOnboarding={params.from === "onboarding"}
     />
   );
 }

@@ -1,5 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { takeOnboardingCandidate } from "@/lib/onboarding-handoff";
 import type { PublicProfile } from "@cgbg/shared/profile";
 import { useInterviewRun } from "./use-interview-run";
 import { OwnOnboarding } from "./own-onboarding";
@@ -14,11 +16,14 @@ export function InterviewDashboard({
   profile,
   ready,
   initialRun,
+  fromOnboarding = false,
 }: {
   profile: PublicProfile;
   ready: boolean;
   initialRun?: string;
+  fromOnboarding?: boolean;
 }) {
+  const router = useRouter();
   const run = useInterviewRun(initialRun);
   const { snapshot } = run;
   // shortcut: 면접 시작 전 프로필은 메모리에만 유지하며, 입력 복원이 필요해지면 임시 저장을 추가한다.
@@ -34,11 +39,26 @@ export function InterviewDashboard({
     (item) => item.result?.outcome === "recommended",
   ).length;
   const running = !!run.runId && !snapshot.done && !snapshot.error;
+  useEffect(() => {
+    if (!fromOnboarding) return;
+    const input = takeOnboardingCandidate();
+    router.replace("/");
+    if (!input) return;
+    const code = input.publicProfile.location.country === "GB" ? "UK" : input.publicProfile.location.country;
+    // sessionStorage는 브라우저에서만 읽을 수 있어 마운트 후 상태를 맞춘다.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setCandidate(input);
+    setCountry(jobSummary.countries.some(item => item.code === code) ? code : "");
+    setPreparingOwn(false);
+    setMode("own");
+  }, [fromOnboarding, router]);
   if (!mode) return <PersonaChoice onSelect={(choice) => {
+    // 내 페르소나는 별도 온보딩 페이지에서 프로필을 만든 뒤 ?from=onboarding으로 돌아온다.
+    if (choice === "own") return router.push("/onboarding");
     run.reset();
-    if (choice === "sample") setCountry("US");
-    setCandidate(choice === "sample" ? null : undefined);
-    setPreparingOwn(choice === "own");
+    setCountry("US");
+    setCandidate(null);
+    setPreparingOwn(false);
     setMode(choice);
   }} />;
   if (mode === "own" && preparingOwn) return <OwnOnboarding
