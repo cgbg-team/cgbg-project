@@ -17,6 +17,17 @@ test("인사이트는 가설로 넘기고 약점·일하는 스타일은 비공�
   expect(selfInsightMd).toContain("## Work style");
 });
 
+test("질문 설계용 JSON에는 gaps·제안을 남기고 약점·일하는 스타일은 뺀다", () => {
+  const raw = JSON.parse(demoAgentExport);
+  const { plannerJson } = parseAgentExport(
+    JSON.stringify({ ...raw, gaps: [{ topic: "해외 근무 의향" }], proposals: [{ type: "role_idea", text: "Coffee PM", ownerResponse: "unanswered" }] }),
+  );
+  expect(plannerJson).toContain("해외 근무 의향");
+  expect(plannerJson).toContain("Coffee PM");
+  expect(plannerJson).not.toContain("administrative meetings");
+  expect(plannerJson).not.toContain("hands-on problems");
+});
+
 test("형식이 틀리거나 경력이 없으면 이유를 알린다", () => {
   expect(() => parseAgentExport("{not json")).toThrow("JSON 문법");
   expect(() => parseAgentExport(JSON.stringify({ format: "other", items: [] }))).toThrow("형식");
