@@ -11,8 +11,7 @@ type Result = CandidateFolder & { mock: boolean };
 
 const input = "w-full rounded border border-neutral-300 bg-white px-3 py-2";
 
-export function OnboardingForm() {
-  const [locale, setLocale] = useState<Locale>("ko");
+export function OnboardingForm({ locale }: { locale: Locale }) {
   const [resumeText, setResumeText] = useState("");
   const [extraText, setExtraText] = useState("");
   const [pending, setPending] = useState(false);
@@ -48,12 +47,6 @@ export function OnboardingForm() {
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-8">
-      <div className="flex items-center justify-between gap-4">
-        <p className="text-lg text-neutral-700">{t.tagline}</p>
-        <button type="button" className="text-sm underline" onClick={() => setLocale(locale === "ko" ? "en" : "ko")}>
-          {locale === "ko" ? "English" : "한국어"}
-        </button>
-      </div>
       <p className="text-sm text-neutral-500">{t.demoNotice}</p>
 
       <fieldset className="flex flex-col gap-3">

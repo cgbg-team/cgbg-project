@@ -1,7 +1,9 @@
 import type { Locale } from "./questions";
 
 const ko = {
-  tagline: "Your next career may not be on your résumé.",
+  title: "구직자 온보딩",
+  language: "언어",
+  tagline: "당신의 다음 커리어는 이력서에 없을 수도 있어요.",
   demoNotice:
     "가상의 데모 인물 자료로 시연합니다. 분석 결과는 실제 직무 수행 능력이 검증되었다는 뜻이 아닙니다.",
   materials: "1. 자료",
@@ -22,7 +24,7 @@ const ko = {
   submit: "프로필 만들기",
   analyzing: "자료를 분석하고 있어요...",
   resultTitle: "프로필이 준비됐어요",
-  wow: "You have more possibilities than your résumé shows.",
+  wow: "당신에게는 이력서에 보이는 것보다 더 많은 가능성이 있어요.",
   resumeSkills: "이력서에서 확인한 역량",
   hiddenSkills: "추가 자료에서 발견한 역량",
   roleTypes: "탐색할 직무",
@@ -56,6 +58,8 @@ const ko = {
 export type Messages = typeof ko;
 
 const en: Messages = {
+  title: "Candidate onboarding",
+  language: "Language",
   tagline: "Your next career may not be on your résumé.",
   demoNotice:
     "This demo uses a fictional person's materials. Results do not verify actual job performance.",
