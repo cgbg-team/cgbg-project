@@ -38,8 +38,22 @@ async function remotive(term: string, country: string): Promise<Job[]> {
     }));
 }
 
+// 같은 검색어·국가는 30분 동안 서버 메모리 결과를 재사용한다. 반복 검색을 빠르게 하고 공개 API 호출 제한을 피한다.
+const cache = new Map<string, { at: number; jobs: Promise<Job[]> }>();
+const ttl = 30 * 60 * 1000;
+function cached(key: string, load: () => Promise<Job[]>) {
+  const hit = cache.get(key);
+  if (hit && Date.now() - hit.at < ttl) return hit.jobs;
+  const jobs = load().catch((error) => {
+    cache.delete(key);
+    throw error;
+  });
+  cache.set(key, { at: Date.now(), jobs });
+  return jobs;
+}
+
 export async function fetchLiveJobs(terms: string[], country = ""): Promise<Job[]> {
-  const calls = terms.slice(0, 3).flatMap((term) => [jobicy(term, country), remotive(term, country)]);
+  const calls = terms.slice(0, 3).flatMap((term) => [cached(`jobicy|${term}|${country}`, () => jobicy(term, country)), cached(`remotive|${term}|${country}`, () => remotive(term, country))]);
   const settled = await Promise.allSettled(calls);
   const seen = new Set<string>();
   return settled
