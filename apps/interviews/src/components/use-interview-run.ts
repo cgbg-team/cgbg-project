@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { applyEvent, emptySnapshot, type RunEvent } from "@/lib/types";
+import type { CandidateInput } from "@/lib/candidate-input";
 
 export function useInterviewRun(initialRun?: string) {
   const [runId, setRunId] = useState(initialRun);
@@ -89,14 +90,26 @@ export function useInterviewRun(initialRun?: string) {
       clearTimeout(timer);
     };
   }, [runId, reconnect]);
-  async function start() {
+  async function start(candidate: CandidateInput | null = null) {
     setStarting(true);
     setError(undefined);
     try {
-      const response = await fetch("/api/runs", { method: "POST" });
+      const response = await fetch("/api/runs", {
+        method: "POST",
+        ...(candidate
+          ? {
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(candidate),
+            }
+          : {}),
+      });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error);
-      setSnapshot(emptySnapshot);
+      setSnapshot({
+        ...emptySnapshot,
+        profile: candidate?.publicProfile,
+        source: candidate ? "upload" : "demo",
+      });
       setRunId(data.runId);
       window.history.replaceState(
         null,

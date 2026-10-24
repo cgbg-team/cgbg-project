@@ -57,7 +57,7 @@ node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
 npm run dev:interviews
 ```
 
-**면접 시작**을 누르면 최대 2개 기업과 각각 3왕복 대화를 진행한다. 창을 닫아도 서버 작업은 계속되고 같은 브라우저에서 다시 열면 기록을 복원한다. 기본 모델은 `claude-sonnet-4-6`이며 `ANTHROPIC_MODEL`로 변경한다. 키가 없으면 설정 안내를 표시한다. 데이터 형식·API·저장 방식·제약은 [면접 앱 문서](docs/interviews/00_overview.md)를 따른다.
+`index.json`과 등록된 Markdown이 있는 구직자 폴더를 선택하고 프로필·희망 조건을 확인한 뒤 **면접 시작**을 누른다. 파일은 20개·합계 1MB 이하로 준비한다. 자료가 없으면 **샘플로 체험하기**를 선택한다. 최대 2개 기업과 각각 3왕복 대화를 진행하며, 창을 닫아도 서버 작업은 계속되고 같은 브라우저에서 다시 열면 업로드한 프로필과 진행 기록을 복원한다. 기본 모델은 `claude-sonnet-4-6`이며 `ANTHROPIC_MODEL`로 변경한다. 키가 없으면 설정 안내를 표시한다. 입력 형식·API·저장 방식·제약은 [면접 앱 문서](docs/interviews/00_overview.md)를 따른다.
 
 ## Supabase 설정
 

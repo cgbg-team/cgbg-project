@@ -9,10 +9,16 @@ import {
 } from "./schemas";
 import { screenJobs } from "./screening";
 import type { Job, Message, RunEvent, Stage } from "./types";
+import { validateCandidate, type CandidateInput } from "./candidate-input";
 
-export async function prepare() {
+export async function prepare(candidate: CandidateInput | null = null) {
   "use step";
-  return { candidate: await loadDemoCandidate(), jobs: loadDemoJobs() };
+  return {
+    candidate: candidate
+      ? validateCandidate(candidate)
+      : await loadDemoCandidate(),
+    jobs: loadDemoJobs(),
+  };
 }
 type Input = Awaited<ReturnType<typeof prepare>>;
 

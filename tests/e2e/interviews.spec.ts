@@ -1,8 +1,21 @@
 import { expect, test } from "@playwright/test";
+import path from "node:path";
+import { cp, readFile, writeFile } from "node:fs/promises";
 
-test("화면을 닫아도 1:N 면접이 완료되고 같은 브라우저에서 기록을 복원한다", async ({ page, context, playwright }) => {
+test("자료 폴더로 시작한 1:N 면접은 화면을 닫아도 완료되고 기록을 복원한다", async ({ page, context, playwright }, testInfo) => {
   test.setTimeout(90_000);
   await page.goto("http://127.0.0.1:3101");
+  const folder = testInfo.outputPath("candidate");
+  await cp(path.resolve("apps/interviews/src/data/demo/candidate"), folder, { recursive: true });
+  const file = path.join(folder, "index.json");
+  const candidate = JSON.parse(await readFile(file, "utf8"));
+  candidate.publicProfile.headline = "업로드한 자동화 엔지니어";
+  candidate.publicProfile.candidateId = "uploaded-candidate-1";
+  candidate.privateProfile.candidateId = "uploaded-candidate-1";
+  await writeFile(file, JSON.stringify(candidate));
+  await page.getByLabel("구직자 자료 폴더 선택").setInputFiles(folder);
+  await expect(page.getByRole("heading", { level: 3, name: "업로드한 자동화 엔지니어" })).toBeVisible();
+  await page.getByRole("checkbox", { name: "프로필과 희망 조건을 확인했으며 이 자료로 면접을 시작합니다." }).check();
   await page.getByRole("button", { name: "면접 시작 ↗" }).click();
   await expect(page).toHaveURL(/run=wrun_/);
   const url = page.url();
@@ -18,15 +31,19 @@ test("화면을 닫아도 1:N 면접이 완료되고 같은 브라우저에서 �
   const restored = await context.newPage();
   await restored.goto(url);
   await expect(restored.getByRole("button", { name: /Orbit Works/ })).toContainText("대면 면접 추천");
+  await expect(restored.getByRole("heading", { level: 2, name: "업로드한 자동화 엔지니어" })).toBeVisible();
+  await expect(restored.getByRole("log")).toContainText("업로드한 자동화 엔지니어");
   await expect(restored.getByRole("button", { name: /Relay Studio/ })).toContainText("확인 후 결정");
   await restored.getByRole("button", { name: /Relay Studio/ }).click();
   await expect(restored.getByText("출장이 필요한지 확인해주세요.")).toBeVisible();
   const events = await context.request.get(`http://127.0.0.1:3101/api/runs/${runId}?stream=1`);
   const log = await events.text();
   expect(log).toContain('"stage":"salary"');
+  expect(log).toContain('"candidateId":"uploaded-candidate-1"');
   expect(log).not.toContain("90000");
   expect(log).not.toContain("floor");
   expect(log.match(/"type":"result"/g)).toHaveLength(2);
+  await restored.screenshot({ path: "test-results/interviews-desktop.png", fullPage: true });
   await restored.setViewportSize({ width: 390, height: 844 });
   expect(await restored.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   await restored.screenshot({ path: "test-results/interviews-mobile.png", fullPage: true });

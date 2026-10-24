@@ -9,6 +9,7 @@ import {
   summarize,
 } from "../lib/steps";
 import type { Job, Message, Stage } from "../lib/types";
+import type { CandidateInput } from "../lib/candidate-input";
 
 async function interview(input: Awaited<ReturnType<typeof prepare>>, job: Job) {
   const messages: Message[] = [];
@@ -64,10 +65,17 @@ async function interview(input: Awaited<ReturnType<typeof prepare>>, job: Job) {
   }
 }
 
-export async function interviewWorkflow() {
+export async function interviewWorkflow(
+  candidate: CandidateInput | null = null,
+) {
   "use workflow";
   try {
-    const input = await prepare();
+    const input = await prepare(candidate);
+    await publish({
+      type: "profile",
+      profile: input.candidate.publicProfile,
+      source: candidate ? "upload" : "demo",
+    });
     await publish({ type: "stage", stage: "keywords" });
     const { keywords } = await extract(input);
     await publish({ type: "keywords", keywords });
@@ -81,7 +89,7 @@ export async function interviewWorkflow() {
       type: "error",
       stage: "error",
       error:
-        "면접을 시작하지 못했습니다. 서버의 Claude API 키와 샘플 자료를 확인해주세요.",
+        "면접을 시작하지 못했습니다. Claude API 설정과 프로필 자료를 확인해주세요.",
     });
   } finally {
     await closeEvents();

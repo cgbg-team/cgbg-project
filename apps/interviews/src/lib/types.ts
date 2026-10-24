@@ -1,3 +1,5 @@
+import type { PublicProfile } from "@cgbg/shared/profile";
+
 export const stageLabels = {
   queued: "면접 대기 중",
   keywords: "검색 키워드 추출 중…",
@@ -49,6 +51,7 @@ export type Interview = {
 };
 export type RunEvent = {
   type:
+    | "profile"
     | "stage"
     | "keywords"
     | "screened"
@@ -58,6 +61,8 @@ export type RunEvent = {
     | "error"
     | "done";
   at: string;
+  profile?: PublicProfile;
+  source?: "upload" | "demo";
   jobId?: string;
   stage?: Stage;
   keywords?: Keyword[];
@@ -69,6 +74,8 @@ export type RunEvent = {
   error?: string;
 };
 export type Snapshot = {
+  profile?: PublicProfile;
+  source?: "upload" | "demo";
   stage: Stage;
   keywords: Keyword[];
   interviews: Interview[];
@@ -86,6 +93,8 @@ export const emptySnapshot: Snapshot = {
 };
 
 export function applyEvent(state: Snapshot, event: RunEvent): Snapshot {
+  if (event.type === "profile")
+    return { ...state, profile: event.profile, source: event.source };
   if (event.type === "keywords")
     return { ...state, keywords: event.keywords ?? [] };
   if (event.type === "screened")
@@ -107,6 +116,7 @@ export function applyEvent(state: Snapshot, event: RunEvent): Snapshot {
       ...state,
       stage: event.stage ?? state.stage,
       error: event.error ?? state.error,
+      done: event.type === "error" ? true : state.done,
     };
   return {
     ...state,

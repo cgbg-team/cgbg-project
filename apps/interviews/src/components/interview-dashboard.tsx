@@ -5,6 +5,9 @@ import type { PublicProfile } from "@cgbg/shared/profile";
 import { stageLabels } from "@/lib/types";
 import { InterviewDetail, outcomeLabels } from "./interview-detail";
 import { useInterviewRun } from "./use-interview-run";
+import { CandidateUpload } from "./candidate-upload";
+import { RunProgress } from "./run-progress";
+import type { CandidateInput } from "@/lib/candidate-input";
 
 export function InterviewDashboard({
   profile,
@@ -18,6 +21,9 @@ export function InterviewDashboard({
   const run = useInterviewRun(initialRun);
   const { snapshot } = run;
   const [selected, setSelected] = useState<string>();
+  const [candidate, setCandidate] = useState<CandidateInput | null>();
+  const currentProfile =
+    snapshot.profile ?? candidate?.publicProfile ?? profile;
   const active =
     snapshot.interviews.find((item) => item.job.id === selected) ??
     snapshot.interviews[0];
@@ -35,7 +41,7 @@ export function InterviewDashboard({
         <p className="workspace-label">CAREER WORKSPACE</p>
         <nav aria-label="주 메뉴">
           <span className="nav-item">
-            01 <span>내 프로필 · 샘플</span>
+            01 <span>자료 업로드</span>
           </span>
           <Link href="/" className="nav-item current" aria-current="page">
             02 <span>에이전트 면접</span>
@@ -44,9 +50,9 @@ export function InterviewDashboard({
         </nav>
         <div className="sidebar-note">
           <span className="live-dot" />
-          샘플 워크스페이스
+          나의 커리어 워크스페이스
           <p>
-            가상 구직자 1명 · 샘플 공고 3개
+            내 프로필 · 샘플 공고 3개
             <br />
             Claude 에이전트의 실제 대화
           </p>
@@ -54,8 +60,14 @@ export function InterviewDashboard({
         <div className="profile-mini">
           <div className="avatar">D</div>
           <div>
-            <strong>데모 구직자</strong>
-            <span>프로필 v1 · 확정됨</span>
+            <strong>
+              {snapshot.source === "upload"
+                ? "업로드한 프로필"
+                : "나의 에이전트"}
+            </strong>
+            <span>
+              프로필 v1 · {snapshot.profile ? "면접 진행 기록" : "자료 준비"}
+            </span>
           </div>
         </div>
       </aside>
@@ -88,8 +100,10 @@ export function InterviewDashboard({
             )}
             <button
               className="button primary"
-              disabled={!ready || run.starting || running}
-              onClick={() => void run.start()}
+              disabled={
+                !ready || run.starting || running || candidate === undefined
+              }
+              onClick={() => void run.start(candidate)}
             >
               {run.starting
                 ? "시작하는 중…"
@@ -123,17 +137,26 @@ export function InterviewDashboard({
             {snapshot.error}
           </p>
         )}
+        <CandidateUpload
+          disabled={running || run.starting}
+          onPrepared={setCandidate}
+        />
+        <RunProgress snapshot={snapshot} started={!!run.runId} />
         <section className="candidate-strip" aria-label="면접에 사용할 프로필">
           <div className="candidate-icon" aria-hidden="true">
             ✳
           </div>
           <div>
-            <span className="eyebrow">MY AGENT BRIEF</span>
-            <h2>{profile.headline}</h2>
-            <p>{profile.wants.roleTypes.join(" · ")}</p>
+            <span className="eyebrow">
+              {snapshot.source === "upload" || (!snapshot.profile && candidate)
+                ? "YOUR AGENT BRIEF"
+                : "SAMPLE AGENT BRIEF"}
+            </span>
+            <h2>{currentProfile.headline}</h2>
+            <p>{currentProfile.wants.roleTypes.join(" · ")}</p>
           </div>
           <div className="profile-tags">
-            {profile.skills.slice(0, 3).map((skill) => (
+            {currentProfile.skills.slice(0, 3).map((skill) => (
               <span key={skill.name}>{skill.name}</span>
             ))}
           </div>
@@ -265,7 +288,9 @@ export function InterviewDashboard({
             화면을 닫아도 서버에서 면접을 계속합니다. 같은 브라우저에서 24시간
             동안 기록을 확인할 수 있습니다.
           </span>
-          <span>DEMO · PROFILE V1</span>
+          <span>
+            {snapshot.source === "upload" ? "YOUR PROFILE" : "DEMO"} · V1
+          </span>
         </footer>
       </main>
     </div>
