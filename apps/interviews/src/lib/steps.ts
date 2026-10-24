@@ -7,7 +7,7 @@ import {
   recruiterSchema,
   resultSchema,
 } from "./schemas";
-import { searchJobPool } from "./searchJobs";
+import { searchJobsOnDemand } from "./searchJobs";
 import { assessConditions } from "./job-conditions";
 import type { Job, Message, RunEvent, Stage } from "./types";
 import { validateCandidate, type CandidateInput } from "./candidate-input";
@@ -56,7 +56,7 @@ export async function screen(
   country: string,
 ) {
   "use step";
-  return searchJobPool(keywords, { country, n: 2 });
+  return searchJobsOnDemand(keywords, { country, n: 2 });
 }
 
 export async function recruiterTurn(

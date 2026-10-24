@@ -156,7 +156,7 @@ export function InterviewDashboard({
             </select>
           </label>
           <p>공개 공고 기반 모의 면접입니다. 실제 기업과 연락하지 않습니다.</p>
-          {snapshot.search && <p role="status">{countryLabel(snapshot.search.country)} · 일치 공고 {snapshot.search.matched.toLocaleString()}개 / {snapshot.search.companies.toLocaleString()}개 기업 · 상위 최대 2개 면접</p>}
+          {snapshot.search && <p role="status">{countryLabel(snapshot.search.country)} · 일치 공고 {snapshot.search.matched.toLocaleString()}개 / {snapshot.search.companies.toLocaleString()}개 기업{snapshot.search.live ? ` · 실시간 공고 ${snapshot.search.live.toLocaleString()}개 추가 검색` : ""} · 상위 최대 2개 면접</p>}
         </div>
         <section className="candidate-strip" aria-label="면접에 사용할 프로필">
           <div className="candidate-icon" aria-hidden="true">
