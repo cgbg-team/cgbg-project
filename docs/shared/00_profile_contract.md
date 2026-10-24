@@ -1,6 +1,6 @@
 # 구직자 프로필 데이터 계약 (v1)
 
-상태: 제안. onboarding·interviews 담당자 합의 후 확정한다. 타입과 테이블은 아직 구현하지 않았다.
+상태: v1을 면접 샘플 구현의 기준으로 사용한다. 타입은 `packages/shared/src/profile.ts`에 구현했으며 테이블은 아직 없다. 온보딩의 저장·전달 연결은 담당자와 별도로 맞춘다. 면접 샘플 봉투 형식은 [면접 앱 문서](../interviews/00_overview.md)에 정의한다.
 
 onboarding 앱이 확정한 구직자 프로필을 interviews 앱이 읽는 형식을 정한다. 제품 흐름은 [제품 아이디어](../01_product_idea.md), 앱 책임은 [개발 계획](../plan/20261024_1119_monorepo_plan.md#앱과-데이터의-책임)을 따른다.
 

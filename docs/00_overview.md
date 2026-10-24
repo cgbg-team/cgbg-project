@@ -4,7 +4,7 @@
 
 `cgbg-project`는 Anthropic 해커톤 보일러플레이트에서 시작한 프로젝트다. 선택한 주제는 “AI로 사라질 직업 1,000만 명을 구할 제품”이며, 구직자 에이전트와 채용 에이전트의 사전 면접을 통해 사람 간 면접으로 연결하는 서비스를 구상한다.
 
-제품 방향과 합의한 데모 범위는 [제품 아이디어](01_product_idea.md), 개발 순서는 [모노레포 개발 계획](plan/20261024_1119_monorepo_plan.md)에 정리한다. npm workspaces 아래 [온보딩 앱](onboarding/00_overview.md), [면접 앱](interviews/00_overview.md), Supabase 공유 패키지를 구성했다. 현재는 각 앱의 기본 화면만 있으며 제품 기능은 아직 구현하지 않았다.
+제품 방향과 합의한 데모 범위는 [제품 아이디어](01_product_idea.md), 개발 순서는 [모노레포 개발 계획](plan/20261024_1119_monorepo_plan.md)에 정리한다. npm workspaces 아래 [온보딩 앱](onboarding/00_overview.md), [면접 앱](interviews/00_overview.md), Supabase 공유 패키지를 구성했다. 면접 앱은 가상 프로필로 서버 검색·1:N 면접과 진행 조회를 제공한다. 실제 온보딩 데이터 연결은 별도 작업이다.
 
 ## 확정 기술 스택
 

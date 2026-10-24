@@ -1,6 +1,6 @@
 # cgbg-project
 
-구직자 온보딩과 에이전트 면접을 독립된 Next.js 앱으로 개발하는 npm workspaces 모노레포다. 현재는 두 앱의 기본 화면, 공용 Supabase 클라이언트와 테스트 설정만 제공한다. 온보딩 인터뷰, 면접 엔진, DB 스키마는 아직 구현하지 않았다.
+구직자 온보딩과 에이전트 면접을 독립된 Next.js 앱으로 개발하는 npm workspaces 모노레포다. 면접 앱은 가상 프로필과 공고로 Claude 검색·1:N 면접을 서버에서 실행한다. 실제 온보딩 데이터 연결과 DB 스키마는 아직 없다.
 
 [프로젝트 개요](docs/00_overview.md) · [제품 아이디어](docs/01_product_idea.md) · [개발 계획](docs/plan/20261024_1119_monorepo_plan.md) · [에이전트 규칙](AGENTS.md)
 
@@ -46,7 +46,18 @@ docs/
 
 앱마다 `package.json`, Next.js·TypeScript·Vitest 설정과 `.env.example`이 있다. `@/*` 경로 별칭은 각 앱의 `src/*`를 가리킨다. TypeScript strict 모드와 Server Component 기본 원칙을 유지한다. 앱끼리 소스를 직접 가져오지 않으며, 실제 공통 코드는 shared의 명시적인 export를 사용한다.
 
-공유 타입과 공용 UI는 필요해질 때 추가한다. 현재 도메인 타입이나 UI 패키지는 만들지 않았다.
+프로필 v1 타입은 `@cgbg/shared/profile`에서 제공한다. 필드의 기준은 [프로필 계약](docs/shared/00_profile_contract.md)이다. 공용 UI 패키지는 없다.
+
+## 면접 앱 실행
+
+`apps/interviews/.env.example`을 같은 폴더의 `.env.local`로 복사하고 서버 전용 `ANTHROPIC_API_KEY`, `INTERVIEW_SESSION_SECRET`을 설정한다. 세션 비밀 키는 다음 명령으로 생성한다.
+
+```bash
+node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
+npm run dev:interviews
+```
+
+**면접 시작**을 누르면 최대 2개 기업과 각각 3왕복 대화를 진행한다. 창을 닫아도 서버 작업은 계속되고 같은 브라우저에서 다시 열면 기록을 복원한다. 기본 모델은 `claude-sonnet-4-6`이며 `ANTHROPIC_MODEL`로 변경한다. 키가 없으면 설정 안내를 표시한다. 데이터 형식·API·저장 방식·제약은 [면접 앱 문서](docs/interviews/00_overview.md)를 따른다.
 
 ## Supabase 설정
 
@@ -76,7 +87,7 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=YOUR_PUBLISHABLE_KEY
 | `npm run typecheck` | 두 앱의 Next.js 타입 생성 및 앱·shared·루트 설정 타입 검사 |
 | `npm test` | 앱별 alias·환경을 적용해 모든 유닛 테스트 실행 |
 | `npm run test:watch` | 유닛 테스트 감시 모드 |
-| `npm run test:e2e` | 두 앱 빌드 후 Chromium으로 기본 화면 검사 |
+| `npm run test:e2e` | 두 앱 빌드 후 Chromium으로 기본 화면·서버 면접·재접속 검사 |
 
 특정 앱만 빌드하거나 실행할 수도 있다.
 
@@ -87,7 +98,7 @@ npm run start --workspace=@cgbg/onboarding
 
 면접 앱은 workspace를 `@cgbg/interviews`로 바꾼다. `start`는 해당 앱을 먼저 빌드해야 한다. 개발 포트와 동일하게 온보딩은 3000, 면접은 3001을 사용한다.
 
-최초 E2E 실행 전 `npx playwright install chromium`으로 브라우저를 설치한다. E2E는 전용 프로덕션 서버를 `127.0.0.1:3100`, `127.0.0.1:3101`에 실행하고 종료 시 정리한다. 해당 포트는 비워둔다.
+최초 E2E 실행 전 `npx playwright install chromium`으로 브라우저를 설치한다. E2E는 전용 프로덕션 서버를 `127.0.0.1:3100`, `127.0.0.1:3101`과 테스트용 Claude HTTP 서버를 `4312`에 실행하고 종료 시 정리한다. 해당 포트는 비워둔다. 자동 검사는 테스트용 키를 사용하여 Claude 비용을 발생시키지 않는다.
 
 각 앱은 자기 `.next`를 사용한다. 같은 앱의 dev·build·E2E를 동시에 실행하지 않는다. E2E는 두 앱 모두 빌드하므로 개발 서버를 모두 종료한 뒤 실행한다. 실패한 테스트의 추적 파일은 `test-results/`에 남긴다.
 

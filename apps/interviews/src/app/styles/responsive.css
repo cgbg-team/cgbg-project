@@ -1,0 +1,171 @@
+@media (min-width: 1500px) {
+  .main-content {
+    padding: 0 64px;
+  }
+  .interview-workspace {
+    grid-template-columns: 330px minmax(0, 1fr);
+  }
+}
+@media (max-width: 1100px) {
+  .app-shell {
+    grid-template-columns: 180px minmax(0, 1fr);
+  }
+  .sidebar {
+    padding: 26px 12px 20px;
+  }
+  .main-content {
+    padding: 0 26px;
+  }
+  .profile-tags {
+    display: none;
+  }
+  .interview-workspace {
+    grid-template-columns: 245px minmax(0, 1fr);
+  }
+  .detail {
+    padding: 24px 20px;
+  }
+  .page-heading {
+    align-items: flex-start;
+  }
+  .actions {
+    flex-direction: column-reverse;
+  }
+}
+@media (max-width: 800px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+  .sidebar {
+    position: static;
+    height: auto;
+    padding: 14px 20px;
+    flex-direction: row;
+    align-items: center;
+    gap: 24px;
+    border-bottom: 1px solid var(--line);
+  }
+  .brand {
+    padding: 0;
+    font-size: 25px;
+  }
+  .sidebar nav {
+    margin-left: auto;
+    display: flex;
+  }
+  .nav-item {
+    margin: 0;
+    padding: 7px;
+    font-size: 10px;
+  }
+  .nav-item span:first-child {
+    font-size: 11px;
+  }
+  .workspace-label,
+  .sidebar-note,
+  .profile-mini {
+    display: none;
+  }
+  .main-content {
+    padding: 0 20px;
+  }
+  .page-heading {
+    margin-top: 26px;
+  }
+  .interview-workspace {
+    grid-template-columns: 1fr;
+  }
+  .company-list {
+    display: flex;
+    overflow-x: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    gap: 12px;
+  }
+  .company-card {
+    width: 255px;
+    flex-shrink: 0;
+    margin: 0;
+  }
+  .empty-list {
+    padding: 14px;
+  }
+  .empty-list h3 br,
+  .empty-list p br,
+  .empty-list ol {
+    display: none;
+  }
+  .empty-list h3 {
+    font-size: 18px;
+    margin: 8px 0;
+  }
+  .empty-detail {
+    min-height: 300px;
+  }
+  .metrics > div {
+    padding: 0 13px;
+  }
+  .connection {
+    display: none;
+  }
+  .candidate-strip {
+    padding: 16px;
+  }
+  .candidate-strip h2 {
+    font-size: 13px;
+  }
+  .page-footer {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+@media (max-width: 480px) {
+  .sidebar {
+    gap: 8px;
+  }
+  .nav-item {
+    gap: 6px;
+  }
+  .nav-item > span:last-child {
+    display: none;
+  }
+  .main-content {
+    padding: 0 16px;
+  }
+  .page-heading {
+    gap: 10px;
+  }
+  .button {
+    padding: 10px 12px;
+    font-size: 11px;
+  }
+  .lede {
+    max-width: 190px;
+  }
+  .metrics strong {
+    font-size: 26px;
+  }
+  .metrics small {
+    padding-left: 5px;
+    font-size: 9px;
+  }
+  .metrics span {
+    font-size: 10px;
+  }
+  .candidate-icon {
+    display: none;
+  }
+  .section-heading h2 {
+    font-size: 13px;
+  }
+  .section-heading > span {
+    font-size: 10px;
+  }
+  .detail-header {
+    flex-direction: column;
+  }
+  .excluded p {
+    flex-direction: column;
+    gap: 5px;
+  }
+}

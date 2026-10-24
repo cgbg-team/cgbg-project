@@ -8,6 +8,8 @@ const eslintConfig = defineConfig([
   { settings: { next: { rootDir: ["apps/onboarding/", "apps/interviews/"] } } },
   globalIgnores([
     "**/.next/**",
+    "**/.swc/**",
+    "**/.well-known/workflow/**",
     "**/out/**",
     "**/build/**",
     "**/next-env.d.ts",

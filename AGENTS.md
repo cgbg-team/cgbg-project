@@ -5,6 +5,8 @@
 - npm workspaces 모노레포다. 두 Next.js App Router 앱과 공유 패키지를 TypeScript, Tailwind CSS, ESLint로 관리한다.
 - `apps/onboarding/src/app/`: 구직자 온보딩 앱의 페이지, 레이아웃, 전역 스타일과 화면 유닛 테스트.
 - `apps/interviews/src/app/`: 에이전트 면접 앱의 페이지, 레이아웃, 전역 스타일과 화면 유닛 테스트.
+- 면접 앱의 `src/workflows/`, `src/lib/steps.ts`: Workflow 실행과 Claude 호출. `src/data/demo/`는 가상 자료이며 실제 개인정보를 커밋하지 않는다.
+- `packages/shared/src/profile.ts`: 프로필 계약 v1 타입. 필드 변경 시 계약 문서도 갱신한다.
 - `packages/shared/src/supabase/`: 브라우저·서버 클라이언트, 환경변수 검증과 테스트.
 - `tests/e2e/`: Playwright 시나리오. 현재 검증 브라우저는 Chromium이다.
 - `docs/`: 프로젝트·제품 개요, 계획, 행사 참고 자료. 앱별 문서는 `docs/onboarding/`, `docs/interviews/`에 둔다.
@@ -37,6 +39,7 @@
 - E2E는 두 앱의 프로덕션 빌드와 전용 서버를 실행한다. 같은 앱의 빌드·개발 서버·E2E를 동시에 실행하지 않는다. 서로 다른 두 앱의 개발 서버는 함께 실행할 수 있다.
 - 새 기능이나 오류 수정에는 핵심 동작을 검증하는 최소 테스트를 추가한다. 단순 문서·스타일 변경에는 불필요한 테스트를 만들지 않는다.
 - 통과하지 않은 검사와 실행하지 못한 검사는 최종 보고에서 구분한다.
+- 면접 E2E는 테스트용 Claude 서버를 사용한다. Workflow 생성 소스와 실행 데이터는 Git·ESLint 검사 대상에서 제외한다.
 
 ## Commit Message & PR Guidelines
 
