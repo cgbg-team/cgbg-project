@@ -22,7 +22,8 @@ const server = http.createServer(async (request, response) => {
   const { context } = JSON.parse(input.messages[0].content);
   let output;
   if (fields.keywords) output = { keywords: [{ term: "software engineer", source: "wants" }] };
-  else if (fields.outcome) output = { outcome: "recommended", reasons: ["공개 경력의 자동화 경험과 공고가 일치합니다."], advice: [] };
+  else if (fields.outcome) output = { outcome: "recommended", reasons: ["공개 경력의 자동화 경험과 공고가 일치합니다."], advice: ["면접 전에 공고의 근무 조건을 확인하세요."] };
+  else if (fields.advice) output = { advice: ["면접 전에 공고의 근무 조건을 확인하세요."] };
   else if (fields.needsUser) output = { message: `${context.profile.headline}: 공개 자료에 근거해 경험을 설명합니다. 미기재 근무 조건은 확인이 필요합니다.`, needsUser: true, question: "근무 조건을 확인해주세요.", done: true };
   else output = { message: "관련 경험과 공고 원문에 기재된 조건에 대한 의견을 알려주세요.", stage: context.job.salary ? "salary" : "salary_check", done: false };
   if (body.includes('"floor"') || (context.candidateSummary && body.includes("dealbreakers"))) {
