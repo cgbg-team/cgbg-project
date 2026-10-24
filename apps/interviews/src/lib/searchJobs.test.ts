@@ -43,6 +43,10 @@ test("풀에 제목 일치 공고가 모자라면 실시간 공개 API 공고로
     expect(result.selected[0].job).toMatchObject({ id: "LJ1", company: "Bean Co", country: "AU", salary: "AUD 70000–90000", text: "Lead our coffee community" });
     expect(result.search.live).toBe(1);
     expect(fetchMock.mock.calls.some(([url]) => String(url).includes("geo=australia"))).toBe(true);
+    // 성공한 실시간 결과는 캐시해 다시 부르지 않고, 실패한 호출은 캐시하지 않는다.
+    await searchJobsOnDemand([{ term: "coffee community", source: "wants" }], { country: "AU" });
+    expect(fetchMock.mock.calls.filter(([url]) => String(url).includes("jobicy")).length).toBe(1);
+    expect(fetchMock.mock.calls.filter(([url]) => String(url).includes("remotive")).length).toBe(2);
     const pooled = await searchJobsOnDemand([{ term: "software engineer", source: "wants" }], { country: "AU", n: 2 });
     expect(pooled.search.live).toBe(0);
   } finally { vi.unstubAllEnvs(); vi.unstubAllGlobals(); }
