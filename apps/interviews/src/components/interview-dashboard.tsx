@@ -5,7 +5,8 @@ import type { PublicProfile } from "@cgbg/shared/profile";
 import { stageLabels } from "@/lib/types";
 import { InterviewDetail, outcomeLabels } from "./interview-detail";
 import { useInterviewRun } from "./use-interview-run";
-import { CandidateUpload } from "./candidate-upload";
+import { OwnOnboarding } from "./own-onboarding";
+import { PersonaChoice, type PersonaMode } from "./persona-choice";
 import { RunProgress } from "./run-progress";
 import type { CandidateInput } from "@/lib/candidate-input";
 import { countryLabel, jobSummary } from "@/lib/job-countries";
@@ -22,10 +23,13 @@ export function InterviewDashboard({
   const run = useInterviewRun(initialRun);
   const { snapshot } = run;
   const [selected, setSelected] = useState<string>();
+  // shortcut: 면접 시작 전 프로필은 메모리에만 유지하며, 입력 복원이 필요해지면 임시 저장을 추가한다.
   const [candidate, setCandidate] = useState<CandidateInput | null>();
+  const [preparingOwn, setPreparingOwn] = useState(false);
+  const [mode, setMode] = useState<PersonaMode | null>(initialRun ? "own" : null);
   const [country, setCountry] = useState("");
   const currentProfile =
-    snapshot.profile ?? candidate?.publicProfile ?? profile;
+    candidate?.publicProfile ?? snapshot.profile ?? profile;
   const active =
     snapshot.interviews.find((item) => item.job.id === selected) ??
     snapshot.interviews[0];
@@ -34,6 +38,20 @@ export function InterviewDashboard({
     (item) => item.result?.outcome === "recommended",
   ).length;
   const running = !!run.runId && !snapshot.done && !snapshot.error;
+  if (!mode) return <PersonaChoice onSelect={(choice) => {
+    setCandidate(choice === "sample" ? null : undefined);
+    setPreparingOwn(choice === "own");
+    setMode(choice);
+  }} />;
+  if (mode === "own" && preparingOwn) return <OwnOnboarding
+    onBack={() => setMode(null)}
+    onPrepared={(input) => {
+      setCandidate(input);
+      setPreparingOwn(false);
+      const code = input.publicProfile.location.country === "GB" ? "UK" : input.publicProfile.location.country;
+      setCountry(jobSummary.countries.some(item => item.code === code) ? code : "");
+    }}
+  />;
   return (
     <div className="app-shell">
       <aside className="sidebar">
@@ -92,6 +110,7 @@ export function InterviewDashboard({
             </p>
           </div>
           <div className="actions">
+            {!running && !run.starting && <button className="button secondary" onClick={() => setMode(null)}>페르소나 다시 선택</button>}
             {running && (
               <button
                 className="button secondary"
@@ -139,11 +158,7 @@ export function InterviewDashboard({
             {snapshot.error}
           </p>
         )}
-        <CandidateUpload
-          sampleProfile={profile}
-          disabled={running || run.starting}
-          onPrepared={setCandidate}
-        />
+        {mode === "own" ? <section className="notice" aria-label="선택한 페르소나"><strong>내 프로필로 체험합니다.</strong><p>프로필과 검색 조건을 확인한 뒤 면접 시작을 눌러주세요.</p></section> : <section className="notice" aria-label="선택한 페르소나"><strong>백지오 페르소나로 체험합니다.</strong><p>{profile.headline}</p><p>아래 검색 조건을 확인한 뒤 면접 시작을 눌러주세요.</p></section>}
         <RunProgress snapshot={snapshot} started={!!run.runId} />
         <div className="job-search-controls">
           <label>
@@ -164,7 +179,7 @@ export function InterviewDashboard({
           </div>
           <div>
             <span className="eyebrow">
-              {snapshot.source === "upload" || (!snapshot.profile && candidate)
+              {snapshot.source === "upload" || candidate
                 ? "YOUR AGENT BRIEF"
                 : "SAMPLE AGENT BRIEF"}
             </span>

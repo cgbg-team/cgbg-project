@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { demoExtra, demoResume } from "@/lib/onboarding/demo";
-import { messages } from "@/lib/onboarding/messages";
-import { questionIds, questions, type Locale } from "@/lib/onboarding/questions";
-import type { CandidateFolder } from "@/lib/onboarding/build";
+import { demoExtra, demoResume } from "./demo";
+import { messages } from "./messages";
+import { questionIds, questions, type Locale } from "./questions";
+import type { CandidateFolder } from "./build";
 import { AgentMaterials } from "./agent-materials";
 import { ProfileResult } from "./profile-result";
 
@@ -12,7 +12,7 @@ type Result = CandidateFolder & { mock: boolean };
 
 const input = "w-full rounded border border-neutral-300 bg-white px-3 py-2";
 
-export function OnboardingForm({ locale }: { locale: Locale }) {
+export function OnboardingForm({ locale, onContinue }: { locale: Locale; onContinue?: (folder: CandidateFolder) => void }) {
   const [mode, setMode] = useState<"agent" | "upload">("agent");
   const [agentExport, setAgentExport] = useState("");
   const [resumeText, setResumeText] = useState("");
@@ -54,7 +54,7 @@ export function OnboardingForm({ locale }: { locale: Locale }) {
     }
   }
 
-  if (result) return <ProfileResult result={result} t={t} onRestart={() => setResult(null)} />;
+  if (result) return <ProfileResult result={result} t={t} onRestart={() => setResult(null)} onContinue={onContinue} />;
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-8">

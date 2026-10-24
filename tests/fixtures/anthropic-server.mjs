@@ -1,4 +1,5 @@
 import http from "node:http";
+import { demoExtraction } from "../../packages/shared/src/onboarding/demo.ts";
 
 // 자동 검사 전용 서버다. 실제 앱에는 모의 응답 경로가 없다.
 const server = http.createServer(async (request, response) => {
@@ -7,6 +8,11 @@ const server = http.createServer(async (request, response) => {
   let body = "";
   for await (const chunk of request) body += chunk;
   const input = JSON.parse(body);
+  if (input.output_config?.format?.schema?.properties?.headline) {
+    response.writeHead(200, { "Content-Type": "application/json" });
+    response.end(JSON.stringify({ id: "msg_profile", type: "message", role: "assistant", model: input.model, content: [{ type: "text", text: JSON.stringify(demoExtraction) }], stop_reason: "end_turn", stop_sequence: null, usage: { input_tokens: 20, output_tokens: 20 } }));
+    return;
+  }
   const fields = input.tools[0].input_schema.properties;
   const { context } = JSON.parse(input.messages[0].content);
   let output;

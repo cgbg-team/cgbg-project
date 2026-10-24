@@ -7,6 +7,7 @@
 - `apps/interviews/src/app/`: 에이전트 면접 앱의 페이지, 레이아웃, 전역 스타일과 화면 유닛 테스트.
 - 면접 앱의 `src/workflows/`, `src/lib/steps.ts`: Workflow 실행과 Claude 호출. 샘플 구직자는 루트 `data/demo/candidates/onboarding-example/`을 공통으로 읽는다. 새 개인정보는 요청 없이 커밋하지 않는다.
 - 면접 공고 풀은 `apps/interviews/src/data/jobs/`에 있다. 전체 풀은 검색 step에서만 읽고 선택된 최대 2개 공고와 검색 통계만 Workflow에 반환한다.
+- `packages/shared/src/onboarding/`: 두 앱이 함께 사용하는 온보딩 화면, 프로필 생성과 파싱 API. 면접 앱은 생성된 프로필을 재업로드 없이 면접 입력으로 연결한다.
 - `packages/shared/src/profile.ts`: 프로필 계약 v1 타입. 필드 변경 시 계약 문서도 갱신한다.
 - `packages/shared/src/supabase/`: 브라우저·서버 클라이언트, 환경변수 검증과 테스트.
 - `tests/e2e/`: Playwright 시나리오. 현재 검증 브라우저는 Chromium이다.

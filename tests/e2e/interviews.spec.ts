@@ -5,8 +5,12 @@ import { cp, readFile, writeFile } from "node:fs/promises";
 test("자료 폴더로 시작한 1:N 면접은 화면을 닫아도 완료되고 기록을 복원한다", async ({ page, context, playwright }, testInfo) => {
   test.setTimeout(90_000);
   await page.goto("http://127.0.0.1:3101");
-  await page.getByRole("button", { name: "샘플로 체험하기" }).click();
-  await expect(page.getByRole("status").filter({ hasText: "최신 온보딩 예시 프로필" })).toContainText("Multimodal AI Research Engineer");
+  await page.getByRole("button", { name: "백지오 페르소나로 체험하기" }).click();
+  await expect(page.getByRole("region", { name: "선택한 페르소나" })).toContainText("Multimodal AI Research Engineer");
+  await page.getByRole("button", { name: "페르소나 다시 선택" }).click();
+  await page.getByRole("button", { name: "내 페르소나로 체험하기" }).click();
+  await expect(page.getByRole("heading", { name: "구직자 온보딩" })).toBeVisible();
+  await page.getByText("이미 만든 프로필 폴더가 있나요?").click();
   const folder = testInfo.outputPath("candidate");
   await cp(path.resolve("data/demo/candidates/onboarding-example"), folder, { recursive: true });
   const file = path.join(folder, "index.json");
@@ -19,6 +23,8 @@ test("자료 폴더로 시작한 1:N 면접은 화면을 닫아도 완료되고 
   await page.getByLabel("구직자 자료 폴더 선택").setInputFiles(folder);
   await expect(page.getByRole("heading", { level: 3, name: "업로드한 자동화 엔지니어" })).toBeVisible();
   await page.getByRole("checkbox", { name: "프로필과 희망 조건을 확인했으며 이 자료로 면접을 시작합니다." }).check();
+  await page.getByRole("button", { name: "이 프로필로 면접 준비하기" }).click();
+  await expect(page.getByRole("heading", { level: 2, name: "업로드한 자동화 엔지니어" })).toBeVisible();
   await page.getByLabel("검색 국가").selectOption("AU");
   await page.getByRole("button", { name: "면접 시작 ↗" }).click();
   await expect(page).toHaveURL(/run=wrun_/);
@@ -50,9 +56,41 @@ test("자료 폴더로 시작한 1:N 면접은 화면을 닫아도 완료되고 
   await restored.setViewportSize({ width: 390, height: 844 });
   expect(await restored.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   await restored.screenshot({ path: "test-results/interviews-mobile.png", fullPage: true });
+  await restored.getByRole("button", { name: "페르소나 다시 선택" }).click();
+  await restored.getByRole("button", { name: "내 페르소나로 체험하기" }).click();
+  await expect(restored.getByRole("heading", { name: "구직자 온보딩" })).toBeVisible();
 });
 
 test("면접 실행 API는 외부 출처의 시작 요청을 거부한다", async ({ request }) => {
   const response = await request.post("http://127.0.0.1:3101/api/runs", { headers: { Origin: "https://example.com" } });
   expect(response.status()).toBe(403);
+});
+
+
+test("내 페르소나는 온보딩에서 만든 프로필로 재업로드 없이 면접을 시작한다", async ({ page }) => {
+  test.setTimeout(90_000);
+  await page.setExtraHTTPHeaders({ "x-forwarded-for": "192.0.2.2" });
+  await page.goto("http://127.0.0.1:3101");
+  await page.getByRole("button", { name: "내 페르소나로 체험하기" }).click();
+  await expect(page.getByRole("heading", { name: "구직자 온보딩" })).toBeVisible();
+  await page.getByRole("tab", { name: "자료 직접 올리기" }).click();
+  await page.getByLabel("또는 이력서 텍스트 붙여넣기").fill("Radiologist with experience in medical imaging and automation.");
+  await page.getByRole("radio", { name: "전혀 다른 업계에 도전하고 싶어요", exact: true }).check();
+  await page.getByRole("radio", { name: "성장 기회가 좋다면 조정할 수 있어요", exact: true }).check();
+  await page.getByRole("radio", { name: "흥미와 성장 가능성", exact: true }).check();
+  await page.getByLabel("희망 근무 국가").fill("AU");
+  await page.getByRole("button", { name: "프로필 만들기", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "프로필이 준비됐어요" })).toBeVisible({ timeout: 30_000 });
+  await page.getByRole("button", { name: "이 프로필로 면접 준비하기" }).click();
+  await expect(page.getByRole("heading", { name: "에이전트 면접", exact: true })).toBeVisible();
+  await expect(page.getByLabel("검색 국가")).toHaveValue("AU");
+  const requestPromise = page.waitForRequest(request => request.url().includes("/api/runs?") && request.method() === "POST");
+  await page.getByRole("button", { name: "면접 시작 ↗" }).click();
+  const input = (await requestPromise).postDataJSON();
+  expect(input.publicProfile.candidateId).toMatch(/^cand_/);
+  expect(input.privateProfile.candidateId).toBe(input.publicProfile.candidateId);
+  expect(input.docs.map((doc: { path: string }) => doc.path)).toEqual(["public/experience.md", "public/strengths.md"]);
+  expect(input.privateProfile.salary.floor).toBe(110000);
+  await expect(page).toHaveURL(/run=wrun_/);
+  await expect(page.getByRole("heading", { level: 2, name: input.publicProfile.headline, exact: true })).toBeVisible();
 });

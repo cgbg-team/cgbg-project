@@ -1,6 +1,5 @@
 "use client";
 import { useState, type ChangeEvent } from "react";
-import type { PublicProfile } from "@cgbg/shared/profile";
 import {
   fileLimit,
   inputError,
@@ -12,17 +11,14 @@ import {
 export function CandidateUpload({
   disabled,
   onPrepared,
-  sampleProfile,
 }: {
   disabled: boolean;
   onPrepared: (candidate: CandidateInput | null | undefined) => void;
-  sampleProfile: PublicProfile;
 }) {
   const [candidate, setCandidate] = useState<CandidateInput>();
   const [folder, setFolder] = useState("");
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [demo, setDemo] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const [error, setError] = useState<string>();
   async function selectFiles(event: ChangeEvent<HTMLInputElement>) {
@@ -31,7 +27,6 @@ export function CandidateUpload({
     if (!files.length) return;
     setLoading(true);
     setCandidate(undefined);
-    setDemo(false);
     setConfirmed(false);
     setError(undefined);
     onPrepared(undefined);
@@ -57,13 +52,6 @@ export function CandidateUpload({
       setLoading(false);
     }
   }
-  function useDemo() {
-    setDemo(true);
-    setCandidate(undefined);
-    setError(undefined);
-    setConfirmed(false);
-    onPrepared(null);
-  }
   return (
     <section className="upload-panel" aria-labelledby="upload-heading">
       <div className="upload-intro">
@@ -88,7 +76,7 @@ export function CandidateUpload({
             함께 준비해주세요.
           </p>
           <p>
-            PDF·원본 이력서의 프로필 변환은 온보딩 앱에서 진행합니다. 여기서는
+            PDF·원본 이력서의 프로필 변환은 위 온보딩 화면에서 진행합니다. 여기서는
             정리된 프로필 v1 자료를 사용합니다.
           </p>
         </details>
@@ -121,30 +109,13 @@ export function CandidateUpload({
           <span>
             {candidate
               ? `${count}개 파일 읽기 완료`
-              : demo
-                ? "샘플 프로필이 준비되었습니다"
-                : "준비된 자료가 아직 없나요?"}
+              : "온보딩에서 내려받은 프로필 폴더를 준비해주세요."}
           </span>
-          <button
-            className="text-button"
-            type="button"
-            disabled={disabled || loading}
-            onClick={useDemo}
-          >
-            샘플로 체험하기
-          </button>
         </div>
         {error && (
           <p role="alert" className="upload-error">
             {error}
           </p>
-        )}
-        {demo && (
-          <div className="upload-feedback" role="status">
-            <strong>{sampleProfile.headline}</strong>
-            <p>{sampleProfile.wants.roleTypes.join(" · ")}</p>
-            <p>최신 온보딩 예시 프로필과 실제 공고 풀로 면접을 진행합니다.</p>
-          </div>
         )}
         {candidate && (
           <div className="upload-preview">

@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { agentPrompt } from "@/lib/onboarding/agent-export";
-import { demoAgentExport } from "@/lib/onboarding/demo";
-import type { Messages } from "@/lib/onboarding/messages";
-import type { Locale } from "@/lib/onboarding/questions";
+import { agentPrompt } from "./agent-export";
+import { demoAgentExport } from "./demo";
+import type { Messages } from "./messages";
+import type { Locale } from "./questions";
 
 type Props = {
   locale: Locale;
