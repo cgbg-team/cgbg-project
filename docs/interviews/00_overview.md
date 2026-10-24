@@ -47,7 +47,7 @@ private/interview.md
 
 `src/lib/searchJobs.ts`는 검색 step 안에서만 압축 풀을 읽고 검증해 프로세스 메모리에 캐시한다. 기본 경로는 앱 cwd 아래 `src/data/jobs/jobs_pool.json.gz`이며 서버 `JOBS_POOL_PATH`로 변경한다. Vercel 함수 추적에 파일을 포함했다. 전체 풀과 미선정 목록은 Workflow 입력·출력에 직렬화하지 않는다. 화면에는 `summary.json`의 국가별 개수만 포함한다. 풀 교체 시 요약도 함께 갱신한다.
 
-풀에서 제목까지 일치하는 공고가 요청 수보다 적으면 `src/lib/liveJobs.ts`가 로그인 없는 공개 API(Jobicy·Remotive 원격 공고, 국가 선택 시 해당 국가·전 세계 지원 가능 공고)를 호출당 5초 제한으로 조회해 풀과 함께 같은 규칙으로 고른다. 성공한 결과는 검색어·국가별로 30분간 서버 메모리에 캐시하고, 실패한 호출은 캐시하지 않으며 풀 결과만 쓴다. 출처는 `jobicy (live)`·`remotive (live)`로 표시하고 실시간 조회 건수를 검색 통계 `live`에 남긴다. LinkedIn 게스트 검색은 429 차단 이력이 있어 쓰지 않는다.
+풀에서 제목까지 일치하는 공고가 요청 수보다 적으면 `src/lib/liveJobs.ts`가 로그인 없는 공개 API(Jobicy·Remotive 원격 공고, 국가 선택 시 그 국가가 명시된 공고만)를 호출당 5초 제한으로 조회해 풀과 함께 같은 규칙으로 고른다. 성공한 결과는 검색어·국가별로 30분간 서버 메모리에, 12시간 동안 Supabase `job_search_cache`(마이그레이션 `20261024160000_job_search_cache.sql`)에 캐시한다. 테이블은 공개 키로 읽고 쓰므로 읽을 때 `jobSchema`와 출처 도메인을 다시 검증한다. 테이블이나 환경변수가 없거나 실패한 호출은 캐시하지 않고 넘어가며 풀 결과만 쓴다. 시연 전 `node apps/interviews/scripts/prewarm-live-jobs.mjs`(Supabase 환경변수 필요)로 예상 검색어 결과를 미리 채운다. 출처는 `jobicy (live)`·`remotive (live)`로 표시하고 실시간 조회 건수를 검색 통계 `live`에 남긴다. LinkedIn 게스트 검색은 429 차단 이력이 있어 쓰지 않는다.
 
 `src/data/jobs/benchmarks.json`은 `node apps/interviews/scripts/build-benchmarks.mjs`로 미리 만든 참고값이다. 국가별 빅맥 가격·1인당 GDP(The Economist Big Mac index 최신분, 유로존 국가는 Euro area 값)와 풀 공고에 적힌 연봉 범위의 중간값을 국가·직무·연차별 USD 연봉 p25/중앙값/p75로 담는다. 같은 회사·같은 연봉 문구는 한 건으로 세고 표본 3건 미만 그룹은 뺀다. 표본이 대부분 미국 테크 기업이라 시장 평균으로 표시하지 않는다. `src/lib/benchmarks.ts`의 `countryCost`·`salaryBenchmark`로 조회하며, 직무·연차 분류 규칙은 JSON의 `rules`를 따른다. 풀을 바꾸면 스크립트를 다시 실행한다.
 
