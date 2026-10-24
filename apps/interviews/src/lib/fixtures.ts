@@ -1,12 +1,7 @@
 import "server-only";
 import { readFile, realpath } from "node:fs/promises";
 import path from "node:path";
-import { z } from "zod";
 import candidate from "../data/demo/candidate/index.json";
-import orbit from "../data/demo/jobs/orbit/index.json";
-import relay from "../data/demo/jobs/relay/index.json";
-import folio from "../data/demo/jobs/folio/index.json";
-import { jobSchema } from "./schemas";
 import { candidateManifestSchema, validateCandidate } from "./candidate-input";
 
 export async function loadDemoCandidate() {
@@ -25,10 +20,3 @@ export async function loadDemoCandidate() {
   return validateCandidate({ ...data, docs });
 }
 
-export function loadDemoJobs() {
-  return z
-    .array(jobSchema)
-    .max(10)
-    .refine((jobs) => new Set(jobs.map((job) => job.id)).size === jobs.length)
-    .parse([orbit, relay, folio]);
-}

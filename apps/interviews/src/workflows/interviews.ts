@@ -18,7 +18,7 @@ async function interview(input: Awaited<ReturnType<typeof prepare>>, job: Job) {
     for (const stage of [
       "experience",
       "conditions",
-      "salary",
+      job.salary || job.salaryText ? "salary" : "salary_check",
     ] satisfies Stage[]) {
       await publish({ type: "stage", jobId: job.id, stage });
       const recruiter = await recruiterTurn(input, job, messages, stage);
@@ -67,6 +67,7 @@ async function interview(input: Awaited<ReturnType<typeof prepare>>, job: Job) {
 
 export async function interviewWorkflow(
   candidate: CandidateInput | null = null,
+  country = "",
 ) {
   "use workflow";
   try {
@@ -80,8 +81,8 @@ export async function interviewWorkflow(
     const { keywords } = await extract(input);
     await publish({ type: "keywords", keywords });
     await publish({ type: "stage", stage: "screening" });
-    const { selected, excluded } = await screen(input, keywords);
-    await publish({ type: "screened", selected, excluded });
+    const { selected, search } = await screen(keywords, country);
+    await publish({ type: "screened", selected, search });
     await Promise.all(selected.map(({ job }) => interview(input, job)));
     await publish({ type: "done" });
   } catch {

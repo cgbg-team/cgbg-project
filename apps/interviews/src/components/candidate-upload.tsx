@@ -137,7 +137,7 @@ export function CandidateUpload({
         )}
         {demo && (
           <p className="upload-feedback" role="status">
-            가상 구직자와 샘플 공고 3개로 면접을 진행합니다.
+            가상 구직자와 실제 공고 풀로 면접을 진행합니다.
           </p>
         )}
         {candidate && (

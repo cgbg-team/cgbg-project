@@ -8,6 +8,7 @@ import { useInterviewRun } from "./use-interview-run";
 import { CandidateUpload } from "./candidate-upload";
 import { RunProgress } from "./run-progress";
 import type { CandidateInput } from "@/lib/candidate-input";
+import { countryLabel, jobSummary } from "@/lib/job-countries";
 
 export function InterviewDashboard({
   profile,
@@ -22,6 +23,7 @@ export function InterviewDashboard({
   const { snapshot } = run;
   const [selected, setSelected] = useState<string>();
   const [candidate, setCandidate] = useState<CandidateInput | null>();
+  const [country, setCountry] = useState("");
   const currentProfile =
     snapshot.profile ?? candidate?.publicProfile ?? profile;
   const active =
@@ -52,7 +54,7 @@ export function InterviewDashboard({
           <span className="live-dot" />
           나의 커리어 워크스페이스
           <p>
-            내 프로필 · 샘플 공고 3개
+            내 프로필 · 실제 공고 {jobSummary.total.toLocaleString()}개
             <br />
             Claude 에이전트의 실제 대화
           </p>
@@ -103,7 +105,7 @@ export function InterviewDashboard({
               disabled={
                 !ready || run.starting || running || candidate === undefined
               }
-              onClick={() => void run.start(candidate)}
+              onClick={() => void run.start(candidate, country)}
             >
               {run.starting
                 ? "시작하는 중…"
@@ -142,6 +144,19 @@ export function InterviewDashboard({
           onPrepared={setCandidate}
         />
         <RunProgress snapshot={snapshot} started={!!run.runId} />
+        <div className="job-search-controls">
+          <label>
+            검색 국가{" "}
+            <select value={country} onChange={(event) => setCountry(event.target.value)} disabled={running || run.starting}>
+              <option value="">전체 국가 ({jobSummary.total.toLocaleString()})</option>
+              {jobSummary.countries.map(({code, count}) => (
+                <option value={code} key={code}>{countryLabel(code)} ({count.toLocaleString()})</option>
+              ))}
+            </select>
+          </label>
+          <p>공개 공고 기반 모의 면접입니다. 실제 기업과 연락하지 않습니다.</p>
+          {snapshot.search && <p role="status">{countryLabel(snapshot.search.country)} · 일치 공고 {snapshot.search.matched.toLocaleString()}개 / {snapshot.search.companies.toLocaleString()}개 기업 · 상위 최대 2개 면접</p>}
+        </div>
         <section className="candidate-strip" aria-label="면접에 사용할 프로필">
           <div className="candidate-icon" aria-hidden="true">
             ✳
@@ -165,7 +180,7 @@ export function InterviewDashboard({
           <div>
             <span>검색 대상</span>
             <strong>
-              3<small>개 공고</small>
+              {(snapshot.search?.countryTotal ?? (country ? jobSummary.countries.find((item) => item.code === country)?.count ?? 0 : jobSummary.total)).toLocaleString()}<small>개 공고</small>
             </strong>
           </div>
           <div>

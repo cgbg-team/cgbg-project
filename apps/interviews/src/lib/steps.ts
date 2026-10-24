@@ -1,13 +1,14 @@
 import { getWritable } from "workflow";
 import { askAgent, candidateContext, recruiterContext } from "./agents";
-import { loadDemoCandidate, loadDemoJobs } from "./fixtures";
+import { loadDemoCandidate } from "./fixtures";
 import {
   candidateSchema,
   keywordSchema,
   recruiterSchema,
   resultSchema,
 } from "./schemas";
-import { screenJobs } from "./screening";
+import { searchJobPool } from "./searchJobs";
+import { assessConditions } from "./job-conditions";
 import type { Job, Message, RunEvent, Stage } from "./types";
 import { validateCandidate, type CandidateInput } from "./candidate-input";
 
@@ -17,7 +18,6 @@ export async function prepare(candidate: CandidateInput | null = null) {
     candidate: candidate
       ? validateCandidate(candidate)
       : await loadDemoCandidate(),
-    jobs: loadDemoJobs(),
   };
 }
 type Input = Awaited<ReturnType<typeof prepare>>;
@@ -52,11 +52,11 @@ export async function extract(input: Input) {
 }
 
 export async function screen(
-  input: Input,
   keywords: Awaited<ReturnType<typeof extract>>["keywords"],
+  country: string,
 ) {
   "use step";
-  return screenJobs(input.jobs, keywords);
+  return searchJobPool(keywords, { country, n: 2 });
 }
 
 export async function recruiterTurn(
@@ -68,7 +68,7 @@ export async function recruiterTurn(
   "use step";
   return askAgent(
     recruiterSchema,
-    `이 공고의 채용 에이전트다. 현재 단계는 ${stage}다. 경험, 근무 조건, 연봉 순서로 한 번에 질문 하나를 하라. 연봉 단계에는 공고의 연간 범위와 통화를 제시하라. 구직자에게 비공개 하한을 묻지 마라.`,
+    `공개 공고를 바탕으로 면접을 모의 진행하는 에이전트다. 실제 회사의 대표자나 채용 담당자가 아니다. 현재 단계는 ${stage}다. 경험, 근무 조건, 연봉 순서로 질문 하나를 하라. salaryText는 연봉 원문이며 통화·주기를 추정하지 마라. salary_check 단계에는 연봉 미기재 사실을 알리고 추가로 확인할 조건을 정리하라. remote·weeklyHours·salary가 null이면 미확인이다. JD에 명시되지 않은 조건이나 협상 권한·수락을 만들어내지 마라. 구직자에게 비공개 하한을 묻지 마라.`,
     recruiterContext(input.candidate.publicProfile, input.candidate.docs, job),
     messages,
   );
@@ -107,26 +107,7 @@ export async function summarize(
     recruiterContext(input.candidate.publicProfile, input.candidate.docs, job),
     messages,
   );
-  const salary = input.candidate.privateProfile.salary;
-  if (job.salary.currency !== salary.currency)
-    return {
-      outcome: "hold" as const,
-      reasons: ["연봉 통화가 달라 구직자의 확인이 필요합니다."],
-    };
-  if (job.salary.max < salary.floor)
-    return {
-      outcome: "mismatch" as const,
-      reasons: ["공고의 연봉 범위가 구직자의 수락 조건과 맞지 않습니다."],
-    };
-  if (needsUser)
-    return {
-      outcome: "hold" as const,
-      reasons: [
-        "구직자에게 추가로 확인할 조건이 있습니다.",
-        ...result.reasons.slice(0, 2),
-      ],
-    };
-  return result;
+  return assessConditions(result, job, input.candidate.privateProfile.salary, needsUser);
 }
 
 // 외부 호출의 자동 재시도로 해커톤 데모 비용이 늘어나지 않도록 한다.

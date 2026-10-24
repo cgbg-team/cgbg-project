@@ -1,4 +1,5 @@
 import { stageLabels, type Interview } from "@/lib/types";
+import { countryLabel } from "@/lib/job-countries";
 
 export const outcomeLabels = {
   recommended: "대면 면접 추천",
@@ -43,12 +44,13 @@ export function InterviewDetail({ interview }: { interview?: Interview }) {
         </span>
       </header>
       <div className="job-conditions">
-        <span>{job.remote ? "원격 근무 가능" : "사무실 근무"}</span>
-        <span>주 {job.weeklyHours}시간</span>
+        {job.country && <span>{countryLabel(job.country)} · {job.location || "지역 미기재"}</span>}
+        <span>{job.remote == null ? "근무 방식 미확인" : job.remote ? "원격 근무 가능" : "사무실 근무"}</span>
+        <span>{job.weeklyHours == null ? "근무시간 미확인" : `주 ${job.weeklyHours}시간`}</span>
         <span>
-          {job.salary.currency} {job.salary.min.toLocaleString()}–
-          {job.salary.max.toLocaleString()} / 년
+          {job.salaryText || (job.salary ? `${job.salary.currency} ${job.salary.min.toLocaleString()}–${job.salary.max.toLocaleString()} / 년` : "연봉 미기재")}
         </span>
+        {job.url && <a href={job.url} target="_blank" rel="noopener noreferrer">{job.source} · 공고 원문 ↗</a>}
       </div>
       <div
         className="transcript"

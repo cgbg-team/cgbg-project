@@ -8,6 +8,7 @@ import {
   publicProfileSchema,
 } from "./schemas";
 import { screenJobs } from "./screening";
+import { assessConditions } from "./job-conditions";
 import { applyEvent, emptySnapshot } from "./types";
 import candidate from "../data/demo/candidate/index.json";
 import orbit from "../data/demo/jobs/orbit/index.json";
@@ -58,10 +59,26 @@ test("실제 검색어 일치 수로 상위 2개만 선택하고 무관한 공�
     { term: "SQL", source: "skills" },
   ]);
   expect(result.selected.map(({ job }) => job.id)).toEqual(["orbit", "relay"]);
-  expect(result.excluded.map(({ job }) => job.id)).toContain("folio");
+  expect(result.search).toMatchObject({ total: 3, matched: 2, companies: 2 });
   expect(
     screenJobs(jobs, [{ term: "no-match", source: "wants" }]).selected,
   ).toEqual([]);
+});
+test("기업 중복·국가·제목 가중치와 면접 수 제한을 적용한다", () => {
+  const base = jobs[0];
+  const pool = [
+    { ...base, id: "body", company: "same", country: "AU", title: "Other", description: "Python" },
+    { ...base, id: "title", company: "SAME", country: "AU", title: "Python", description: "" },
+    { ...base, id: "us", company: "US", country: "US", title: "Python" },
+  ];
+  const keywords = [{ term: "Python", source: "skills" as const }];
+  expect(screenJobs(pool, keywords, 20, "AU").selected.map(({job}) => job.id)).toEqual(["title"]);
+  expect(screenJobs(pool, keywords, 0).selected).toEqual([]);
+});
+test("미확인 조건은 보류하고 구조화된 연봉 하한 불일치는 거절한다", () => {
+  const result = { outcome: "recommended" as const, reasons: ["경험 일치"] };
+  expect(assessConditions(result, { ...jobs[0], salary: null, remote: null, weeklyHours: null }, privateProfile.salary, false).outcome).toBe("hold");
+  expect(assessConditions(result, { ...jobs[0], salary: { currency: "USD", min: 1, max: 2, period: "annual" } }, privateProfile.salary, false).outcome).toBe("mismatch");
 });
 test("기업별 대화·오류·확인 질문을 섞지 않고 기록을 복원한다", () => {
   let state = applyEvent(emptySnapshot, {

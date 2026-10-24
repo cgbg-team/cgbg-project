@@ -7,6 +7,7 @@ export const stageLabels = {
   experience: "경험 확인 중…",
   conditions: "근무 조건 확인 중…",
   salary: "연봉 협상 중…",
+  salary_check: "연봉 정보 확인 중…",
   summarizing: "면접 결과 정리 중…",
   waiting: "내 답변을 기다리고 있어요",
   completed: "면접 완료",
@@ -22,15 +23,21 @@ export type Job = {
   title: string;
   description: string;
   skills: string[];
-  remote: boolean;
-  weeklyHours: number;
+  country?: string;
+  location?: string;
+  source?: string;
+  url?: string;
+  salaryText?: string;
+  remote: boolean | null;
+  weeklyHours: number | null;
   salary: {
     currency: "USD" | "KRW";
     min: number;
     max: number;
     period: "annual";
-  };
+  } | null;
 };
+export type JobSearch = { total: number; countryTotal: number; matched: number; companies: number; country: string };
 export type Keyword = {
   term: string;
   source: "wants" | "skills" | "experience" | "transferableStrengths";
@@ -68,6 +75,7 @@ export type RunEvent = {
   keywords?: Keyword[];
   selected?: { job: Job; reasons: string[] }[];
   excluded?: { job: Job; reason: string }[];
+  search?: JobSearch;
   message?: Message;
   question?: string;
   result?: Interview["result"];
@@ -76,6 +84,7 @@ export type RunEvent = {
 export type Snapshot = {
   profile?: PublicProfile;
   source?: "upload" | "demo";
+  search?: JobSearch;
   stage: Stage;
   keywords: Keyword[];
   interviews: Interview[];
@@ -108,6 +117,7 @@ export function applyEvent(state: Snapshot, event: RunEvent): Snapshot {
         matchReasons: reasons,
       })),
       excluded: event.excluded ?? [],
+      search: event.search,
     };
   if (event.type === "done")
     return { ...state, stage: "completed", done: true };

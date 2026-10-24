@@ -31,6 +31,8 @@ export async function POST(request: Request) {
       { status: 503 },
     );
   const jar = await cookies();
+  const country = (new URL(request.url).searchParams.get("country") ?? "").trim().toUpperCase();
+  if (country && !/^(?:[A-Z]{2}|\?)$/.test(country)) return Response.json({ error: "국가 코드를 확인해주세요." }, { status: 400 });
   let candidate: CandidateInput | null = null;
   try {
     if (request.body) {
@@ -98,7 +100,7 @@ export async function POST(request: Request) {
       { status: 429 },
     );
   try {
-    const run = await start(interviewWorkflow, [candidate]);
+    const run = await start(interviewWorkflow, [candidate, country]);
     jar.set(sessionCookie, createSession(run.runId), {
       httpOnly: true,
       secure:

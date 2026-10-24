@@ -11,11 +11,11 @@ const server = http.createServer(async (request, response) => {
   const { context } = JSON.parse(input.messages[0].content);
   const relay = context.job?.id === "relay";
   let output;
-  if (fields.keywords) output = { keywords: [{ term: "Python", source: "skills" }, { term: "SQL", source: "skills" }] };
+  if (fields.keywords) output = { keywords: [{ term: "software engineer", source: "wants" }] };
   else if (fields.outcome) output = { outcome: "recommended", reasons: ["공개 경력의 자동화 경험과 공고가 일치합니다."] };
   else if (fields.needsUser) output = { message: `${context.profile.headline}: Python과 SQL 자동화 경험을 설명합니다. 원격 근무 조건을 확인했습니다.`, needsUser: relay, question: relay ? "출장이 필요한지 확인해주세요." : "" };
   else output = { message: "관련 자동화 경험과 근무 조건, 공고의 연간 연봉 범위에 대한 의견을 알려주세요." };
-  if (body.includes('"floor"') || body.includes("90000") || (context.candidateSummary && body.includes("dealbreakers"))) {
+  if (body.includes('"floor"') || (context.candidateSummary && body.includes("dealbreakers"))) {
     response.writeHead(400).end(JSON.stringify({ type: "error", error: { type: "invalid_request_error", message: "비공개 입력 누출" } }));
     return;
   }

@@ -1,30 +1,30 @@
 import type { Job, Keyword } from "./types";
 
-export function screenJobs(jobs: Job[], keywords: Keyword[], limit = 2) {
-  const scored = jobs
+export function screenJobs(jobs: Job[], keywords: Keyword[], limit = 2, country = "") {
+  const n = Number.isFinite(limit) ? Math.min(2, Math.max(0, Math.floor(limit))) : 2;
+  const terms = [...new Set(keywords.map((keyword) => keyword.term.trim().toLowerCase()).filter(Boolean))];
+  const candidates = country ? jobs.filter((job) => job.country === country) : jobs;
+  const scored = candidates
     .map((job) => {
-      const corpus =
-        `${job.title} ${job.description} ${job.skills.join(" ")}`.toLocaleLowerCase();
-      const reasons = [
-        ...new Set(keywords.map((keyword) => keyword.term.toLocaleLowerCase())),
-      ].filter((term) => corpus.includes(term));
-      return { job, reasons };
+      const title = job.title.toLowerCase();
+      const body = job.description.toLowerCase();
+      const reasons = terms.filter((term) => title.includes(term) || body.includes(term));
+      const score = terms.reduce((sum, term) => sum + (title.includes(term) ? 3 : 0) + (body.includes(term) ? 1 : 0), 0);
+      return { job, reasons, score: score ? score + (job.salaryText || job.salary ? 1 : 0) : 0 };
     })
+    .filter((item) => item.score > 0 && item.job.company.trim().length > 0)
     .sort(
       (a, b) =>
-        b.reasons.length - a.reasons.length || a.job.id.localeCompare(b.job.id),
+        b.score - a.score,
     );
-  const selected = scored
-    .filter((item) => item.reasons.length > 0)
-    .slice(0, limit);
-  const selectedIds = new Set(selected.map((item) => item.job.id));
-  const excluded = scored
-    .filter((item) => !selectedIds.has(item.job.id))
-    .map(({ job, reasons }) => ({
-      job,
-      reason: reasons.length
-        ? "이번 실행의 공고 수 한도에 따라 제외했습니다."
-        : "추출한 검색 키워드와 일치하는 직무 근거가 없습니다.",
-    }));
-  return { selected, excluded };
+  const seen = new Set<string>();
+  const distinct = scored.filter(({ job }) => {
+    const company = job.company.trim().toLowerCase();
+    if (seen.has(company)) return false;
+    seen.add(company);
+    return true;
+  });
+  const selected = distinct.slice(0, n).map(({ job, reasons }) => ({ job, reasons }));
+  // 전체 공고와 미선정 목록을 Workflow에 직렬화하지 않는다.
+  return { selected, excluded: [], search: { total: jobs.length, countryTotal: candidates.length, matched: scored.length, companies: distinct.length, country } };
 }

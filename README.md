@@ -1,6 +1,6 @@
 # cgbg-project
 
-구직자 온보딩과 에이전트 면접을 독립된 Next.js 앱으로 개발하는 npm workspaces 모노레포다. 면접 앱은 가상 프로필과 공고로 Claude 검색·1:N 면접을 서버에서 실행한다. 실제 온보딩 데이터 연결과 DB 스키마는 아직 없다.
+구직자 온보딩과 에이전트 면접을 독립된 Next.js 앱으로 개발하는 npm workspaces 모노레포다. 면접 앱은 업로드 또는 가상 프로필과 실제 공개 공고 17,237건으로 Claude 검색·1:N 모의 면접을 서버에서 실행한다. 실제 온보딩 데이터 연결과 DB 스키마는 아직 없다.
 
 [프로젝트 개요](docs/00_overview.md) · [제품 아이디어](docs/01_product_idea.md) · [개발 계획](docs/plan/20261024_1119_monorepo_plan.md) · [에이전트 규칙](AGENTS.md)
 
@@ -58,6 +58,8 @@ npm run dev:interviews
 ```
 
 `index.json`과 등록된 Markdown이 있는 구직자 폴더를 선택하고 프로필·희망 조건을 확인한 뒤 **면접 시작**을 누른다. 파일은 20개·합계 1MB 이하로 준비한다. 자료가 없으면 **샘플로 체험하기**를 선택한다. 최대 2개 기업과 각각 3왕복 대화를 진행하며, 창을 닫아도 서버 작업은 계속되고 같은 브라우저에서 다시 열면 업로드한 프로필과 진행 기록을 복원한다. 기본 모델은 `claude-sonnet-4-6`이며 `ANTHROPIC_MODEL`로 변경한다. 키가 없으면 설정 안내를 표시한다. 입력 형식·API·저장 방식·제약은 [면접 앱 문서](docs/interviews/00_overview.md)를 따른다.
+
+실제 공고 풀은 `apps/interviews/src/data/jobs/jobs_pool.json.gz`다. 국가 선택은 기본 전체이며 최대 2개 회사만 면접한다. 출처·원문 링크·연봉 원문을 표시하고 미확인 조건은 보류한다. 공고는 제공받은 스냅샷이다. 서버 `JOBS_POOL_PATH`는 별도 풀의 절대 경로를 지정할 때만 설정한다.
 
 ## Supabase 설정
 

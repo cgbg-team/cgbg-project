@@ -319,3 +319,7 @@
   color: var(--muted);
   font-size: 12px;
 }
+.job-search-controls { margin: 22px 0; color: var(--muted); font-size: 12px; }
+.job-search-controls label { color: var(--ink); font-weight: 600; }
+.job-search-controls select { max-width: 100%; padding: 9px; border: 1px solid var(--line); border-radius: 6px; background: #fafbf7; color: inherit; }
+.job-conditions a { color: var(--green); overflow-wrap: anywhere; }

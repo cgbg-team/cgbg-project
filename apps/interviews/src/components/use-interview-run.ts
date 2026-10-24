@@ -90,11 +90,11 @@ export function useInterviewRun(initialRun?: string) {
       clearTimeout(timer);
     };
   }, [runId, reconnect]);
-  async function start(candidate: CandidateInput | null = null) {
+  async function start(candidate: CandidateInput | null = null, country = "") {
     setStarting(true);
     setError(undefined);
     try {
-      const response = await fetch("/api/runs", {
+      const response = await fetch(`/api/runs${country ? `?country=${encodeURIComponent(country)}` : ""}`, {
         method: "POST",
         ...(candidate
           ? {
