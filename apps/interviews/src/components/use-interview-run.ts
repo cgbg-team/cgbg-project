@@ -12,6 +12,7 @@ export function useInterviewRun(initialRun?: string) {
   const [reconnect, setReconnect] = useState(0);
   const replayTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const replayVersion = useRef(0);
+  const replayEvents = useRef<RunEvent[]>([]);
   const [demo, setDemo] = useState(false);
   useEffect(() => () => { replayVersion.current++; clearTimeout(replayTimer.current); }, []);
   useEffect(() => {
@@ -106,6 +107,7 @@ export function useInterviewRun(initialRun?: string) {
       const data: { events: RunEvent[] } = await response.json();
       if (version !== replayVersion.current) return;
       if (!data.events.some(event => event.type === "done")) throw new Error("완료된 체험 데이터가 없습니다.");
+      replayEvents.current = data.events;
       setDemo(true);
       setSnapshot(emptySnapshot);
       setRunId("demo-gio");
@@ -113,10 +115,10 @@ export function useInterviewRun(initialRun?: string) {
       let cursor = 0;
       const advance = () => {
         const elapsed = Date.now() - startedAt;
-        // 검색 단계를 읽을 여유를 주고, 경과 시간에 맞춰 100초에 재생을 마친다.
-        const target = Math.min(data.events.length, elapsed < 12000
-          ? Math.floor(elapsed / 2000) + 1
-          : 6 + Math.ceil(Math.max(0, data.events.length - 6) * Math.min(1, (elapsed - 12000) / 88000)));
+        // 검색 단계를 읽을 여유를 주고, 경과 시간에 맞춰 약 67초에 재생을 마친다.
+        const target = Math.min(data.events.length, elapsed < 8000
+          ? Math.floor(elapsed / (8000 / 6)) + 1
+          : 6 + Math.ceil(Math.max(0, data.events.length - 6) * Math.min(1, (elapsed - 8000) / 58667)));
         const batch = data.events.slice(cursor, target);
         cursor = target;
         setSnapshot(state => batch.reduce(applyEvent, state));
@@ -188,6 +190,11 @@ export function useInterviewRun(initialRun?: string) {
     setError(undefined);
     setReconnect((value) => value + 1);
   }
+  function skipReplay() {
+    if (!demo || snapshot.done) return;
+    clearTimeout(replayTimer.current);
+    setSnapshot(replayEvents.current.reduce(applyEvent, emptySnapshot));
+  }
   function reset() {
     replayVersion.current++;
     clearTimeout(replayTimer.current);
@@ -197,5 +204,5 @@ export function useInterviewRun(initialRun?: string) {
     setError(undefined);
     window.history.replaceState(null, "", window.location.pathname);
   }
-  return { runId, snapshot, starting, connected, error, start, cancel, retry, demo, reset };
+  return { runId, snapshot, starting, connected, error, start, cancel, retry, demo, reset, skipReplay };
 }

@@ -16,7 +16,7 @@ export function ProfileSummary({ profile, starting, error, onBack, onStart }: {
       <button className="text-button" disabled={starting} onClick={onBack}><span aria-hidden="true">← </span>페르소나 다시 선택</button>
     </header>
     <section className="profile-start" aria-label="체험 시작">
-      <div><strong>백지오 페르소나로 체험합니다.</strong><p>4배속 · 저장된 실제 대화를 재생합니다.</p></div>
+      <div><strong>실제 백지오 엔지니어의 블로그, Github 등에서 추출된 정보와 인터뷰를 바탕으로 생성된 프로필 정보로 체험해요.</strong><p>6배속 · 저장된 실제 대화를 재생합니다.</p></div>
       <button className="button primary" disabled={starting} onClick={onStart}>{starting ? "시작하는 중…" : "면접 시작 ↗"}</button>
     </section>
     {error && <p className="notice error" role="alert">{error}</p>}

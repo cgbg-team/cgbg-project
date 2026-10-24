@@ -36,7 +36,7 @@ export function InterviewDetail({ interview, runId }: { interview?: Interview; r
         <div>
           <p className="eyebrow">INTERVIEW ROOM</p>
           <h2>{job.company}</h2>
-          <p>{job.title}</p>
+          <p><a className="job-title-link" href={job.url} target="_blank" rel="noopener noreferrer">{job.title}<span aria-hidden="true"> ↗</span><span className="sr-only"> (새 탭에서 채용공고 열기)</span></a></p>
         </div>
         <span className={`badge ${result?.outcome ?? interview.stage}`}>
           {result
@@ -106,7 +106,7 @@ export function InterviewDetail({ interview, runId }: { interview?: Interview; r
           </small>
         </aside>
       )}
-      {runId && result?.outcome === "recommended" && <InterviewApplication key={`${runId}:${job.id}`} runId={runId} jobId={job.id} company={job.company} />}
+      {runId && result?.outcome === "recommended" && <InterviewApplication key={`${runId}:${job.id}`} runId={runId} jobId={job.id} company={job.company} country={job.country} location={job.location} />}
     </section>
   );
 }

@@ -60,13 +60,10 @@ export function RunProgress({
           )}
         </div>
       )}
-      {started && !snapshot.done && snapshot.interviews.length === 0 && (
-        <p className="search-log" role="status">
-          {snapshot.keywords.length
-            ? `${snapshot.keywords.map(keyword => keyword.term).join(", ")} 검색어로 검색합니다…`
-            : "프로필에서 경험과 관심사를 읽고 검색어를 추출합니다…"}
-        </p>
-      )}
+      {started && <details className="progress-history">
+        <summary><span>진행 로그 보기 <span className="count">{snapshot.progressLogs.length}</span></span><span className="progress-latest" role="status">{snapshot.progressLogs.at(-1)?.text ?? "프로필에서 경험과 관심사를 읽고 검색어를 추출합니다…"}</span></summary>
+        <ol aria-label="과거 진행 로그">{snapshot.progressLogs.map((log, index) => <li key={index}><time dateTime={log.at}>{Number.isNaN(Date.parse(log.at)) ? "—" : new Date(log.at).toLocaleTimeString("ko-KR", { hour12: false })}</time><p>{log.text}</p></li>)}</ol>
+      </details>}
     </section>
   );
 }

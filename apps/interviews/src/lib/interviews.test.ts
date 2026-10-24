@@ -8,10 +8,12 @@ import {
   publicProfileSchema,
   candidateSchema,
   recruiterSchema,
+  adviceSchema,
 } from "./schemas";
 import { screenJobs } from "./screening";
 import { assessConditions } from "./job-conditions";
 import { enrichSearchKeywords } from "./search-keywords";
+import { normalizeAdvice } from "./job-advice";
 import { applyEvent, emptySnapshot, type Keyword } from "./types";
 import candidate from "../../../../data/demo/candidates/onboarding-example/index.json";
 
@@ -27,6 +29,10 @@ const jobs = [
 test("모델이 종료 필드를 생략하면 완료로 오인하지 않고 한도 안에서 대화를 계속한다", () => {
   expect(candidateSchema.parse({ message: "답변", needsUser: false })).toMatchObject({ done: false, question: "" });
   expect(recruiterSchema.parse({ message: "추가 질문", stage: "experience" }).done).toBe(false);
+  expect(adviceSchema.safeParse({ advice: ["이유.", "매력.", "협상.", "추가."] }).success).toBe(false);
+  const advice = normalizeAdvice(["경험이 맞습니다. 추가 확인이 필요합니다.", "지원이 매력적입니다.", "$175K–$200K를 제안하세요. 지급 주기는 확인하세요."]);
+  expect([...new Intl.Segmenter("ko", { granularity: "sentence" }).segment(advice.join(" "))]).toHaveLength(3);
+  expect(advice.join(" ")).toContain("지급 주기는 확인하세요");
 });
 
 test("명시된 기술·활동·관심사로 검색 표현을 보완하고 관심사를 경력으로 만들지 않는다", () => {
@@ -69,6 +75,9 @@ test("비공개 하한은 양측 프롬프트에서 제외하고 채용자에게
   );
   expect(recruiter).not.toHaveProperty("preferences");
   expect(recruiter).not.toHaveProperty("profile");
+  const offer = recruiterContext(profile, [], { ...jobs[0], text: "Relocation assistance provided. We do not offer visa sponsorship." });
+  expect(offer.advertisedBenefits).toContainEqual({ label: "이주 지원", evidence: "Relocation assistance provided" });
+  expect(offer.advertisedBenefits.some(benefit => benefit.label === "비자 지원")).toBe(false);
 });
 test("실제 검색어 일치 수로 상위 2개만 선택하고 무관한 공고는 제외한다", () => {
   const result = screenJobs(jobs, [

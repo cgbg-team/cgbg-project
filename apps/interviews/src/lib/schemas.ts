@@ -145,3 +145,7 @@ export const resultSchema = z.object({
   outcome: z.enum(["recommended", "hold", "mismatch"]),
   reasons: z.array(z.string().min(1).max(500)).min(1).max(3),
 });
+
+export const adviceSchema = z.object({
+  advice: z.array(z.string().trim().min(1).max(220)).min(1).max(3),
+});

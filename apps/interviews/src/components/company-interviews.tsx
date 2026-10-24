@@ -2,6 +2,8 @@ import { stageLabels, type CandidateMatch, type Interview } from "@/lib/types";
 import { InterviewDetail, outcomeLabels } from "./interview-detail";
 import { InterviewApplication } from "./interview-application";
 import { CompanyLogo } from "./company-logo";
+import { JobContext, jobLocation } from "./job-context";
+import { jobHighlights } from "@/lib/job-highlights";
 
 export function CompanyInterviews({ interviews, candidates, runId, done }: {
   interviews: Interview[];
@@ -22,7 +24,7 @@ export function CompanyInterviews({ interviews, candidates, runId, done }: {
       <div className="company-row-main">
         <div className="company-row-identity">
           <CompanyLogo company={item.job.company} />
-          <div><h3>{item.job.company}</h3><p>{item.job.title}</p><small>{[item.job.location, item.job.salary].filter(Boolean).join(" · ")}</small></div>
+          <div><div className="company-name-line"><h3>{item.job.company}</h3><span className="company-location" title={item.job.location}>{jobLocation(item.job)}</span></div><p><a className="job-title-link" href={item.job.url} target="_blank" rel="noopener noreferrer">{item.job.title}<span aria-hidden="true"> ↗</span><span className="sr-only"> (새 탭에서 채용공고 열기)</span></a></p><JobContext job={item.job} /></div>
         </div>
         <div className="company-row-progress">
           <span className={`badge ${item.error ? "error" : item.result?.outcome ?? item.stage}`}>
@@ -31,10 +33,12 @@ export function CompanyInterviews({ interviews, candidates, runId, done }: {
           </span>
           {archived ? <p className="company-decision"><strong>{stageLabels[stage].replace("…", "")} 단계에서 {item.error ? "중단" : item.result?.outcome === "hold" ? "보류" : "제외"}</strong>{item.error ?? item.result?.reasons[0]}</p> : <p className="company-live-message">{item.result?.reasons[0] ?? lastMessage?.text ?? "채용 에이전트가 프로필을 읽고 첫 질문을 준비합니다."}</p>}
           <small>{item.messages.length}개 메시지{!item.result && !item.error ? " · 양측 에이전트 대화 중" : " · 대화 종료"}</small>
+          <div className="company-benefit-tags" aria-label="공고별 특징">{jobHighlights(item.job).map(tag => <span key={tag.label} title={`공고 근거: ${tag.evidence}`}>{tag.label}</span>)}</div>
         </div>
-        {runId && item.result?.outcome === "recommended" && <InterviewApplication runId={runId} jobId={item.job.id} company={item.job.company} label="면접 일정 잡기 →" />}
+        {runId && item.result?.outcome === "recommended" && <InterviewApplication runId={runId} jobId={item.job.id} company={item.job.company} country={item.job.country} location={item.job.location} label="면접 일정 잡기 →" />}
       </div>
       {candidate?.track === "exploration" && <p className="company-exploration">{candidate.basis === "interest" ? "관심사 기반·적합성 확인 필요" : "활동 근거 기반·전환 적합성 확인 필요"} · {candidate.hypothesis}</p>}
+      {item.result?.advice?.length ? <aside className="morrow-advice" aria-label="MORROW의 조언"><h4>MORROW의 조언</h4><p>{item.result.advice.join(" ")}</p>{item.result.adviceSource && <a href={item.result.adviceSource.url} target="_blank" rel="noreferrer">시장 연봉 근거 · {item.result.adviceSource.label} ↗</a>}</aside> : null}
       <details className="company-row-detail"><summary>상세 이유와 에이전트 대화 보기</summary><InterviewDetail interview={item} /></details>
     </article>;
   }

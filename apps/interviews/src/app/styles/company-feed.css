@@ -6,18 +6,33 @@
 .company-emblem { flex-shrink: 0; width: 46px; height: 46px; background: #eef2e8; border-radius: 10px; display: grid; place-items: center; color: var(--green); font-size: 24px; font-weight: 600; }
 .company-emblem img { display: block; width: 36px; height: 36px; object-fit: contain; border-radius: 5px; }
 .company-row h3 { font-size: 19px; font-weight: 600; }
+.company-name-line { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; }
+.company-location { font-size: 11px; color: #596950; }
+.job-economic-context { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; font-size: 10px; color: #56624f; }
+.job-economic-context > span, .job-economic-context > a { background: #f1f4eb; border-radius: 4px; padding: 4px 7px; }
+.job-economic-context > a { background: #f3eedf; color: #755b20; }
+.job-economic-context > a:hover { text-decoration: underline; }
 .company-row-identity p { font-size: 12px; color: var(--muted); }
+.job-title-link { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: #acb9a3; }
+.job-title-link:hover { color: var(--green); text-decoration-color: currentColor; }
 .company-row small { font-size: 10px; color: #8a9285; }
 .company-row-progress { flex: 1; min-width: 0; }
+.company-benefit-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
+.company-benefit-tags:empty { display: none; }
+.company-benefit-tags span { background: #eaf0df; color: #4a6432; border: 1px solid #d9e4c9; border-radius: 4px; padding: 3px 8px; font-size: 10px; }
+.company-row.inactive .company-benefit-tags span { background: #e9ece4; color: #526147; border-color: #d6ddce; }
 .company-live-message { font-size: 12px; margin: 10px 0 6px; color: #63715c; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .interview-pulse { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #679451; margin-right: 7px; animation: interview-pulse 1.6s infinite; }
 .company-row.passed { border-color: #a6c48a; background: #fbfdf7; }
-.company-row-main > .notice { width: 250px; flex-shrink: 0; margin: 0; padding: 0; border: 0; background: transparent; }
-.company-row-main > .notice > p { font-size: 9px; max-width: 230px; margin-top: 8px; color: #8a9285; }
+.company-row-main > .notice { width: auto; max-width: 250px; flex-shrink: 0; margin: 0; padding: 0; border: 0; background: transparent; }
 .company-row-detail { margin-top: 14px; padding-top: 10px; border-top: 1px solid #eef0ea; font-size: 10px; color: #8a9285; }
 .company-row-detail summary { cursor: pointer; }
 .company-row-detail .detail { margin-top: 14px; border-radius: 6px; }
 .company-exploration { margin: 12px 0 0; font-size: 10px; color: #947549; }
+.morrow-advice { margin-top: 18px; padding: 14px 16px; border-radius: 6px; border-left: 3px solid #98ac79; background: #f0f4e7; }
+.morrow-advice h4 { margin: 0 0 6px; font-size: 11px; font-weight: 700; letter-spacing: .3px; color: #456132; }
+.morrow-advice p { font-size: 12px; line-height: 1.9; color: #46523e; }
+.company-row.inactive .morrow-advice { background: #e9ede3; border-left-color: #a7b29b; }
 .company-archive { margin-top: 44px; border-top: 1px solid var(--line); padding-top: 26px; }
 .company-row.inactive { background: #f2f3ef; border-color: #d9ddd3; color: #414c3e; animation: company-archive .8s both; }
 .company-row.inactive .company-emblem { color: #626d5d; background: #e3e5de; }
@@ -38,7 +53,7 @@
   .company-row { padding: 18px 16px 12px; }
   .company-row-main { flex-direction: column; align-items: stretch; gap: 16px; }
   .company-row-identity { width: 100%; }
-  .company-row-main > .notice { width: 100%; }
+  .company-row-main > .notice { width: 100%; max-width: none; }
   .company-feed .section-heading { align-items: flex-start; flex-direction: column; gap: 5px; }
 }
 @media (prefers-reduced-motion: reduce) {

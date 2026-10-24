@@ -74,6 +74,7 @@ export function InterviewDashboard({
           </div>
           <div className="actions">
             {!running && !run.starting && <button className="button secondary" onClick={() => setMode(null)}>페르소나 다시 선택</button>}
+            {run.demo && running && <button className="button secondary" onClick={run.skipReplay}>재생 건너뛰기 →</button>}
             {running && (
               <button
                 className="button secondary"
@@ -121,7 +122,7 @@ export function InterviewDashboard({
             {snapshot.error}
           </p>
         )}
-        {mode === "own" ? <section className="notice" aria-label="선택한 페르소나"><strong>내 프로필로 체험합니다.</strong><p>프로필과 검색 조건을 확인한 뒤 면접 시작을 눌러주세요.</p></section> : <section className="notice" aria-label="선택한 페르소나"><strong>백지오 페르소나로 체험합니다.</strong><p>4배속 · 저장된 실제 대화를 재생합니다.</p></section>}
+        {mode === "own" ? <section className="notice" aria-label="선택한 페르소나"><strong>내 프로필로 체험합니다.</strong><p>프로필과 검색 조건을 확인한 뒤 면접 시작을 눌러주세요.</p></section> : <section className="notice" aria-label="선택한 페르소나"><strong>실제 백지오 엔지니어의 블로그, Github 등에서 추출된 정보와 인터뷰를 바탕으로 생성된 프로필 정보로 체험해요.</strong><p>6배속 · 저장된 실제 대화를 재생합니다.</p></section>}
         <RunProgress snapshot={snapshot} started={!!run.runId} demo={mode === "sample"} />
         <div className="job-search-controls">
           {!run.runId && mode === "own" && <label>
@@ -155,16 +156,21 @@ export function InterviewDashboard({
         </section>}
         <section className="metrics" aria-label="면접 현황">
           <div>
-            <span>검색 대상</span>
+            <span>검색 결과</span>
             <strong>
-              {(snapshot.search?.countryTotal ?? (country ? jobSummary.countries.find((item) => item.code === country)?.count ?? 0 : jobSummary.total)).toLocaleString()}<small>개 공고</small>
+              {(snapshot.search?.matched ?? 0).toLocaleString()}{" "}<small>/ {(snapshot.search?.total ?? jobSummary.total).toLocaleString()}개 공고</small>
             </strong>
           </div>
           <div>
-            <span>진행한 면접</span>
+            <span className="metric-label">면접 볼 기업
+              <span className="metric-tooltip">
+                <button type="button" aria-label="면접 횟수 안내" aria-describedby="interview-membership-tooltip">ⓘ</button>
+                <span role="tooltip" id="interview-membership-tooltip">플러스 맴버십에 가입하면 무제한으로 면접을 진행할 수 있어요.</span>
+              </span>
+            </span>
             <strong>
-              {snapshot.interviews.length}
-              <small>개 기업</small>
+              150
+              <small>개</small>
             </strong>
           </div>
           <div>
@@ -178,7 +184,7 @@ export function InterviewDashboard({
             <span>AI 사전검토 통과</span>
             <strong>
               {recommended}
-              <small>개 기업</small>
+              <small>개 공고</small>
             </strong>
           </div>
         </section>

@@ -40,7 +40,7 @@ export type Interview = {
   stage: Stage;
   messages: Message[];
   matchReasons: string[];
-  result?: { outcome: Outcome; reasons: string[] };
+  result?: { outcome: Outcome; reasons: string[]; advice?: string[]; adviceSource?: { label: string; url: string } };
   question?: string;
   error?: string;
 };
@@ -71,6 +71,7 @@ export type RunEvent = {
   error?: string;
 };
 export type Snapshot = {
+  progressLogs: { at: string; text: string }[];
   profile?: PublicProfile;
   source?: "upload" | "demo";
   search?: JobSearch;
@@ -84,6 +85,7 @@ export type Snapshot = {
 };
 
 export const emptySnapshot: Snapshot = {
+  progressLogs: [],
   stage: "queued",
   keywords: [],
   interviews: [],
@@ -93,6 +95,15 @@ export const emptySnapshot: Snapshot = {
 };
 
 export function applyEvent(state: Snapshot, event: RunEvent): Snapshot {
+  if (!event.jobId) {
+    const text = event.type === "profile" ? "프로필 준비 완료 · 경험과 희망 조건을 확인했습니다."
+      : event.type === "keywords" ? `${(event.keywords ?? []).map(keyword => keyword.term).join(", ")} 검색어로 검색합니다…`
+      : event.type === "screened" ? `후보 공고 ${event.selected?.length ?? 0}개를 찾았습니다. 기업별 에이전트 면접을 시작합니다.`
+      : event.type === "done" ? "기업별 면접과 후보 추림을 마쳤습니다. 최종 결과를 확인해주세요."
+      : event.type === "error" ? event.error
+      : event.type === "stage" && event.stage ? stageLabels[event.stage] : undefined;
+    if (text && state.progressLogs.at(-1)?.text !== text) state = { ...state, progressLogs: [...state.progressLogs, { at: event.at, text }] };
+  }
   if (event.type === "profile")
     return { ...state, profile: event.profile, source: event.source };
   if (event.type === "keywords")

@@ -201,6 +201,11 @@ h1 {
   color: var(--muted);
   display: block;
 }
+.metrics .metric-label { display: flex; align-items: center; gap: 6px; }
+.metrics .metric-tooltip { display: inline-flex; position: relative; }
+.metric-tooltip button { padding: 0 2px; border: 0; background: transparent; color: var(--muted); font-size: 13px; }
+.metrics .metric-tooltip [role="tooltip"] { display: none; position: absolute; z-index: 10; top: calc(100% + 8px); left: 50%; transform: translateX(-50%); width: min(240px, 65vw); padding: 10px 12px; border-radius: 6px; background: var(--ink); color: white; font-size: 11px; line-height: 1.6; box-shadow: 0 4px 16px #203a3220; }
+.metrics .metric-tooltip:is(:hover, :focus-within) [role="tooltip"] { display: block; }
 .metrics strong {
   display: block;
   font-size: 31px;
