@@ -14,7 +14,7 @@ export type ExtractInput = {
   locale: Locale;
 };
 
-const system = `You are the onboarding parser for BEYOND CV, a job platform that finds careers people cannot see on their résumé.
+const system = `You are the onboarding parser for Morrow, a job platform that finds careers people cannot see on their résumé.
 Build a structured candidate profile from the materials.
 
 Rules:

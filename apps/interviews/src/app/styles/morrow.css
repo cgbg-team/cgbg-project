@@ -1,0 +1,42 @@
+.button { min-height: 44px; border-radius: 8px; font-size: 14px; }
+.text-button { min-height: 44px; }
+.main-content { max-width: 1440px; }
+.topbar { align-items: center; gap: 20px; padding: 24px 0; }
+.topbar .connection { font-size: 12px; text-align: right; }
+.topbar .morrow-logo { margin-right: auto; }
+.topbar > span:not(.connection) { font-size: 13px; }
+.lede { font-size: 15px; }
+.eyebrow { font-size: 11px; letter-spacing: 1.5px; }
+.persona-entry { min-height: 100dvh; }
+.persona-option { border-radius: 16px; padding: 32px; }
+.persona-option p { font-size: 15px; }
+.persona-option h2 { font-weight: 600; }
+.persona-chip, .persona-option-footer, .persona-entry-note { font-size: 13px; }
+.persona-tags > span { font-size: 12px; border-radius: 6px; }
+.persona-monogram.own { background: var(--morrow-soft); color: var(--green); font-family: inherit; }
+.profile-start, .profile-section, .candidate-strip, .notice, .run-progress, .company-row { border-radius: 12px; }
+.profile-start p, .profile-meta, .profile-summary, .candidate-strip p { font-size: 14px; }
+.section-heading h2 { font-size: 18px; }
+.metrics span { font-size: 13px; }
+.metrics small { font-size: 12px; }
+.company-heading h3 { font-size: 18px; }
+.morrow-advice { background: var(--morrow-soft); border-radius: 10px; border-left-color: var(--green); }
+.morrow-advice h4 { color: var(--green); font-size: 13px; }
+.morrow-advice p, .calendar-description { font-size: 14px; }
+.calendar-slots button, .calendar-selected button { min-height: 44px; font-size: 13px; border-radius: 8px; }
+.calendar-days button { min-height: 40px; }
+.interview-complete { position: relative; padding-top: 120px; }
+.morrow-completion-nav { position: absolute; top: 32px; left: 24px; right: 24px; }
+.interview-complete > section { background: white; border: 1px solid var(--line); border-radius: 24px; padding: 40px; }
+.completion-slots { background: var(--morrow-soft); border-radius: 12px; padding: 16px; }
+@media (max-width: 680px) {
+  .main-content { padding: 0 20px; }
+  .topbar { flex-wrap: wrap; gap: 12px; }
+  .topbar > span:not(.connection) { display: none; }
+  .topbar .connection { max-width: 48%; font-size: 11px; }
+  .persona-option { padding: 24px; }
+  .actions { flex-wrap: wrap; }
+  .page-heading { align-items: flex-start; }
+  .interview-complete > section { padding: 28px 20px; }
+  .metrics > div { padding: 0 10px; }
+}

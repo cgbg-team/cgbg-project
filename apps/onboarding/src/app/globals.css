@@ -1,8 +1,4 @@
 @import "tailwindcss";
 @source "../../../../packages/shared/src/onboarding";
 
-body {
-  background: #fafaf9;
-  color: #171717;
-  font-family: Arial, Helvetica, sans-serif;
-}
+@import "@cgbg/shared/brand/theme.css";

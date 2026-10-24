@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { MorrowLogo } from "@cgbg/shared/brand/logo";
 import { useRouter } from "next/navigation";
 import { takeOnboardingCandidate } from "@/lib/onboarding-handoff";
 import type { PublicProfile } from "@cgbg/shared/profile";
@@ -76,6 +77,7 @@ export function InterviewDashboard({
 
       <main className="main-content">
         <header className="topbar">
+          <MorrowLogo />
           <span>
             내 커리어 <span className="breadcrumb">/</span> 에이전트 면접
           </span>

@@ -1,0 +1,53 @@
+:root {
+  --ink: #203a32;
+  --muted: #5f6f65;
+  --line: #dde5dc;
+  --green: #176342;
+  --morrow-canvas: #fafbf7;
+  --morrow-soft: #edf2e6;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--morrow-canvas); color: var(--ink); font-family: Arial, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; font-size: 16px; line-height: 1.65; }
+button, input, textarea, select { font: inherit; }
+button, summary { cursor: pointer; }
+button:disabled { cursor: not-allowed; opacity: .45; }
+:focus-visible { outline: 3px solid #b37635; outline-offset: 4px; }
+.morrow-logo { display: inline-flex; align-items: center; gap: 10px; flex-shrink: 0; width: fit-content; color: var(--green); text-decoration: none; }
+.morrow-logo svg { flex-shrink: 0; }
+.morrow-logo > span { font-size: 29px; font-weight: 700; letter-spacing: -1.5px; line-height: 1; }
+.morrow-logo:hover { color: #104c32; }
+.morrow-form-page { max-width: 760px; margin: auto; min-height: 100dvh; padding: 40px 24px 72px; display: flex; flex-direction: column; gap: 28px; }
+.morrow-onboarding { display: flex; flex-direction: column; gap: 24px; }
+.morrow-onboarding > header { padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+.morrow-onboarding h1 { color: var(--ink); font-size: clamp(30px, 5vw, 42px); line-height: 1.25; letter-spacing: -1.6px; margin: 8px 0 0; }
+.morrow-onboarding h2 { font-size: 24px; line-height: 1.4; letter-spacing: -.6px; }
+.morrow-onboarding p { word-break: keep-all; overflow-wrap: anywhere; }
+.morrow-onboarding pre { background: var(--morrow-soft); border: 1px solid var(--line); border-radius: 12px; padding: 20px; color: var(--ink); line-height: 1.8; }
+.morrow-onboarding fieldset { min-width: 0; border-color: var(--line); background: white; border-radius: 12px; padding: 20px; }
+.morrow-onboarding legend { color: var(--ink); padding: 0 6px; }
+.morrow-onboarding :is(textarea, input:not([type="radio"]):not([type="checkbox"]), select) { border: 1px solid var(--line); border-radius: 8px; background: white; padding: 12px; color: var(--ink); min-width: 0; }
+.morrow-onboarding input:is([type="radio"], [type="checkbox"]) { accent-color: var(--green); width: 18px; height: 18px; }
+.morrow-onboarding label:has(input[type="radio"]), .morrow-onboarding label:has(input[type="checkbox"]) { min-height: 44px; gap: 10px; }
+.morrow-onboarding :is(button, a[class*="border"]) { min-height: 44px; border-radius: 8px; }
+.morrow-onboarding [class*="bg-neutral-900"] { background: var(--green); color: white; }
+.morrow-onboarding [class*="border-neutral"] { border-color: var(--line); }
+.morrow-onboarding [class*="text-neutral"] { color: var(--muted); }
+.morrow-onboarding [class*="bg-neutral-100"] { background: var(--morrow-soft); }
+.morrow-onboarding [aria-current="step"] { background: var(--green); color: white; }
+.morrow-onboarding [aria-pressed="true"] { background: var(--green); color: white; }
+.morrow-onboarding ol[aria-label="progress"] { gap: 8px; padding: 16px 0; }
+.morrow-onboarding ol[aria-label="progress"] li { font-size: 13px; padding: 8px 12px; }
+.morrow-form-page > details { border: 1px solid var(--line); border-radius: 12px; padding: 18px; background: white; font-size: 14px; }
+.morrow-form-page .upload-panel { display: flex; flex-direction: column; padding: 0; border: 0; gap: 20px; }
+.morrow-form-page > button { color: var(--muted); font-size: 14px; }
+.morrow-completion-nav { display: flex; align-items: center; justify-content: center; }
+.morrow-onboarding [role="alert"] { color: #963c2f; padding: 14px; background: #fff2ec; border-radius: 8px; }
+@media (max-width: 680px) {
+  .morrow-form-page { padding: 24px 20px 48px; gap: 24px; }
+  .morrow-logo svg { width: 34px; height: 34px; }
+  .morrow-logo > span { font-size: 26px; }
+  .morrow-onboarding h2 { font-size: 21px; }
+  .morrow-onboarding > header { gap: 12px; }
+  .morrow-onboarding ol[aria-label="progress"] { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0s !important; animation-duration: 0s !important; } }

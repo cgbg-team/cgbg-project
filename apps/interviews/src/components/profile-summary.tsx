@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { MorrowLogo } from "@cgbg/shared/brand/logo";
 import Image from "next/image";
 import type { PublicProfile } from "@cgbg/shared/profile";
 import { countryLabel } from "@/lib/job-countries";
@@ -12,7 +12,7 @@ export function ProfileSummary({ profile, starting, error, onBack, onStart }: {
 }) {
   return <main className="profile-overview">
     <header className="profile-overview-nav">
-      <Link className="brand" href="/" aria-label="cgbg 홈"><span className="brand-symbol">c</span> cgbg.</Link>
+      <MorrowLogo />
       <button className="text-button" disabled={starting} onClick={onBack}><span aria-hidden="true">← </span>페르소나 다시 선택</button>
     </header>
     <section className="profile-start" aria-label="체험 시작">

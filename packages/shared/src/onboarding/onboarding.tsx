@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { MorrowLogo } from "../brand/logo";
 import { messages } from "./messages";
 import type { Locale } from "./questions";
 import type { CandidateFolder } from "./build";
@@ -22,9 +23,9 @@ export function Onboarding({ onContinue }: { onContinue?: (folder: CandidateFold
   }, [locale]);
 
   return (
-    <>
+    <div className="morrow-onboarding">
       <header className="flex items-center justify-between gap-4">
-        <p className="text-sm font-medium text-neutral-600">BEYOND CV</p>
+        <MorrowLogo />
         <div role="group" aria-label={t.language} className="flex rounded border border-neutral-300 text-sm">
           {locales.map((item) => (
             <button
@@ -42,6 +43,6 @@ export function Onboarding({ onContinue }: { onContinue?: (folder: CandidateFold
       <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">{t.title}</h1>
       <p className="text-lg text-neutral-700">{t.tagline}</p>
       <OnboardingWizard locale={locale} onContinue={onContinue} />
-    </>
+    </div>
   );
 }

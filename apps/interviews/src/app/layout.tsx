@@ -3,8 +3,10 @@ import type { ReactNode } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "에이전트 면접 | cgbg-project",
-  description: "기업별 면접 진행 상황과 결과를 확인합니다.",
+  applicationName: "Morrow",
+  icons: { icon: "/morrow-icon.svg", apple: "/morrow-apple-icon.png" },
+  title: "에이전트 면접 | Morrow",
+  description: "내 에이전트가 나를 대신해 새로운 커리어 기회를 찾고 면접을 준비합니다.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

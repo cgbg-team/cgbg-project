@@ -9,7 +9,10 @@
     "./supabase/env": "./src/supabase/env.ts",
     "./onboarding": "./src/onboarding/onboarding.tsx",
     "./onboarding/parse": "./src/onboarding/parse.ts",
-    "./onboarding/step": "./src/onboarding/step.ts"
+    "./onboarding/step": "./src/onboarding/step.ts",
+    "./brand/logo": "./src/brand/logo.tsx",
+    "./brand/theme.css": "./src/brand/theme.css",
+    "./brand/social-image": "./src/brand/social-image.tsx"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"

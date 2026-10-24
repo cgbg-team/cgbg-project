@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { MorrowLogo } from "@cgbg/shared/brand/logo";
 import { useState, useSyncExternalStore } from "react";
 import { createInterviewCalendar, readInterviewSchedules, subscribeToSchedule } from "@/lib/interview-schedule";
 
@@ -23,6 +24,7 @@ export function InterviewComplete({ runId, jobId, company }: { runId: string; jo
     } catch { setError("캘린더 파일을 만들지 못했어요. 다시 시도해주세요."); }
   }
   return <main className="interview-complete">
+    <header className="morrow-completion-nav"><MorrowLogo /></header>
     <section>
       {stored === undefined ? <p role="status">면접 일정을 확인하고 있어요.</p> : slots.length ? <>
         <div className="completion-emoji" aria-hidden="true">🎉</div>

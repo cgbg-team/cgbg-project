@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { MorrowLogo } from "@cgbg/shared/brand/logo";
 import Image from "next/image";
 
 export type PersonaMode = "sample" | "own";
@@ -6,7 +6,7 @@ export type PersonaMode = "sample" | "own";
 export function PersonaChoice({ onSelect }: { onSelect: (mode: PersonaMode) => void }) {
   return (
     <main className="persona-entry">
-      <Link className="brand" href="/" aria-label="cgbg 홈"><span className="brand-symbol">c</span> cgbg.</Link>
+      <MorrowLogo />
       <div className="persona-intro">
         <p className="eyebrow">YOUR NEXT CHAPTER</p>
         <h1>누구의 다음 기회를 찾아볼까요?</h1>
@@ -17,7 +17,7 @@ export function PersonaChoice({ onSelect }: { onSelect: (mode: PersonaMode) => v
           <span className="persona-option-top"><Image className="persona-monogram persona-photo" src="/images/gio-profile.jpg" alt="백지오" width={64} height={64} /><span className="persona-chip">바로 체험</span></span>
           <span className="eyebrow">MEET GIO</span>
           <h2>백지오 페르소나로 체험하기</h2>
-          <p>서울에 사는 1년차 주니어 AI Engineer 백지오의 실제 프로필을 바탕으로, MORROW를 체험합니다.</p>
+          <p>서울에 사는 1년차 주니어 AI Engineer 백지오의 실제 프로필을 바탕으로, Morrow를 체험합니다.</p>
           <span className="persona-tags"><span>Speech AI</span><span>Multimodal AI</span><span>Research Engineer</span></span>
           <span className="persona-option-footer">자료 준비 없이 시작<span aria-hidden="true">↗</span></span>
         </button>

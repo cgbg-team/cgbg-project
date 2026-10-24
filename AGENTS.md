@@ -9,6 +9,7 @@
 - 면접 공고 풀은 `apps/interviews/src/data/jobs/`에 있다. 전체 풀은 검색 step에서만 읽고 선택된 최대 100개 공고와 검색 통계만 Workflow에 반환한다.
 - `packages/shared/src/onboarding/`: 두 앱이 함께 사용하는 온보딩 화면, 프로필 생성과 파싱 API. 면접 앱은 생성된 프로필을 재업로드 없이 면접 입력으로 연결한다.
 - `packages/shared/src/profile.ts`: 프로필 계약 v1 타입. 필드 변경 시 계약 문서도 갱신한다.
+- `packages/shared/src/brand/`: 두 앱의 Morrow 로고, 공통 테마와 공유 이미지. 화면의 표시용 브랜드는 Morrow로 통일한다.
 - `packages/shared/src/supabase/`: 브라우저·서버 클라이언트, 환경변수 검증과 테스트.
 - `tests/e2e/`: Playwright 시나리오. 현재 검증 브라우저는 Chromium이다.
 - `docs/`: 프로젝트·제품 개요, 계획, 행사 참고 자료. 앱별 문서는 `docs/onboarding/`, `docs/interviews/`에 둔다.
