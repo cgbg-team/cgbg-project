@@ -22,6 +22,10 @@ import { saveCandidate } from "./save";
 
 const model = "claude-opus-5-5";
 
+// 면접 앱의 국가 선택·참고값 키와 같은 코드를 쓴다.
+const countryCodeRule =
+  "Use 2-letter country codes: KR, US, UK (not GB), CA, AU, JP, SG, IN, DE, FR, IE, NL, or another ISO 3166-1 alpha-2 code.";
+
 const finalSchema = extractionSchema.extend({
   prefs: z.object({
     country: z.string(),
@@ -55,6 +59,7 @@ Rules:
 - One topic per question, short, neutral. Prefer "single" or "multi" with 3–6 options, and always end the options with "기타" so the candidate can type their own answer. The screen also offers an optional free-text note under every choice question. Use "text" when a choice list would be too narrow.
 - Do not ask for contact details, ID numbers, health, religion, politics or family.
 - "id" must be unique across rounds, e.g. "r2q1".
+- salaryResearch.country: ${countryCodeRule} salaryResearch.role: an English job title such as "Machine Learning Engineer" or "Product Manager".
 - Write question text, why and options in {LANG} only, even when the agent export or the research is in another language. Do not add translations in parentheses.`;
 
 const finalSystem = `You are the onboarding parser for Morrow. Build the final candidate profile from <agent_export> and the interview <transcript>.
@@ -66,6 +71,7 @@ Rules:
 - Evidence quotes must come from the agent export (quote or detail) without changing their meaning; if the export is in another language than {LANG}, translate the quote faithfully into {LANG}. Use source "resume" for work/education items and "portfolio" for the rest. Do not invent facts or numbers.
 - Replace employer names with an anonymous description: industry · size · city.
 - "roleTypes": 3 job titles the candidate is actually open to after the interview, usable as search keywords. Never company names.
+- "prefs.country": the candidate's first-choice work country as a code, not a name. ${countryCodeRule}
 - "prefs": take country, salary numbers, remote/relocation, flexibility, dealbreakers and work style from the candidate's answers. Use USD for any country other than Korea; if an answer was given in another currency, convert it to USD using the rate in <salary_research>. Answers in "만원/년" mean KRW × 10,000. If an answer is missing, use the most conservative reasonable value and add an open question.
 - "openQuestions": what is still unclear for an employer.
 - "experienceMd" and "strengthsMd": short Markdown documents starting with "# " with "## " headings per item.
@@ -193,7 +199,35 @@ const demoQuestions: Question[] = [
   },
 ];
 
-export async function POST(request: Request) {
+// 앱이 가진 국가·직무 참고값(빅맥 가격, 공고 연봉)을 넘기면 웹 검색보다 먼저 쓴다.
+export type ResearchLookup = (country: string, role: string, locale: StepRequest["locale"]) => {
+  research: Research;
+  hasSalary: boolean;
+} | null;
+
+async function findResearch(
+  client: Anthropic,
+  lookup: ResearchLookup | undefined,
+  country: string,
+  role: string,
+  locale: StepRequest["locale"],
+): Promise<Research> {
+  const local = lookup?.(country, role, locale);
+  if (local?.hasSalary) return local.research;
+  const searched = await researchSalary(client, country, role, locale);
+  // 빅맥 가격은 미리 계산한 값이 있으면 그것을 앞에 두고 연봉만 검색 결과로 보완한다.
+  return local
+    ? { ...searched, summary: `${local.research.summary} ${searched.summary}`, sources: [...local.research.sources, ...searched.sources] }
+    : searched;
+}
+
+export function createStepHandler(options: { lookup?: ResearchLookup } = {}) {
+  return (request: Request) => handleStep(request, options.lookup);
+}
+
+export const POST = createStepHandler();
+
+async function handleStep(request: Request, lookup: ResearchLookup | undefined) {
   let body: StepRequest;
   try {
     body = stepRequestSchema.parse(await request.json());
@@ -219,7 +253,7 @@ export async function POST(request: Request) {
     const research = [...body.research];
     const wanted = next.salaryResearch;
     if (wanted && !research.some((r) => r.country === wanted.country && r.role === wanted.role)) {
-      research.push(await researchSalary(client, wanted.country, wanted.role, body.locale));
+      research.push(await findResearch(client, lookup, wanted.country, wanted.role, body.locale));
       next = await plan(client, agent, { ...body, research });
     }
     if (next.done || !next.questions.length) return Response.json(await finalize(client, agent, { ...body, research }));
