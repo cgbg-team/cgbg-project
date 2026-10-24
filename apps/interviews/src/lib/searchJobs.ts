@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { gunzipSync } from "node:zlib";
 import path from "node:path";
 import { z } from "zod";
+import { fetchLiveJobs } from "./liveJobs";
 import { screenJobs } from "./screening";
 import { jobSchema } from "./schemas";
 import type { Job, Keyword } from "./types";
@@ -24,4 +25,17 @@ export function searchJobPool(keywords: Keyword[], opts: { country?: string; n?:
 }
 export function searchJobs(tags: string[], opts: { country?: string; n?: number } = {}): Job[] {
   return searchJobPool(tags.map((term) => ({ term, source: "wants" })), opts).selected.map(({ job }) => job);
+}
+
+// 풀에서 제목까지 맞는 공고가 모자랄 때만 실시간 공개 API를 불러 채운다. 실시간 호출이 실패해도 풀 결과는 그대로 쓴다.
+export async function searchJobsOnDemand(keywords: Keyword[], opts: { country?: string; n?: number; primaryRoles?: string[] } = {}) {
+  const n = Math.min(100, Math.max(0, opts.n ?? 100));
+  const country = opts.country ?? "";
+  const pooled = searchJobPool(keywords, { country, n, primaryRoles: opts.primaryRoles });
+  const terms = keywords.map((keyword) => keyword.term.trim().toLowerCase()).filter(Boolean);
+  const strong = pooled.selected.filter(({ job }) => terms.some((term) => job.title.toLowerCase().includes(term)));
+  if (strong.length >= n) return { ...pooled, search: { ...pooled.search, live: 0 } };
+  const live = await fetchLiveJobs(terms, country);
+  const combined = screenJobs([...loadPool(), ...live], keywords, n, country, opts.primaryRoles);
+  return { ...combined, search: { ...combined.search, live: live.length } };
 }

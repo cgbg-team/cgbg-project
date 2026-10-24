@@ -76,6 +76,7 @@ test("내 페르소나는 온보딩에서 만든 프로필로 재업로드 없�
   await page.goto("http://127.0.0.1:3101");
   await page.getByRole("button", { name: "내 페르소나로 체험하기" }).click();
   await expect(page.getByRole("heading", { name: "구직자 온보딩" })).toBeVisible();
+  await page.getByRole("tab", { name: "자료 직접 올리기" }).click();
   await page.getByLabel("또는 이력서 텍스트 붙여넣기").fill("Radiologist with experience in medical imaging and automation.");
   await page.getByRole("radio", { name: "전혀 다른 업계에 도전하고 싶어요", exact: true }).check();
   await page.getByRole("radio", { name: "성장 기회가 좋다면 조정할 수 있어요", exact: true }).check();

@@ -5,6 +5,7 @@ import { demoExtra, demoResume } from "./demo";
 import { messages } from "./messages";
 import { questionIds, questions, type Locale } from "./questions";
 import type { CandidateFolder } from "./build";
+import { AgentMaterials } from "./agent-materials";
 import { ProfileResult } from "./profile-result";
 
 type Result = CandidateFolder & { mock: boolean };
@@ -12,6 +13,8 @@ type Result = CandidateFolder & { mock: boolean };
 const input = "w-full rounded border border-neutral-300 bg-white px-3 py-2";
 
 export function OnboardingForm({ locale, onContinue }: { locale: Locale; onContinue?: (folder: CandidateFolder) => void }) {
+  const [mode, setMode] = useState<"agent" | "upload">("agent");
+  const [agentExport, setAgentExport] = useState("");
   const [resumeText, setResumeText] = useState("");
   const [extraText, setExtraText] = useState("");
   const [pending, setPending] = useState(false);
@@ -23,7 +26,15 @@ export function OnboardingForm({ locale, onContinue }: { locale: Locale; onConti
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const file = form.get("resumeFile");
-    if (!(file instanceof File && file.size > 0) && !resumeText.trim()) return setError(t.needResume);
+    if (mode === "agent") {
+      if (!agentExport.trim()) return setError(t.needAgentJson);
+      form.delete("resumeFile");
+      form.set("resumeText", "");
+      form.set("extraText", "");
+    } else {
+      if (!(file instanceof File && file.size > 0) && !resumeText.trim()) return setError(t.needResume);
+      form.set("agentExport", "");
+    }
     if (questionIds.some((id) => !form.get(id))) return setError(t.needAnswers);
     if (Number(form.get("floor")) > Number(form.get("target"))) return setError(t.needSalary);
     form.set("locale", locale);
@@ -51,6 +62,24 @@ export function OnboardingForm({ locale, onContinue }: { locale: Locale; onConti
 
       <fieldset className="flex flex-col gap-3">
         <legend className="mb-2 text-xl font-semibold">{t.materials}</legend>
+        <div role="tablist" className="flex gap-2 text-sm">
+          {(["agent", "upload"] as const).map((item) => (
+            <button
+              key={item}
+              type="button"
+              role="tab"
+              aria-selected={mode === item}
+              onClick={() => setMode(item)}
+              className={`rounded px-3 py-2 ${mode === item ? "bg-neutral-900 text-white" : "border border-neutral-300"}`}
+            >
+              {item === "agent" ? t.tabAgent : t.tabUpload}
+            </button>
+          ))}
+        </div>
+        {mode === "agent" ? (
+          <AgentMaterials locale={locale} t={t} value={agentExport} onChange={setAgentExport} />
+        ) : (
+        <>
         <button
           type="button"
           className="self-start text-sm underline"
@@ -74,6 +103,8 @@ export function OnboardingForm({ locale, onContinue }: { locale: Locale; onConti
           <span className="text-sm text-neutral-500">{t.extraHint}</span>
           <textarea name="extraText" rows={6} className={input} value={extraText} onChange={(e) => setExtraText(e.target.value)} />
         </label>
+        </>
+        )}
       </fieldset>
 
       <fieldset className="flex flex-col gap-5">

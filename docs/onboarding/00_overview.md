@@ -6,6 +6,8 @@
 
 `skills`·`experience`는 이력서에서만, `transferableStrengths`는 추가 자료에서만 추출하며 근거 문장이 없는 역량은 `verified: false`다. 희망·최저 연봉과 조건은 사용자가 직접 입력한 값만 비공개 프로필에 넣는다. `ANTHROPIC_API_KEY`가 없으면 가상 데모 결과를 반환한다. 화면 문구는 `packages/shared/src/onboarding/messages.ts`의 한국어·영어 사전을 사용한다. 링크 수집, 실제 저장소 연동과 디자인은 아직 없다.
 
+자료 입력은 두 가지다. 기본인 "내 AI 에이전트로 가져오기"는 사용자가 복사한 프롬프트로 개인 AI 에이전트가 `beyond-cv/agent-export/v1` JSON(`items[]`: `category`, `title`, `detail`, `quote`, `source`)을 만들고, 사용자가 그 JSON을 붙여넣는다. 서버는 `work`·`education` 항목을 이력서 자리로, 나머지를 추가 자료로 나눠 같은 파서로 검증·분석한다. 개인 에이전트는 원자료만 제공하고 검증·숨은 강점 분석은 이 앱의 Claude가 맡는다. 질문 3개와 연봉은 화면에서 사용자가 직접 입력한다. 선택 필드 `insights`에는 에이전트가 본 관심사·재능·강점·약점·일하는 스타일과 직무·산업 가설(`roleIdeas`, 회사명 제외)을 담는다. 관심사·재능·강점·직무 가설은 Claude에 가설로만 전달해 자료로 뒷받침될 때만 반영하고, 약점과 일하는 스타일은 Claude에 보내지 않고 비공개 문서 `private/self-insight.md`에만 저장한다. "자료 직접 올리기"는 기존 PDF·텍스트 입력이다.
+
 `@/*`는 이 앱의 `src/*`를 가리킨다. Supabase는 `@cgbg/shared/supabase/client` 또는 `@cgbg/shared/supabase/server`를 사용한다. 필요할 때 앱 내부 `.env.example`을 `.env.local`로 복사한다.
 
 전체 실행·검증·배포는 [README](../../README.md), 기능 방향은 [제품 아이디어](../01_product_idea.md)를 따른다.

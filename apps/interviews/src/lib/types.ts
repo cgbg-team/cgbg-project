@@ -21,7 +21,7 @@ export const stageLabels = {
 export type Stage = keyof typeof stageLabels;
 export type Outcome = "recommended" | "hold" | "mismatch";
 export type Job = z.infer<typeof jobSchema>;
-export type JobSearch = { total: number; countryTotal: number; matched: number; companies: number; country: string; candidateCount?: number; explorationCount?: number; explorationTarget?: number };
+export type JobSearch = { total: number; countryTotal: number; matched: number; companies: number; country: string; candidateCount?: number; explorationCount?: number; explorationTarget?: number; live?: number };
 export type Keyword = {
   term: string;
   source: "wants" | "skills" | "experience" | "transferableStrengths";

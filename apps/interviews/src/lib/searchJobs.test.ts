@@ -31,3 +31,19 @@ test("실제 압축 풀에서 호주 공고를 검색하고 상위 두 회사만
     expect(JSON.stringify(result).length).toBeLessThan(15000);
   } finally { vi.unstubAllEnvs(); }
 });
+
+test("풀에 제목 일치 공고가 모자라면 실시간 공개 API 공고로 채우고, 실패해도 풀 결과를 쓴다", async () => {
+  vi.stubEnv("JOBS_POOL_PATH", fileURLToPath(new URL("../data/jobs/jobs_pool.json.gz", import.meta.url)));
+  const jobicy = { jobs: [{ id: 1, url: "https://jobicy.com/jobs/1", jobTitle: "Coffee Community Lead", companyName: "Bean Co", jobGeo: "Australia", jobDescription: "<p>Lead our coffee community</p>", salaryMin: 70000, salaryMax: 90000, salaryCurrency: "AUD" }] };
+  const fetchMock = vi.fn(async (url: string) => (url.includes("jobicy") ? new Response(JSON.stringify(jobicy)) : new Response("", { status: 503 })));
+  vi.stubGlobal("fetch", fetchMock);
+  try {
+    const { searchJobsOnDemand } = await import("./searchJobs");
+    const result = await searchJobsOnDemand([{ term: "coffee community", source: "wants" }], { country: "AU" });
+    expect(result.selected[0].job).toMatchObject({ id: "LJ1", company: "Bean Co", country: "AU", salary: "AUD 70000–90000", text: "Lead our coffee community" });
+    expect(result.search.live).toBe(1);
+    expect(fetchMock.mock.calls.some(([url]) => String(url).includes("geo=australia"))).toBe(true);
+    const pooled = await searchJobsOnDemand([{ term: "software engineer", source: "wants" }], { country: "AU", n: 2 });
+    expect(pooled.search.live).toBe(0);
+  } finally { vi.unstubAllEnvs(); vi.unstubAllGlobals(); }
+});

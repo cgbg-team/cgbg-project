@@ -40,3 +40,14 @@ test("근거 문장이 없는 역량은 확인되지 않은 것으로 표시한�
   const { manifest } = buildCandidateFolder(extraction, { ...prefs, dealbreakers: [] }, "cand_2");
   expect(manifest.publicProfile.skills[0]).toEqual({ name: "Leadership", verified: false, evidence: [] });
 });
+
+test("개인 에이전트 인사이트는 비공개 문서로만 저장한다", () => {
+  const { manifest, files } = buildCandidateFolder(
+    demoExtraction,
+    { ...prefs, dealbreakers: [], selfInsightMd: "# Self-insight\n\n## Weaknesses\n- x\n" },
+    "cand_3",
+  );
+  expect(manifest.privateProfile.docs.map((doc) => doc.path)).toContain("private/self-insight.md");
+  expect(manifest.publicProfile.docs.every((doc) => doc.visibility === "public")).toBe(true);
+  expect(files.map((file) => file.path)).toContain("private/self-insight.md");
+});

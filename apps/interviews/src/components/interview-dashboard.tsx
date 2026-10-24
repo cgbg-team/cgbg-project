@@ -126,7 +126,7 @@ export function InterviewDashboard({
         <div className="job-search-controls">
           {!run.runId && mode === "own" && <label>
             검색 국가{" "}
-            <select value={country} onChange={(event) => setCountry(event.target.value)} disabled={mode === "sample" || running || run.starting}>
+            <select value={country} onChange={(event) => setCountry(event.target.value)} disabled={running || run.starting}>
               <option value="">전체 국가 ({jobSummary.total.toLocaleString()})</option>
               {jobSummary.countries.map(({code, count}) => (
                 <option value={code} key={code}>{countryLabel(code)} ({count.toLocaleString()})</option>

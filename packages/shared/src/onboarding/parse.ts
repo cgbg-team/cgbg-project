@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
+import { parseAgentExport } from "./agent-export";
 import { buildCandidateFolder } from "./build";
 import { extractProfile } from "./extract";
 import { questions } from "./questions";
@@ -11,6 +12,7 @@ const formSchema = z.object({
   locale: z.enum(["ko", "en"]),
   resumeText: z.string().max(textLimit),
   extraText: z.string().max(textLimit),
+  agentExport: z.string().max(100_000),
   direction: z.enum(questions.direction),
   pay: z.enum(questions.pay),
   priority: z.enum(questions.priority),
@@ -46,6 +48,17 @@ export async function POST(request: Request) {
   if (data.floor > data.target)
     return Response.json({ error: "최저 연봉은 희망 연봉보다 클 수 없습니다." }, { status: 400 });
 
+  let agent: ReturnType<typeof parseAgentExport> | undefined;
+  if (data.agentExport.trim()) {
+    try {
+      agent = parseAgentExport(data.agentExport);
+      data.resumeText = agent.resumeText;
+      data.extraText = agent.extraText;
+    } catch (error) {
+      return Response.json({ error: error instanceof Error ? error.message : String(error) }, { status: 400 });
+    }
+  }
+
   const file = form.get("resumeFile");
   let resumePdf: string | undefined;
   if (file instanceof File && file.size > 0) {
@@ -63,6 +76,7 @@ export async function POST(request: Request) {
       resumePdf,
       resumeText: data.resumeText.trim() || undefined,
       extraText: data.extraText.trim() || undefined,
+      agentInsights: agent?.insightsText,
       locale: data.locale,
     });
     const folder = buildCandidateFolder(extraction, {
@@ -74,6 +88,7 @@ export async function POST(request: Request) {
       remoteOk: data.remoteOk === "true",
       relocateOk: data.relocateOk === "true",
       dealbreakers: data.dealbreakers.split("\n").map((line) => line.trim()).filter(Boolean),
+      selfInsightMd: agent?.selfInsightMd,
     }, `cand_${randomUUID()}`);
     return Response.json({ ...folder, mock });
   } catch (error) {
