@@ -1,10 +1,9 @@
-# Strengths beyond the résumé
-
-## Coffee equipment knowledge
-Runs a 12k-reader espresso equipment blog and restored 15 vintage lever machines.
-
-## Public speaking
-Seoul Coffee Expo 2023 speaker; hosts a monthly "AI & Medicine" talk.
-
-## Community building
-Founded a 60-member café owners' group; organized a charity event raising $8,000.
+# Hidden Strengths
+## Consumer voice AI founder
+Opens founding-engineer and AI product roles in entertainment and companion apps.
+## Technical educator
+Opens DevRel and edtech roles.
+## Audio and music AI
+Opens music tech and generative voice roles.
+## Community builder
+Opens community lead and AI enablement roles.

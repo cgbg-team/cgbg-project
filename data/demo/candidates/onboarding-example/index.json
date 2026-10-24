@@ -1,15 +1,15 @@
 {
-  "confirmed_at": "2026-10-24T03:36:39.554Z",
+  "confirmed_at": "2026-10-24T03:47:01.054Z",
   "salaryPeriod": "annual",
   "publicProfile": {
     "schemaVersion": 1,
-    "candidateId": "cand_a36d524a-be42-4ec9-b8a2-f1b5eee4db3d",
-    "headline": "Radiologist turned detail-obsessed coffee equipment expert and educator",
-    "summary": "Attending radiologist with 10+ years of chest imaging and AI tool adoption experience. Outside medicine, runs a 12k-reader espresso equipment blog, restores machines, speaks publicly and built a 60-member café community. Open to roles that combine technical depth, teaching and community.",
+    "candidateId": "cand_40317bc0-db90-403b-ba1d-91aede358cd1",
+    "headline": "Multimodal AI Research Engineer — speech, vision-language and video models from research to production",
+    "summary": "Research/ML engineer spanning video, vision-language and speech AI. Leads end-to-end speech recognition development and serving at a seed-stage startup (Korean-English code-switching STT, 200k+ monthly API calls), previously did VLM data synthesis, multi-node fine-tuning and evaluation at a large cloud company, and began in a university computer vision lab. First author at ACL Findings 2025 and EACL Findings 2026. Strong communicator: long-running tech blog, YouTube lectures, invited talks and conference organizing. Extra materials indicate founding a speech AI company focused on AI as entertainment.",
     "location": {
       "country": "US",
       "remoteOk": true,
-      "relocateOk": false
+      "relocateOk": true
     },
     "languages": [
       {
@@ -18,105 +18,269 @@
       },
       {
         "name": "English",
-        "level": "fluent"
+        "level": "business"
       }
     ],
     "skills": [
       {
-        "name": "Medical image analysis",
+        "name": "Python",
         "level": "expert",
-        "years": 12,
         "verified": true,
         "evidence": [
           {
             "source": "resume",
-            "quote": "Read 40,000+ CT/MRI studies per year; subspecialty in chest imaging"
+            "quote": "Research: Python, Pytorch, Hugging Face"
           }
         ]
       },
       {
-        "name": "Clinical AI tool adoption",
+        "name": "PyTorch / Hugging Face",
+        "level": "expert",
+        "verified": true,
+        "evidence": [
+          {
+            "source": "resume",
+            "quote": "Research: Python, Pytorch, Hugging Face"
+          }
+        ]
+      },
+      {
+        "name": "Speech recognition (STT, Faster-Whisper)",
+        "level": "expert",
+        "years": 1,
+        "verified": true,
+        "evidence": [
+          {
+            "source": "resume",
+            "quote": "월 20만건 이상 호출되는 고성능 STT API 개발, 운영 (Faster-Whisper, K8S)"
+          },
+          {
+            "source": "resume",
+            "quote": "한-영 코드스위칭 오류율 5% 미만의 음성인식 AI 개발 및 서비스화 (thetaone-stt)"
+          }
+        ]
+      },
+      {
+        "name": "Kubernetes / model serving (vLLM)",
         "level": "working",
         "verified": true,
         "evidence": [
           {
             "source": "resume",
-            "quote": "Led adoption of an AI triage tool for chest X-rays across 3 departments"
+            "quote": "Development: Kubernetes, vLLM"
           }
         ]
       },
       {
-        "name": "Medical education",
+        "name": "Vision-language model fine-tuning (multi-node)",
+        "level": "working",
+        "verified": true,
+        "evidence": [
+          {
+            "source": "resume",
+            "quote": "비전-언어 모델 SFT용 데이터셋 합성 & 멀티 노드 환경에서의 파인튜닝을 통한 성능 개선 연구 (HCX)"
+          }
+        ]
+      },
+      {
+        "name": "Data curation, synthesis and data recipes",
         "level": "expert",
         "verified": true,
         "evidence": [
           {
             "source": "resume",
-            "quote": "Teaches imaging interpretation to 20 residents per year"
+            "quote": "LLM 기반 데이터 개선(rewriting, augmentation), 큐레이션을 통한 수학 특화 모델 연구"
+          },
+          {
+            "source": "resume",
+            "quote": "모델 기반의 데이터 품질 평가 및 개선 파이프라인 설계"
+          }
+        ]
+      },
+      {
+        "name": "Model evaluation / benchmarks (LLM-as-a-judge)",
+        "level": "expert",
+        "verified": true,
+        "evidence": [
+          {
+            "source": "resume",
+            "quote": "LVLM 추론 능력 평가를 위한 LLM-as-a-judge 기반 벤치마크 연구 & 논문화"
+          }
+        ]
+      },
+      {
+        "name": "Multi-agent LLM pipelines",
+        "level": "working",
+        "verified": true,
+        "evidence": [
+          {
+            "source": "resume",
+            "quote": "동영상에서 영어 교육용 콘텐츠를 생성하는 Multi-Agent 파이프라인 개발 (langflix)"
+          }
+        ]
+      },
+      {
+        "name": "Video retrieval / video-language alignment",
+        "level": "working",
+        "years": 1,
+        "verified": true,
+        "evidence": [
+          {
+            "source": "resume",
+            "quote": "확률적 임베딩을 활용하는 Video-Language Alignment 기술 연구"
           }
         ]
       }
     ],
     "experience": [
       {
-        "title": "Attending Radiologist",
-        "orgDescription": "University hospital · 2,000+ beds · Seoul",
-        "startYear": 2014,
+        "title": "ML Engineer",
+        "orgDescription": "Speech AI startup · seed stage · Korea",
+        "startYear": 2025,
         "highlights": [
-          "40,000+ CT/MRI reads per year",
-          "Led AI triage tool adoption across 3 departments"
+          "Built and shipped Korean-English code-switching STT with under 5% error rate",
+          "Developed and operates STT API with 200k+ monthly calls (Faster-Whisper, K8S)",
+          "Built data recipe search and model-based data quality pipelines",
+          "Built multi-agent pipeline generating English learning content from video",
+          "Led team AI transformation: non-developers write 15+ PRs/week while PR review demand fell 30%"
         ],
         "evidence": [
           {
             "source": "resume",
-            "quote": "Attending Radiologist, University Hospital (2,000+ beds, Seoul) — 2014–present"
+            "quote": "팀 전체 AX 리드: 비개발자들이 주15회+ PR을 작성하면서도, 전체 PR 리뷰 수요는 30% 감소"
+          },
+          {
+            "source": "resume",
+            "quote": "월 20만건 이상 호출되는 고성능 STT API 개발, 운영 (Faster-Whisper, K8S)"
+          }
+        ]
+      },
+      {
+        "title": "Research Intern",
+        "orgDescription": "Cloud & AI platform · large enterprise · Korea",
+        "startYear": 2024,
+        "endYear": 2025,
+        "highlights": [
+          "Synthesized SFT datasets and fine-tuned VLMs in multi-node environments",
+          "Built data mixing and experiment tools for data recipes and curricula",
+          "Researched LLM-as-a-judge benchmark for LVLM reasoning (MMRefine, ACL Findings 2025)"
+        ],
+        "evidence": [
+          {
+            "source": "resume",
+            "quote": "데이터 레시피, 커리큘럼 설계를 위한 데이터 믹싱 및 실험 도구 개발"
+          }
+        ]
+      },
+      {
+        "title": "Undergraduate Researcher",
+        "orgDescription": "University robotics & computer vision lab · academic · Seoul",
+        "startYear": 2023,
+        "endYear": 2024,
+        "highlights": [
+          "Fast and precise video retrieval via suppressing non-essential information",
+          "Video-language alignment with probabilistic embeddings"
+        ],
+        "evidence": [
+          {
+            "source": "resume",
+            "quote": "비중요 정보 억제를 통한 고속/정밀 Video Retrieval 기술 연구"
+          }
+        ]
+      },
+      {
+        "title": "Software Developer (military service)",
+        "orgDescription": "Air force information systems unit · government · Korea",
+        "startYear": 2021,
+        "endYear": 2022,
+        "highlights": [
+          "Edited internal IT newsletter and operated GPU cloud for AI research",
+          "Planned and ran headquarters IT conference",
+          "Runs alumni community and tech conference after discharge"
+        ],
+        "evidence": [
+          {
+            "source": "resume",
+            "quote": "공군 IT 뉴스레터 (월간 스카e) 편집, AI 연구용 GPU 클라우드 운영"
+          },
+          {
+            "source": "resume",
+            "quote": "공군본부 IT 컨퍼런스 <계룡전산한마당> 기획 및 운영"
           }
         ]
       }
     ],
     "transferableStrengths": [
       {
-        "strength": "Coffee equipment knowledge",
-        "why": "Teardown-level understanding of espresso machines fits product, QA and technical sales roles at coffee equipment companies.",
+        "strength": "Founder / product vision in consumer voice AI",
+        "why": "Founding a speech AI company around lovable AI voices opens founding-engineer, head-of-AI and product roles in entertainment, companion apps, games and media.",
         "evidence": [
           {
             "source": "portfolio",
-            "quote": "Repaired and restored 15 vintage lever machines for local cafés"
+            "quote": "CEO of Kitsch Labs (\"WE MAKE AI LOVABLE\" — AI Voice You Can Fall For), Jul. 2026 – Present."
+          },
+          {
+            "source": "portfolio",
+            "quote": "Interests: Multimodal AI and AI as entertainment."
           }
         ]
       },
       {
-        "strength": "Public speaking",
-        "why": "Regular talks to both medical and consumer audiences translate to developer relations, education and evangelist roles.",
+        "strength": "Technical education and content creation",
+        "why": "Free deep learning lecture series and paper reviews point to developer relations, technical education and edtech curriculum roles.",
         "evidence": [
           {
             "source": "portfolio",
-            "quote": "Monthly hospital \"AI & Medicine\" lunch talk host since 2021"
+            "quote": "deeplearning (★6): \"'나만 알기 아까운 딥러닝' 무료 강의 공식 Repository\""
+          },
+          {
+            "source": "portfolio",
+            "quote": "paperReview (★7): \"Reviews of DL Papers. with youtube!\""
           }
         ]
       },
       {
-        "strength": "Community building",
-        "why": "Founding and running a 60-member owners' group shows community management and partnership skills.",
+        "strength": "Music and audio AI tinkering, TTS serving",
+        "why": "Piano-to-MIDI and serverless TTS projects open roles in music tech, generative audio and voice synthesis companies.",
         "evidence": [
           {
             "source": "portfolio",
-            "quote": "Founded a neighborhood café owners' group (60 members)"
+            "quote": "Piano2Midi (★32, Python): \"Convert your .wav Piano Music to .mid File! Using Deep Learning.\""
+          },
+          {
+            "source": "portfolio",
+            "quote": "gpt-sovits-runpod-serverless (Python): \"RunPod Serverless worker for GPT-SoVITS v2ProPlus TTS inference\""
+          }
+        ]
+      },
+      {
+        "strength": "Community building and AI developer tooling",
+        "why": "Founding clubs, leading alumni communities and building agent-readiness tools fit community lead, developer productivity and AI enablement roles.",
+        "evidence": [
+          {
+            "source": "portfolio",
+            "quote": "Founder, code_high (Problem Solving Club), Sejong University."
+          },
+          {
+            "source": "portfolio",
+            "quote": "agent-onboarding (★9): \"Make your repository AI-ready with single skill run\""
           }
         ]
       }
     ],
     "wants": {
       "roleTypes": [
-        "Clinical AI product specialist",
-        "Coffee equipment product manager",
-        "Medical education content lead"
+        "Speech AI / ML Engineer",
+        "Multimodal Research Engineer",
+        "AI Developer Relations Engineer (consumer entertainment / edtech)"
       ],
       "interests": [
-        "specialty coffee",
-        "medical AI",
-        "public speaking",
-        "community"
+        "Multimodal AI",
+        "AI as entertainment",
+        "Speech and voice AI",
+        "Technical writing and teaching",
+        "Music",
+        "Travel and specialty coffee"
       ],
       "workStyle": [
         "흥미와 성장 가능성"
@@ -137,7 +301,7 @@
   },
   "privateProfile": {
     "schemaVersion": 1,
-    "candidateId": "cand_a36d524a-be42-4ec9-b8a2-f1b5eee4db3d",
+    "candidateId": "cand_40317bc0-db90-403b-ba1d-91aede358cd1",
     "salary": {
       "currency": "USD",
       "target": 150000,
@@ -146,14 +310,20 @@
         "성장 기회가 좋다면 연봉 조정 가능"
       ]
     },
-    "dealbreakers": [
-      "More than 60 hours per week"
-    ],
+    "dealbreakers": [],
     "mustEmphasize": [
-      "Explains complex technical detail to non-experts"
+      "End-to-end ownership of production STT serving 200k+ monthly calls",
+      "First-author papers at ACL Findings 2025 and EACL Findings 2026",
+      "Data-centric expertise: synthesis, curation, evaluation",
+      "Team-wide AI adoption lead with measurable PR review reduction",
+      "Strong public communication: blog, YouTube, invited talks"
     ],
     "openQuestions": [
-      "Would you accept a role outside healthcare with a lower starting salary?"
+      "Is the candidate still running Kitsch Labs (listed from Jul. 2026) and available for employment?",
+      "What English proficiency level for work communication?",
+      "Team size and scope of leadership at the startup?",
+      "Experience with TTS/LLM training at scale beyond fine-tuning?",
+      "Salary, location and remote preferences?"
     ],
     "docs": [
       {
