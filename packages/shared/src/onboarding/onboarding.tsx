@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { messages } from "./messages";
 import type { Locale } from "./questions";
 import type { CandidateFolder } from "./build";
-import { OnboardingForm } from "./onboarding-form";
+import { OnboardingWizard } from "./onboarding-wizard";
 
 const locales: { id: Locale; label: string }[] = [
   { id: "ko", label: "한국어" },
@@ -41,7 +41,7 @@ export function Onboarding({ onContinue }: { onContinue?: (folder: CandidateFold
       </header>
       <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">{t.title}</h1>
       <p className="text-lg text-neutral-700">{t.tagline}</p>
-      <OnboardingForm locale={locale} onContinue={onContinue} />
+      <OnboardingWizard locale={locale} onContinue={onContinue} />
     </>
   );
 }

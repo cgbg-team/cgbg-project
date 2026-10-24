@@ -9,7 +9,11 @@ import type { Answers } from "./questions";
 import { messages } from "./messages";
 
 export type Preferences = {
-  answers: Answers;
+  // 고정 질문 3개 응답(기존 입력) 또는 동적 질문 기록(interviewMd·flexibleOn·workStyle) 중 하나를 쓴다.
+  answers?: Answers;
+  interviewMd?: string;
+  flexibleOn?: string[];
+  workStyle?: string[];
   country: string;
   currency: "USD" | "KRW";
   target: number;
@@ -56,7 +60,8 @@ function toEvidence(items: Extraction["skills"][number]["evidence"]): Evidence[]
     .map((item) => ({ source: item.source, quote: item.quote.trim() }));
 }
 
-function interviewMd(answers: Answers) {
+function interviewMd(answers?: Answers) {
+  if (!answers) return "# 온보딩 질문 응답\n";
   const ko = messages.ko;
   const lines = (Object.keys(answers) as (keyof Answers)[]).map(
     (id) => `## ${ko.q[id]}\n\n${ko.a[answers[id]]}`,
@@ -105,7 +110,7 @@ export function buildCandidateFolder(
     wants: {
       roleTypes: extraction.roleTypes,
       interests: extraction.interests,
-      workStyle: [messages.ko.a[prefs.answers.priority]],
+      workStyle: prefs.workStyle ?? (prefs.answers ? [messages.ko.a[prefs.answers.priority]] : []),
     },
     docs: publicDocs,
   };
@@ -116,7 +121,7 @@ export function buildCandidateFolder(
       currency: prefs.currency,
       target: prefs.target,
       floor: prefs.floor,
-      flexibleOn: flexibleOn[prefs.answers.pay],
+      flexibleOn: prefs.flexibleOn ?? (prefs.answers ? flexibleOn[prefs.answers.pay] : []),
     },
     dealbreakers: prefs.dealbreakers,
     mustEmphasize: extraction.mustEmphasize,
@@ -135,7 +140,7 @@ export function buildCandidateFolder(
       { path: "index.json", content: `${JSON.stringify(manifest, null, 2)}\n` },
       { path: "public/experience.md", content: extraction.experienceMd },
       { path: "public/strengths.md", content: extraction.strengthsMd },
-      { path: "private/interview.md", content: interviewMd(prefs.answers) },
+      { path: "private/interview.md", content: prefs.interviewMd ?? interviewMd(prefs.answers) },
       ...(prefs.selfInsightMd ? [{ path: selfInsightDoc.path, content: prefs.selfInsightMd }] : []),
     ],
   };
