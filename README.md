@@ -108,7 +108,11 @@ npm run start --workspace=@cgbg/onboarding
 
 같은 Git 저장소에서 Vercel 프로젝트를 두 개 만들고 Root Directory를 각각 `apps/onboarding`, `apps/interviews`로 지정한다. 각 프로젝트에서 루트 workspaces와 lockfile, shared 패키지를 포함해 설치·빌드되는지 확인한다. 설정 절차는 [Vercel 모노레포 안내](https://vercel.com/docs/monorepos)를 따른다.
 
-Supabase를 사용할 때 필요한 환경변수는 각 Vercel 프로젝트에 설정한다. 공개 환경변수 변경 후에는 다시 빌드·배포한다. 현재 클라우드 프로젝트 생성·연결이나 배포는 수행하지 않았다.
+면접 앱은 Kitsch Labs 팀의 별도 프로젝트 `cgbg-interviews`에 배포했다: [프로덕션 페이지](https://cgbg-interviews.vercel.app). Root Directory는 `apps/interviews`, Node.js는 24.x다. 모노레포 루트의 개발 의존성도 설치하도록 Install Command는 `cd ../.. && npm ci --include=dev`, Build Command는 `npm run build`로 설정한다. 루트 외부 파일 접근, 시스템 환경변수 노출과 Workflow OIDC를 활성화한다.
+
+프로덕션 환경에 `ANTHROPIC_API_KEY`와 32자 이상의 `INTERVIEW_SESSION_SECRET`을 등록한 뒤 재배포해야 면접을 시작할 수 있다. 키가 없으면 설정 안내가 표시된다. Supabase를 사용할 때 필요한 환경변수도 앱별 Vercel 프로젝트에 설정한다. 비밀값은 Git에 저장하지 않는다.
+
+GitHub의 `cgbg-team` 조직에 Vercel App을 설치했고 `main` 소스로 API 배포했다. 현재 프로젝트의 Git 연결과 push 자동 배포는 미설정이며, [Git 설정](https://vercel.com/kitsch-labs/cgbg-interviews/settings/git)에서 저장소를 연결할 수 있다. 온보딩의 Vercel 프로젝트는 이번 배포 작업에서 변경하지 않았다.
 
 ## 알려진 도구 제약
 
