@@ -1,5 +1,5 @@
 import { expect, test, vi } from "vitest";
-import { getSupabaseEnv } from "./env";
+import { getSupabaseEnv } from "@cgbg/shared/supabase/env";
 
 test.each(["NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"])(
   "%s 누락 시 설정 오류를 알린다",

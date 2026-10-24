@@ -1,13 +1,18 @@
 {
-  "name": "anthropic-hackathon-boilerplate",
+  "name": "cgbg-project",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "npm run dev:onboarding",
+    "dev:onboarding": "npm run dev --workspace=@cgbg/onboarding",
+    "dev:interviews": "npm run dev --workspace=@cgbg/interviews",
+    "build": "npm run build --workspaces --if-present",
     "lint": "eslint .",
-    "typecheck": "next typegen && tsc --noEmit",
+    "typecheck": "npm run typecheck --workspaces && tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test"
@@ -15,17 +20,8 @@
   "engines": {
     "node": "^22.12.0 || ^24.0.0 || >=26.0.0"
   },
-  "dependencies": {
-    "@supabase/ssr": "0.12.7",
-    "@supabase/supabase-js": "2.118.0",
-    "next": "16.4.3",
-    "react": "19.3.0",
-    "react-dom": "19.3.0",
-    "server-only": "0.0.1"
-  },
   "devDependencies": {
     "@playwright/test": "1.64.1",
-    "@tailwindcss/turbopack": "^4",
     "@testing-library/dom": "10.4.2",
     "@testing-library/react": "16.3.3",
     "@types/node": "22.20.5",
@@ -35,7 +31,6 @@
     "eslint": "9.39.5",
     "eslint-config-next": "16.4.3",
     "jsdom": "29.1.1",
-    "tailwindcss": "^4",
     "typescript": "^5",
     "vite": "8.3.5",
     "vitest": "5.0.5"

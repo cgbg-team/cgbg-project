@@ -5,14 +5,15 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
+  { settings: { next: { rootDir: ["apps/onboarding/", "apps/interviews/"] } } },
   globalIgnores([
-    ".next/**",
-    "out/**",
-    "build/**",
-    "next-env.d.ts",
+    "**/.next/**",
+    "**/out/**",
+    "**/build/**",
+    "**/next-env.d.ts",
     "playwright-report/**",
     "test-results/**",
-    "coverage/**",
+    "**/coverage/**",
   ]),
 ]);
 
