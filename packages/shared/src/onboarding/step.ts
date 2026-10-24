@@ -101,7 +101,8 @@ async function researchSalary(client: Anthropic, country: string, role: string, 
       role: "user",
       content: `Search the web for two facts and answer in ${lang(locale)} in at most three short sentences, as a reference based on the sources:
 1. The current average or typical annual salary for "${role}" in ${country}, with currency (also in USD if the country is not Korea).
-2. The latest Big Mac index for ${country}: the Big Mac price in local currency and USD, and how it compares with South Korea.`,
+2. The latest Big Mac index for ${country}: the Big Mac price in local currency and USD, and how it compares with South Korea.
+Put only the final answer for the candidate inside <answer></answer>. Keep any notes to yourself outside the tags.`,
     },
   ];
   const sources = new Map<string, string>();
@@ -125,6 +126,8 @@ async function researchSalary(client: Anthropic, country: string, role: string, 
       }
     }
     if (finalText.trim()) summary = finalText;
+    const tagged = summary.match(/<answer>([\s\S]*?)<\/answer>/);
+    if (tagged) summary = tagged[1];
     if (response.stop_reason !== "pause_turn") break;
     messages.push({ role: "assistant", content: response.content });
   }
@@ -225,8 +228,13 @@ export async function POST(request: Request) {
     const latest = research.at(-1);
     const countryFields = new Set(["salaryTarget", "salaryFloor", "global", "location"]);
     const first = latest ? next.questions.findIndex((q) => countryFields.has(q.fills)) : -1;
+    // 연봉 숫자는 계약대로 USD 또는 만원 단위로만 받는다.
+    const salaryUnit = (q: Question) =>
+      q.type === "number" && (q.fills === "salaryTarget" || q.fills === "salaryFloor") && q.unit !== "만원/년"
+        ? { ...q, unit: "USD/년" }
+        : q;
     const questions: Question[] = next.questions.map((q, index) =>
-      latest && index === first ? { ...q, context: latest.summary, sources: latest.sources } : q,
+      salaryUnit(latest && index === first ? { ...q, context: latest.summary, sources: latest.sources } : q),
     );
     return Response.json({ done: false, questions, research, mock: false });
   } catch (error) {

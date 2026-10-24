@@ -79,7 +79,10 @@ function answerWithNote(round: Round, id: string) {
 export function transcript(rounds: Round[]) {
   return rounds
     .map((round, index) =>
-      [`Round ${index + 1}`, ...round.questions.map((q) => `- Q (${q.fills}): ${q.text}\n  A: ${answerWithNote(round, q.id)}`)].join("\n"),
+      [
+        `Round ${index + 1}`,
+        ...round.questions.map((q) => `- Q (${q.fills}${q.unit ? `, unit ${q.unit}` : ""}): ${q.text}\n  A: ${answerWithNote(round, q.id)}`),
+      ].join("\n"),
     )
     .join("\n\n");
 }
