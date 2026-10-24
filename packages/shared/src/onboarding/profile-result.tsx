@@ -1,6 +1,5 @@
 "use client";
 
-import { strToU8, zipSync } from "fflate";
 import type { CandidateFolder } from "./build";
 import type { Messages } from "./messages";
 
@@ -28,19 +27,6 @@ function Chips({ title, items }: { title: string; items: string[] }) {
 
 export function ProfileResult({ result, t, onRestart, onContinue }: Props) {
   const { publicProfile, privateProfile } = result.manifest;
-  const folder = publicProfile.candidateId;
-
-  function download() {
-    const zip = zipSync(
-      Object.fromEntries(result.files.map((file) => [`${folder}/${file.path}`, strToU8(file.content)])),
-    );
-    const url = URL.createObjectURL(new Blob([zip as BlobPart], { type: "application/zip" }));
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `${folder}.zip`;
-    link.click();
-    URL.revokeObjectURL(url);
-  }
 
   return (
     <section className="flex flex-col gap-6">
@@ -71,17 +57,14 @@ export function ProfileResult({ result, t, onRestart, onContinue }: Props) {
         <Chips title={t.openQuestions} items={privateProfile.openQuestions} />
       )}
       <div className="flex flex-wrap gap-3">
-        <button type="button" onClick={download} className="rounded bg-neutral-900 px-4 py-3 font-semibold text-white">
-          {t.downloadZip}
-        </button>
-        {onContinue ? <button type="button" onClick={() => onContinue(result)} className="rounded border border-neutral-900 px-4 py-3 font-semibold">
+        {onContinue ? <button type="button" onClick={() => onContinue(result)} className="rounded bg-neutral-900 px-4 py-3 font-semibold text-white">
           {t.continueInterviews}
-        </button> : <a href={interviewsUrl} className="rounded border border-neutral-900 px-4 py-3 font-semibold">
+        </button> : <a href={interviewsUrl} className="rounded bg-neutral-900 px-4 py-3 font-semibold text-white">
           {t.goInterviews}
         </a>}
         <button type="button" onClick={onRestart} className="px-4 py-3 underline">{t.restart}</button>
       </div>
-      <p className="text-sm text-neutral-500">{onContinue ? t.directHandoff : t.handoff}</p>
+      {onContinue && <p className="text-sm text-neutral-500">{t.directHandoff}</p>}
     </section>
   );
 }
