@@ -1,9 +1,9 @@
 {
-  "total": 17237,
+  "total": 16675,
   "countries": [
     {
       "code": "US",
-      "count": 8759
+      "count": 8659
     },
     {
       "code": "?",
@@ -14,16 +14,16 @@
       "count": 1200
     },
     {
-      "code": "KR",
-      "count": 947
-    },
-    {
       "code": "CA",
       "count": 679
     },
     {
       "code": "DE",
       "count": 534
+    },
+    {
+      "code": "KR",
+      "count": 485
     },
     {
       "code": "IN",
